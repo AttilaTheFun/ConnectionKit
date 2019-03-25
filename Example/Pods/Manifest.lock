@@ -1,0 +1,16 @@
+PODS:
+  - ConnectionKit (0.1.0)
+
+DEPENDENCIES:
+  - ConnectionKit (from `../`)
+
+EXTERNAL SOURCES:
+  ConnectionKit:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  ConnectionKit: c8de380755a643da507f79645a63e6f16c3ccb20
+
+PODFILE CHECKSUM: 275a01f9047c90522c078058a2a8c0f1248cef6d
+
+COCOAPODS: 1.6.1
