@@ -1,5 +1,5 @@
 
-protocol ConnectionProtocol {
+public protocol ConnectionProtocol {
     associatedtype ConnectedEdge: ConnectionEdge
     associatedtype ConnectedPageInfo: ConnectionPageInfo
     var pageInfo: ConnectedPageInfo { get }

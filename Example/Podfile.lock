@@ -3,6 +3,9 @@ PODS:
     - RxCocoa
     - RxSwift
   - RxAtomic (4.4.2)
+  - RxBlocking (4.4.2):
+    - RxAtomic (>= 4.4.2, ~> 4.4)
+    - RxSwift (>= 4.4.2, ~> 4.4)
   - RxCocoa (4.4.2):
     - RxSwift (>= 4.4.2, ~> 4.4)
   - RxSwift (4.4.2):
@@ -10,10 +13,12 @@ PODS:
 
 DEPENDENCIES:
   - ConnectionKit (from `../`)
+  - RxBlocking
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - RxAtomic
+    - RxBlocking
     - RxCocoa
     - RxSwift
 
@@ -22,11 +27,12 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  ConnectionKit: 37399a5d4e283c68c83aea49e5349c80c1232b3a
+  ConnectionKit: 3fd8d867a87c4f0ea499b14ccb7a18cf13808261
   RxAtomic: d00e97c10db88c6f08540e0bf2752fc5a2404167
+  RxBlocking: e96fdda1473d81332a6ed2cface935dc2167a122
   RxCocoa: 477990dc3b4c3ff55fb0ac77e1cc06244e0aaec8
   RxSwift: 74c29b693c8e42b0f64400e8b06564575742d649
 
-PODFILE CHECKSUM: 275a01f9047c90522c078058a2a8c0f1248cef6d
+PODFILE CHECKSUM: a651f0ebfef530a3b8448680aa97856938f6661f
 
 COCOAPODS: 1.6.1

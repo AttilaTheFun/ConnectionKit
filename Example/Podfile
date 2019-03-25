@@ -6,6 +6,6 @@ target 'ConnectionKit_Example' do
   target 'ConnectionKit_Tests' do
     inherit! :search_paths
 
-    
+    pod 'RxBlocking'
   end
 end

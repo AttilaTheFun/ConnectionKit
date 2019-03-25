@@ -1,7 +1,7 @@
 import RxCocoa
 import RxSwift
 
-final class Manager<F> where F: ConnectionFetcher {
+final class ConnectionManager<F> where F: ConnectionFetcher {
 
     private let fetcher: F
     private let initialPageSize: Int
@@ -20,8 +20,8 @@ final class Manager<F> where F: ConnectionFetcher {
         self.fetcher = fetcher
         self.initialPageSize = initialPageSize
         self.paginationPageSize = paginationPageSize
-        self.headFetcher = Manager.pageFetcher(for: fetcher, position: .head, pageSize: initialPageSize, cursor: nil)
-        self.tailFetcher = Manager.pageFetcher(for: fetcher, position: .tail, pageSize: initialPageSize, cursor: nil)
+        self.headFetcher = ConnectionManager.pageFetcher(for: fetcher, position: .head, pageSize: initialPageSize, cursor: nil)
+        self.tailFetcher = ConnectionManager.pageFetcher(for: fetcher, position: .tail, pageSize: initialPageSize, cursor: nil)
 
         // Subscribe to observables:
         self.headFetcher.stateObservable
@@ -33,7 +33,7 @@ final class Manager<F> where F: ConnectionFetcher {
 
 // MARK: Private
 
-extension Manager {
+extension ConnectionManager {
     private func handleFetcherState(
         _ state: PageFetcherState<F>,
         position: PagePosition)

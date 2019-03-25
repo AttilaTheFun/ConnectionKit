@@ -1,7 +1,7 @@
 {
   "name": "ConnectionKit",
   "version": "0.1.0",
-  "summary": "A short description of ConnectionKit.",
+  "summary": "Manages a connection implementing the Relay Cursor Connections Specification",
   "description": "TODO: Add long description of the pod here.",
   "homepage": "https://github.com/logan.shire@gmail.com/ConnectionKit",
   "license": {
