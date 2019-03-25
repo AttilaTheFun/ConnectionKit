@@ -54,7 +54,7 @@ class TestFetcherTests: XCTestCase {
     func testCompletePageBackward() throws {
         let nodes: [TestNode] = .createNodes(count: 100)
         let testFetcher = TestFetcher(startIndex: 50, testData: TestData(nodes: nodes))
-        let connection = try testFetcher.fetch(first: 10, after: nil, last: nil, before: nil)
+        let connection = try testFetcher.fetch(first: nil, after: nil, last: 10, before: nil)
             .toBlocking()
             .single()
 
