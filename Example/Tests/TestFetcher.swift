@@ -6,7 +6,7 @@ import RxSwift
  */
 struct TestFetcher {
     let startIndex: Int
-    let testData: TestData
+    let edges: [TestEdge]
 }
 
 extension TestFetcher: ConnectionFetcher {
@@ -45,7 +45,7 @@ extension TestFetcher: ConnectionFetcher {
             return .error(TestFetcherError.invalidCursor)
         }
 
-        if self.testData.nodes.count == 0 {
+        if self.edges.count == 0 {
             let pageInfo = TestPageInfo(hasNextPage: false, hasPreviousPage: false)
             let connection = TestConnection(pageInfo: pageInfo, edges: [])
             return .just(connection)
@@ -53,17 +53,16 @@ extension TestFetcher: ConnectionFetcher {
 
         let endIndex = startIndex + first
         let pageInfo = TestPageInfo(
-            hasNextPage: endIndex < self.testData.nodes.count - 1,
+            hasNextPage: endIndex < self.edges.count - 1,
             hasPreviousPage: startIndex > 0)
 
         let range = Range.bounded(
             low: startIndex,
             high: endIndex,
             lowest: 0,
-            highest: self.testData.nodes.count
+            highest: self.edges.count
         )
-        let nodes = self.testData.nodes[range]
-        let edges = nodes.map(TestEdge.init)
+        let edges = Array(self.edges[range])
         let connection = TestConnection(pageInfo: pageInfo, edges: edges)
 
         return .just(connection)
@@ -74,11 +73,11 @@ extension TestFetcher: ConnectionFetcher {
             return .error(TestFetcherError.invalidCursor)
         }
 
-        if endIndex >= self.testData.nodes.count {
+        if endIndex >= self.edges.count {
             return .error(TestFetcherError.invalidCursor)
         }
 
-        if self.testData.nodes.count == 0 {
+        if self.edges.count == 0 {
             let pageInfo = TestPageInfo(hasNextPage: false, hasPreviousPage: false)
             let connection = TestConnection(pageInfo: pageInfo, edges: [])
             return .just(connection)
@@ -87,16 +86,15 @@ extension TestFetcher: ConnectionFetcher {
         let startIndex = endIndex - last
         let pageInfo = TestPageInfo(
             hasNextPage: startIndex > 0,
-            hasPreviousPage: endIndex < self.testData.nodes.count - 1)
+            hasPreviousPage: endIndex < self.edges.count - 1)
 
         let range = Range.bounded(
             low: startIndex,
             high: endIndex,
             lowest: 0,
-            highest: self.testData.nodes.count
+            highest: self.edges.count
         )
-        let nodes = self.testData.nodes[range]
-        let edges = nodes.map(TestEdge.init)
+        let edges = Array(self.edges[range])
         let connection = TestConnection(pageInfo: pageInfo, edges: edges)
 
         return .just(connection)

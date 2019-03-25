@@ -9,7 +9,7 @@
  - error -> fetching
  All states could revert to idle if the connection was reset.
  */
-enum EndState {
+enum EndState: Hashable {
     // The end has not started fetching a page.
     case idle
 
@@ -17,5 +17,5 @@ enum EndState {
     case fetching
 
     // The end failed to fetch a page.
-    case error(Error)
+    case error(ErrorWrapper)
 }

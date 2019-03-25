@@ -1,6 +1,5 @@
 import RxCocoa
 import RxSwift
-//import SwiftToolbox
 
 final class PageFetcher<F> where F: ConnectionFetcher {
     private let stateRelay = BehaviorRelay<PageFetcherState<F>>(value: .idle)
@@ -23,6 +22,7 @@ extension PageFetcher {
 // MARK: Interface
 
 extension PageFetcher {
+
     // The current state of the fetcher.
     var state: PageFetcherState<F> {
         return self.stateRelay.value
@@ -46,7 +46,7 @@ extension PageFetcher {
             self.restartFetch()
         case .fetching:
             return assertionFailure("Already fetching")
-        case .complete:
+        case .completed:
             return assertionFailure("Already complete")
         }
     }
@@ -54,13 +54,18 @@ extension PageFetcher {
     private func restartFetch() {
         self.stateRelay.accept(.fetching)
         self.fetchablePage()
-            .subscribe(onSuccess: { [weak self] connection in
-                self?.stateRelay.accept(.complete(connection.edges, connection.pageInfo))
-            }, onError: { [weak self] error in
-                self?.stateRelay.accept(.error(error))
-            }, onCompleted: { [weak self] in
-                self?.stateRelay.accept(.error(PageFetcherError.fetchFiredCompleted))
-            })
+            .subscribe(
+                onSuccess: { [weak self] connection in
+                    self?.stateRelay.accept(.completed(connection.edges, connection.pageInfo))
+                },
+                onError: { [weak self] error in
+                    let wrappedError = ErrorWrapper(error: error)
+                    self?.stateRelay.accept(.error(wrappedError))
+                },
+                onCompleted: { [weak self] () -> Void in
+                    let wrappedError = ErrorWrapper(error: PageFetcherError.fetchFiredCompleted)
+                    self?.stateRelay.accept(.error(wrappedError))
+                })
             .disposed(by: self.disposeBag)
     }
 }

@@ -1,5 +1,5 @@
 
-enum PagePosition {
+enum PagePosition: Hashable {
     case head
     case tail
 }

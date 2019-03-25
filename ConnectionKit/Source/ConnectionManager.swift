@@ -46,7 +46,7 @@ extension ConnectionManager {
             relay.accept(.fetching)
         case .error(let error):
             relay.accept(.error(error))
-        case .complete(let page, let pageInfo):
+        case .completed(let page, let pageInfo):
             self.paginationManager.ingest(pageInfo: pageInfo, from: position)
             self.pageManager.ingest(page: page, from: position)
             // Does replacing fetcher fire idle?

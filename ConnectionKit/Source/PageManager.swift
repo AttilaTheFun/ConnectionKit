@@ -2,7 +2,7 @@ import RxCocoa
 import RxSwift
 
 final class PageManager<F> where F: ConnectionFetcher {
-    private let pagesRelay = BehaviorRelay<[(Int, Edges<F>)]>(value: [])
+    private let pagesRelay = BehaviorRelay<[(Int, [Edge<F>])]>(value: [])
 }
 
 // MARK: Private
@@ -23,14 +23,14 @@ extension PageManager {
     /**
      Array of tuples of the page index and page of data.
      */
-    var pages: [(Int, Edges<F>)] {
+    var pages: [(Int, [Edge<F>])] {
         return self.pagesRelay.value
     }
 
     /**
      Observable for the pages.
      */
-    var pagesObservable: Observable<[(Int, Edges<F>)]> {
+    var pagesObservable: Observable<[(Int, [Edge<F>])]> {
         return self.pagesRelay.asObservable()
     }
 
@@ -47,7 +47,7 @@ extension PageManager {
      - If the third page is ingested from the tail it will have index 1.
      - If the fourth page is ingested from the tail it will have index 2.
      */
-    func ingest(page: Edges<F>, from position: PagePosition) {
+    func ingest(page: [Edge<F>], from position: PagePosition) {
         if self.pages.count == 0 {
             let initialPage = (0, page)
             self.pagesRelay.accept([initialPage])
