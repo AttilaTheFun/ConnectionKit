@@ -56,9 +56,14 @@ extension TestFetcher: ConnectionFetcher {
             hasNextPage: endIndex < self.testData.nodes.count - 1,
             hasPreviousPage: startIndex > 0)
 
-        let range = self.range(startIndex: startIndex, endIndex: endIndex)
+        let range = Range.bounded(
+            low: startIndex,
+            high: endIndex,
+            lowest: 0,
+            highest: self.testData.nodes.count
+        )
         let nodes = self.testData.nodes[range]
-        let edges = nodes.map { TestEdge(cursor: $0.id, node: $0) }
+        let edges = nodes.map(TestEdge.init)
         let connection = TestConnection(pageInfo: pageInfo, edges: edges)
 
         return .just(connection)
@@ -84,27 +89,16 @@ extension TestFetcher: ConnectionFetcher {
             hasNextPage: startIndex > 0,
             hasPreviousPage: endIndex < self.testData.nodes.count - 1)
 
-        let range = self.range(startIndex: startIndex, endIndex: endIndex)
+        let range = Range.bounded(
+            low: startIndex,
+            high: endIndex,
+            lowest: 0,
+            highest: self.testData.nodes.count
+        )
         let nodes = self.testData.nodes[range]
-        let edges = nodes.map { TestEdge(cursor: $0.id, node: $0) }
+        let edges = nodes.map(TestEdge.init)
         let connection = TestConnection(pageInfo: pageInfo, edges: edges)
 
         return .just(connection)
-    }
-
-    private func range(startIndex: Int, endIndex: Int) -> Range<Int> {
-        if startIndex > endIndex {
-            return self.range(startIndex: endIndex, endIndex: startIndex)
-        }
-
-        if startIndex == endIndex || startIndex < 0 || startIndex >= self.testData.nodes.count {
-            return 0..<0
-        }
-
-        if endIndex >= self.testData.nodes.count {
-            return startIndex..<self.testData.nodes.count
-        }
-
-        return startIndex..<endIndex
     }
 }

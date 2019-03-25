@@ -3,12 +3,12 @@ import Foundation
 struct TestData {
     let nodes: [TestNode]
 
-    init(nodes: [TestNode] = TestData.createNodes(count: 100)) {
+    init(nodes: [TestNode] = .createNodes(count: 100)) {
         self.nodes = nodes
     }
 }
 
-extension TestData {
+extension Array where Element == TestNode {
 
     /**
      Creates `count` test nodes with ascending ids from 0 to `count` - 1.
