@@ -1,15 +1,31 @@
 PODS:
-  - ConnectionKit (0.1.0)
+  - ConnectionKit (0.1.0):
+    - RxCocoa
+    - RxSwift
+  - RxAtomic (4.4.2)
+  - RxCocoa (4.4.2):
+    - RxSwift (>= 4.4.2, ~> 4.4)
+  - RxSwift (4.4.2):
+    - RxAtomic (>= 4.4.2, ~> 4.4)
 
 DEPENDENCIES:
   - ConnectionKit (from `../`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - RxAtomic
+    - RxCocoa
+    - RxSwift
 
 EXTERNAL SOURCES:
   ConnectionKit:
     :path: "../"
 
 SPEC CHECKSUMS:
-  ConnectionKit: c8de380755a643da507f79645a63e6f16c3ccb20
+  ConnectionKit: 37399a5d4e283c68c83aea49e5349c80c1232b3a
+  RxAtomic: d00e97c10db88c6f08540e0bf2752fc5a2404167
+  RxCocoa: 477990dc3b4c3ff55fb0ac77e1cc06244e0aaec8
+  RxSwift: 74c29b693c8e42b0f64400e8b06564575742d649
 
 PODFILE CHECKSUM: 275a01f9047c90522c078058a2a8c0f1248cef6d
 

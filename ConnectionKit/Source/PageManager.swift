@@ -47,7 +47,7 @@ extension PageManager {
      - If the third page is ingested from the tail it will have index 1.
      - If the fourth page is ingested from the tail it will have index 2.
      */
-    func ingest(page: Connection.Edges<F>, from position: PagePosition) {
+    func ingest(page: Edges<F>, from position: PagePosition) {
         if self.pages.count == 0 {
             let initialPage = (0, page)
             self.pagesRelay.accept([initialPage])

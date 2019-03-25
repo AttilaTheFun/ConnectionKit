@@ -16,7 +16,7 @@ enum PageFetcherState<F> where F: ConnectionFetcher {
     case fetching
 
     // The fetcher completed fetching a page.
-    case complete(Connection.Edges<F>, Connection.PageInfo<F>)
+    case complete(Edges<F>, PageInfo<F>)
 
     // The fetcher failed to fetch a page.
     case error(Error)

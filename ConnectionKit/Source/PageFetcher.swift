@@ -3,7 +3,7 @@ import RxSwift
 //import SwiftToolbox
 
 final class PageFetcher<F> where F: ConnectionFetcher {
-    private let stateRelay = BehaviorRelay<Connection.PageFetcherState<F>>(value: .idle)
+    private let stateRelay = BehaviorRelay<PageFetcherState<F>>(value: .idle)
     private let fetchablePage: FetchablePage<F>
     private let disposeBag = DisposeBag()
 
@@ -12,16 +12,24 @@ final class PageFetcher<F> where F: ConnectionFetcher {
     }
 }
 
+// MARK: Private
+
+extension PageFetcher {
+    private enum PageFetcherError: String, Error {
+        case fetchFiredCompleted = "Fetch should not fire onCompleted"
+    }
+}
+
 // MARK: Interface
 
 extension PageFetcher {
     // The current state of the fetcher.
-    var state: Connection.PageFetcherState<F> {
+    var state: PageFetcherState<F> {
         return self.stateRelay.value
     }
 
     // Observe the state of the fetch page.
-    var stateObservable: Observable<Connection.PageFetcherState<F>> {
+    var stateObservable: Observable<PageFetcherState<F>> {
         return self.stateRelay.asObservable()
     }
 
@@ -51,7 +59,7 @@ extension PageFetcher {
             }, onError: { [weak self] error in
                 self?.stateRelay.accept(.error(error))
             }, onCompleted: { [weak self] in
-                self?.stateRelay.accept(.error(GenericError("Fetch should not fire onCompleted")))
+                self?.stateRelay.accept(.error(PageFetcherError.fetchFiredCompleted))
             })
             .disposed(by: self.disposeBag)
     }

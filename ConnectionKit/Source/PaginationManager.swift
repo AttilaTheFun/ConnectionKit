@@ -52,13 +52,13 @@ extension PaginationManager {
         switch position {
         case .head:
             // If ingesting from the head, only update hasPreviousPage.
-            newState = Connection.PaginationManagerState(
+            newState = PaginationManagerState(
                 hasNextPage: currentState.hasNextPage,
                 hasPreviousPage: pageInfo.hasNextPage
             )
         case .tail:
             // If ingesting from the tail, only update hasNextPage.
-            newState = Connection.PaginationManagerState(
+            newState = PaginationManagerState(
                 hasNextPage: pageInfo.hasNextPage,
                 hasPreviousPage: currentState.hasPreviousPage
             )

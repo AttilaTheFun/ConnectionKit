@@ -21,7 +21,7 @@ final class Manager<F> where F: ConnectionFetcher {
         self.initialPageSize = initialPageSize
         self.paginationPageSize = paginationPageSize
         self.headFetcher = Manager.pageFetcher(for: fetcher, position: .head, pageSize: initialPageSize, cursor: nil)
-        self.tailFetcher = Manager.pageFetcher(for: fetcher, isForward: true, pageSize: initialPageSize, cursor: nil)
+        self.tailFetcher = Manager.pageFetcher(for: fetcher, position: .tail, pageSize: initialPageSize, cursor: nil)
 
         // Subscribe to observables:
         self.headFetcher.stateObservable
@@ -34,7 +34,10 @@ final class Manager<F> where F: ConnectionFetcher {
 // MARK: Private
 
 extension Manager {
-    private func handleFetcherState(_ state: Connection.PageFetcherState<F>, position: Connection.PagePosition) {
+    private func handleFetcherState(
+        _ state: PageFetcherState<F>,
+        position: PagePosition)
+    {
         let relay = position == .head ? self.headStateRelay : self.tailStateRelay
         switch state {
         case .idle:
@@ -55,10 +58,14 @@ extension Manager {
         }
     }
 
-    private static func pageFetcher(for fetcher: F, position: Connection.PagePosition, pageSize: Int, cursor: String?)
-        -> Connection.PageFetcher<F>
+    private static func pageFetcher(
+        for fetcher: F,
+        position: PagePosition,
+        pageSize: Int,
+        cursor: String?)
+        -> PageFetcher<F>
     {
-        return Connection.PageFetcher(fetchablePage: {
+        return PageFetcher(fetchablePage: {
             switch position {
             case .head:
                 // Paginating backward: `pageSize and `cursor` will be passed as the `last` and `before` arguments.

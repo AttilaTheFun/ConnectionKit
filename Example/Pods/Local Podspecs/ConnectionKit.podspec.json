@@ -18,5 +18,13 @@
   "platforms": {
     "ios": "8.0"
   },
-  "source_files": "ConnectionKit/Classes/**/*"
+  "source_files": "ConnectionKit/Source/**/*",
+  "dependencies": {
+    "RxCocoa": [
+
+    ],
+    "RxSwift": [
+
+    ]
+  }
 }
