@@ -25,26 +25,9 @@ enum PageFetcherState<F> where F: ConnectionFetcher {
 extension PageFetcherState: Equatable where
 F.FetchedConnection.ConnectedPageInfo : Equatable,
 F.FetchedConnection.ConnectedEdge: Equatable
-{
-//    static func == (lhs: PageFetcherState<F>, rhs: PageFetcherState<F>) -> Bool {
-//        switch (lhs, rhs) {
-//        case (.idle, .idle):
-//            return true
-//        case (.fetching, .fetching):
-//            return true
-//        case (.error(let left), .error(let right)):
-//            return left == right
-//        case (.complete(let leftEdges, let leftPageInfo), .complete(let rightEdges, let rightPageInfo)):
-//            return leftEdges == rightEdges && leftPageInfo == rightPageInfo
-//        default:
-//            return false
-//        }
-//    }
-}
+{}
 
 extension PageFetcherState: Hashable where
     F.FetchedConnection.ConnectedPageInfo : Hashable,
     F.FetchedConnection.ConnectedEdge: Hashable
-{
-//    has
-}
+{}

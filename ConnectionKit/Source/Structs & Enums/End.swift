@@ -1,5 +1,5 @@
 
-enum PagePosition: Hashable {
+public enum End: Hashable {
     case head
     case tail
 }

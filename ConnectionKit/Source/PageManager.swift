@@ -1,19 +1,21 @@
 import RxCocoa
 import RxSwift
 
+// TODO: Do not append empty pages.
+
 final class PageManager<F> where F: ConnectionFetcher {
-    private let pagesRelay = BehaviorRelay<[(Int, [Edge<F>])]>(value: [])
+    private let pagesRelay = BehaviorRelay<[Page<F>]>(value: [])
 }
 
 // MARK: Private
 
 extension PageManager {
     private var headPageIndex: Int {
-        return self.pages.first?.0 ?? 0
+        return self.pages.first?.index ?? 0
     }
 
     private var tailPageIndex: Int {
-        return self.pages.last?.0 ?? 0
+        return self.pages.last?.index ?? 0
     }
 }
 
@@ -23,14 +25,14 @@ extension PageManager {
     /**
      Array of tuples of the page index and page of data.
      */
-    var pages: [(Int, [Edge<F>])] {
+    var pages: [Page<F>] {
         return self.pagesRelay.value
     }
 
     /**
      Observable for the pages.
      */
-    var pagesObservable: Observable<[(Int, [Edge<F>])]> {
+    var pagesObservable: Observable<[Page<F>]> {
         return self.pagesRelay.asObservable()
     }
 
@@ -47,19 +49,19 @@ extension PageManager {
      - If the third page is ingested from the tail it will have index 1.
      - If the fourth page is ingested from the tail it will have index 2.
      */
-    func ingest(page: [Edge<F>], from position: PagePosition) {
+    func ingest(edges: [Edge<F>], from end: End) {
         if self.pages.count == 0 {
-            let initialPage = (0, page)
+            let initialPage = Page<F>(index: 0, edges: edges)
             self.pagesRelay.accept([initialPage])
             return
         }
 
-        switch position {
+        switch end {
         case .head:
-            let headPage = (self.headPageIndex - 1, page)
+            let headPage = Page<F>(index: self.headPageIndex - 1, edges: edges)
             self.pagesRelay.accept([headPage] + self.pages)
         case .tail:
-            let tailPage = (self.tailPageIndex + 1, page)
+            let tailPage = Page<F>(index: self.tailPageIndex + 1, edges: edges)
             self.pagesRelay.accept(self.pages + [tailPage])
         }
     }

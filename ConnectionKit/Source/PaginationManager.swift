@@ -46,10 +46,10 @@ extension PaginationManager {
     /**
      Ingest a new page info object into the manager.
      */
-    func ingest(pageInfo: PageInfo<F>, from position: PagePosition) {
+    func ingest(pageInfo: PageInfo<F>, from end: End) {
         let currentState = self.stateRelay.value
         let newState: PaginationManagerState
-        switch position {
+        switch end {
         case .head:
             // If ingesting from the head, only update hasPreviousPage.
             newState = PaginationManagerState(
