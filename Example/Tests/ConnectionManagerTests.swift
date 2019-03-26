@@ -3,6 +3,12 @@ import RxBlocking
 import RxSwift
 import XCTest
 
+// TODO: Additional tests to write:
+// - pagination tracker tests
+// - connection manager reset
+// - connection manager initial page tests
+// - connection manager multiple pages, both directions
+
 class ConnectionManagerTests: XCTestCase {
 
     private var disposeBag = DisposeBag()
@@ -29,14 +35,48 @@ class ConnectionManagerTests: XCTestCase {
         try self.runTailTest(manager: manager, expectedEndState: .hasFetchedLastPage, expectedPages: expectedPages)
     }
 
+    func testIncompletePageForward() throws {
+        // Create test data:
+        let initialPageSize = 10
+        let startIndex = 5
+        let endIndex = startIndex + 5
+        let allEdges: [TestEdge] = .create(count: 10)
+        let fetcher = TestFetcher(startIndex: startIndex, edges: allEdges)
+        let expectedEdges = Array(allEdges[startIndex..<endIndex])
+        let expectedPages = [Page<TestFetcher>(index: 0, edges: expectedEdges)]
+
+        // Create connection manager:
+        let manager = ConnectionManager(fetcher: fetcher, initialPageSize: initialPageSize)
+
+        // Run test:
+        try self.runTailTest(manager: manager, expectedEndState: .hasFetchedLastPage, expectedPages: expectedPages)
+    }
+
+    func testIncompletePageBackward() throws {
+        // Create test data:
+        let initialPageSize = 10
+        let startIndex = 5
+        let endIndex = 0
+        let allEdges: [TestEdge] = .create(count: 10)
+        let fetcher = TestFetcher(startIndex: startIndex, edges: allEdges)
+        let expectedEdges = Array(allEdges[endIndex..<startIndex])
+        let expectedPages = [Page<TestFetcher>(index: 0, edges: expectedEdges)]
+
+        // Create connection manager:
+        let manager = ConnectionManager(fetcher: fetcher, initialPageSize: initialPageSize)
+
+        // Run test:
+        try self.runHeadTest(manager: manager, expectedEndState: .hasFetchedLastPage, expectedPages: expectedPages)
+    }
+
     func testCompletePageForward() throws {
         // Create test data:
-        let initialPageSize = 2
+        let initialPageSize = 10
         let startIndex = 50
         let endIndex = startIndex + 2
         let allEdges: [TestEdge] = .create(count: 100)
         let fetcher = TestFetcher(startIndex: startIndex, edges: allEdges)
-        let expectedEdges = Array(allEdges[50..<endIndex])
+        let expectedEdges = Array(allEdges[startIndex..<endIndex])
         let expectedPages = [Page<TestFetcher>(index: 0, edges: expectedEdges)]
 
         // Create connection manager:
@@ -48,12 +88,12 @@ class ConnectionManagerTests: XCTestCase {
 
     func testCompletePageBackward() throws {
         // Create test data:
-        let initialPageSize = 2
+        let initialPageSize = 10
         let startIndex = 50
-        let endIndex = startIndex + 2
+        let endIndex = startIndex - 10
         let allEdges: [TestEdge] = .create(count: 100)
         let fetcher = TestFetcher(startIndex: startIndex, edges: allEdges)
-        let expectedEdges = Array(allEdges[50..<endIndex])
+        let expectedEdges = Array(allEdges[endIndex..<startIndex])
         let expectedPages = [Page<TestFetcher>(index: 0, edges: expectedEdges)]
 
         // Create connection manager:

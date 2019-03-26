@@ -6,8 +6,6 @@ import RxSwift
 // Will also need to determine what to do if fetching initial page and told to fetch separate page.
 // ? Use initial page size in both directions? This is the easiest.
 
-// TODO: Does replacing fetcher refires fire idle?
-
 public final class ConnectionManager<F> where F: ConnectionFetcher {
 
     // MARK: Constants
@@ -18,7 +16,7 @@ public final class ConnectionManager<F> where F: ConnectionFetcher {
 
     // MARK: Dependencies
 
-    private let paginationManager = PaginationManager<F>()
+    private let paginationStateTracker = PaginationStateTracker<F>()
     private let pageStorer = PageStorer<F>()
     private var headFetcher: PageFetcher<F>
     private var tailFetcher: PageFetcher<F>
@@ -51,16 +49,18 @@ extension ConnectionManager {
         let relay = end == .head ? self.headStateRelay : self.tailStateRelay
         switch state {
         case .idle:
-            let endHasNextPage = end == .head ?
-                self.paginationManager.hasPreviousPage : self.paginationManager.hasNextPage
-            let state: EndState = endHasNextPage ? .hasNextPage : .hasFetchedLastPage
+            let canFetchNextPageFromEnd = end == .head ?
+                self.paginationStateTracker.canFetchNextPageFromHead :
+                self.paginationStateTracker.canFetchNextPageFromTail
+            let state: EndState = canFetchNextPageFromEnd ?
+                .hasNextPage : .hasFetchedLastPage
             relay.accept(state)
         case .fetching:
             relay.accept(.isFetchingNextPage)
         case .error(let error):
             relay.accept(.failedToFetchNextPage(error))
         case .completed(let edges, let pageInfo):
-            self.paginationManager.ingest(pageInfo: pageInfo, from: end)
+            self.paginationStateTracker.ingest(pageInfo: pageInfo, from: end)
             self.pageStorer.ingest(edges: edges, from: end)
             let fetcher = self.createFetcher(for: end, from: edges, isInitialPage: false, disposedBy: self.disposeBag)
             switch end {
@@ -91,7 +91,7 @@ extension ConnectionManager {
         let pageSize = isInitialPage ? self.initialPageSize : self.paginationPageSize
         let fetcher = PageFetcher(
             for: self.fetcher,
-            end: .tail,
+            end: end,
             pageSize: pageSize,
             cursor: end == .head ? edges.first?.cursor : edges.last?.cursor
         )

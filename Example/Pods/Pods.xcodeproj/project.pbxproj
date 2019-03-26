@@ -238,7 +238,7 @@
 		B081E825E987E172B10B217FA0A18D7E /* ScheduledItemType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086904349ACE4097FE41274ED36AADDC /* ScheduledItemType.swift */; };
 		B09E6B406892B7D1F1E5EF11A34F83DF /* DelegateProxyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 603E08301C5D3B1ABE19A127B57D917C /* DelegateProxyType.swift */; };
 		B0A890EC14FDF5CE54CA0907B230EAA0 /* NSTextStorage+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D87EB9C4E7ABA5E711D2CC7F679B04 /* NSTextStorage+Rx.swift */; };
-		B1CC27AE9EC5E923D4F57F9B8DF55992 /* PaginationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9172935203D553877E11D33538022F87 /* PaginationManager.swift */; };
+		B1CC27AE9EC5E923D4F57F9B8DF55992 /* PaginationStateTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9172935203D553877E11D33538022F87 /* PaginationStateTracker.swift */; };
 		B1D8B327D31E5E508EC52AEDCC25DBD4 /* Bag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E15DEC2DDA1E71F2F11047EC53A148 /* Bag.swift */; };
 		B3EFBDB5DDDA2E45589DDC5F92282CD2 /* End.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE6EB50EDBB7549BA35CED6E754C57AC /* End.swift */; };
 		B4EF87D90094B7EC55F7BF3E847FDCC2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A8B5381B40E644F9C69D1D10D46B175 /* Foundation.framework */; };
@@ -642,7 +642,7 @@
 		8FF6E910BBC41DAE987FA0F93F1ECC29 /* UITextView+Rx.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "UITextView+Rx.swift"; path = "RxCocoa/iOS/UITextView+Rx.swift"; sourceTree = "<group>"; };
 		8FFF911E57BA7DFD779BDBF09CEE1718 /* ScheduledItem.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ScheduledItem.swift; path = RxSwift/Schedulers/Internal/ScheduledItem.swift; sourceTree = "<group>"; };
 		915ABFE73B192AE9572A3BBD5A101117 /* Buffer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Buffer.swift; path = RxSwift/Observables/Buffer.swift; sourceTree = "<group>"; };
-		9172935203D553877E11D33538022F87 /* PaginationManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PaginationManager.swift; path = ConnectionKit/Source/PaginationManager.swift; sourceTree = "<group>"; };
+		9172935203D553877E11D33538022F87 /* PaginationStateTracker.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PaginationStateTracker.swift; path = ConnectionKit/Source/PaginationStateTracker.swift; sourceTree = "<group>"; };
 		91DC53C4C915BD128AA960483482F5D0 /* RecursiveLock.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RecursiveLock.swift; path = Platform/RecursiveLock.swift; sourceTree = "<group>"; };
 		92275CFB0B0BD682A0AF3EE0E5C06C9B /* UIStepper+Rx.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "UIStepper+Rx.swift"; path = "RxCocoa/iOS/UIStepper+Rx.swift"; sourceTree = "<group>"; };
 		926C6F7AE0B4D5DB763AE2D875107026 /* ReplaySubject.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ReplaySubject.swift; path = RxSwift/Subjects/ReplaySubject.swift; sourceTree = "<group>"; };
@@ -1212,7 +1212,7 @@
 				FEDCF4D5E02033844D71DDD9C6E21329 /* ConnectionManager.swift */,
 				C906FBBCFECE4AB9E6400143D1B2EF53 /* PageFetcher.swift */,
 				0D98FD49DF6A07FAA2E88259C1AD147B /* PageStorer.swift */,
-				9172935203D553877E11D33538022F87 /* PaginationManager.swift */,
+				9172935203D553877E11D33538022F87 /* PaginationStateTracker.swift */,
 				6000B23AE28F6EABEC01CE08496E9987 /* Typealiases.swift */,
 				2604F733933FF44B56AAD7E9C6549C1D /* Pod */,
 				F7CF2DE067BB6555067F31AC65232C57 /* Protocols */,
@@ -2075,7 +2075,7 @@
 				B70BC63F9FAAD760F21BE61CAE02D3BF /* PageFetcher.swift in Sources */,
 				D3A49E125DAAFBE24F2D3922DAE361CC /* PageFetcherState.swift in Sources */,
 				175210A323CBD0657A060DCA7D449C8A /* PageStorer.swift in Sources */,
-				B1CC27AE9EC5E923D4F57F9B8DF55992 /* PaginationManager.swift in Sources */,
+				B1CC27AE9EC5E923D4F57F9B8DF55992 /* PaginationStateTracker.swift in Sources */,
 				E9344490895E821CDD0DFE09F19567D3 /* Typealiases.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
