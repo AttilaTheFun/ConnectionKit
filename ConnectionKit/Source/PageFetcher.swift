@@ -69,3 +69,25 @@ extension PageFetcher {
             .disposed(by: self.disposeBag)
     }
 }
+
+// MARK: Internal
+
+extension PageFetcher {
+    convenience init(
+        for fetcher: F,
+        end: End,
+        pageSize: Int,
+        cursor: String?)
+    {
+        self.init(fetchablePage: {
+            switch end {
+            case .head:
+                // Paginating backward: `pageSize and `cursor` will be passed as the `last` and `before` arguments.
+                return fetcher.fetch(first: nil, after: nil, last: pageSize, before: cursor)
+            case .tail:
+                // Paginating forward: `pageSize and `cursor` will be passed as the `first` and `after` arguments.
+                return fetcher.fetch(first: pageSize, after: cursor, last: nil, before: nil)
+            }
+        })
+    }
+}

@@ -1,12 +1,6 @@
 import RxCocoa
 import RxSwift
 
-// TODO: Maybe I could consolidate pagination state into end states?
-// - hasNextPage
-// - hasLoadedAllPages
-// - isLoadingNextPage
-// - error
-
 // TODO: Improve handling around initial page.
 // Will need some form of state to know if we have fetched the initial page.
 // Will also need to determine what to do if fetching initial page and told to fetch separate page.
@@ -31,8 +25,8 @@ public final class ConnectionManager<F> where F: ConnectionFetcher {
 
     // MARK: State
 
-    private let headStateRelay = BehaviorRelay<EndState>(value: .idle)
-    private let tailStateRelay = BehaviorRelay<EndState>(value: .idle)
+    private let headStateRelay = BehaviorRelay<EndState>(value: .hasNextPage)
+    private let tailStateRelay = BehaviorRelay<EndState>(value: .hasNextPage)
     private let disposeBag = DisposeBag()
 
     // MARK: Initialization
@@ -41,8 +35,8 @@ public final class ConnectionManager<F> where F: ConnectionFetcher {
         self.fetcher = fetcher
         self.initialPageSize = initialPageSize
         self.paginationPageSize = paginationPageSize
-        self.headFetcher = ConnectionManager.pageFetcher(for: fetcher, end: .head, pageSize: initialPageSize, cursor: nil)
-        self.tailFetcher = ConnectionManager.pageFetcher(for: fetcher, end: .tail, pageSize: initialPageSize, cursor: nil)
+        self.headFetcher = PageFetcher(for: fetcher, end: .head, pageSize: initialPageSize, cursor: nil)
+        self.tailFetcher = PageFetcher(for: fetcher, end: .tail, pageSize: initialPageSize, cursor: nil)
 
         // Rebuild the fetchers now that we can access self:
         self.headFetcher = self.createFetcher(for: .head, from: [], isInitialPage: true, disposedBy: self.disposeBag)
@@ -57,11 +51,14 @@ extension ConnectionManager {
         let relay = end == .head ? self.headStateRelay : self.tailStateRelay
         switch state {
         case .idle:
-            relay.accept(.idle)
+            let endHasNextPage = end == .head ?
+                self.paginationManager.hasPreviousPage : self.paginationManager.hasNextPage
+            let state: EndState = endHasNextPage ? .hasNextPage : .hasFetchedLastPage
+            relay.accept(state)
         case .fetching:
-            relay.accept(.fetching)
+            relay.accept(.isFetchingNextPage)
         case .error(let error):
-            relay.accept(.error(error))
+            relay.accept(.failedToFetchNextPage(error))
         case .completed(let edges, let pageInfo):
             self.paginationManager.ingest(pageInfo: pageInfo, from: end)
             self.pageManager.ingest(edges: edges, from: end)
@@ -92,7 +89,7 @@ extension ConnectionManager {
         -> PageFetcher<F>
     {
         let pageSize = isInitialPage ? self.initialPageSize : self.paginationPageSize
-        let fetcher = ConnectionManager.pageFetcher(
+        let fetcher = PageFetcher(
             for: self.fetcher,
             end: .tail,
             pageSize: pageSize,
@@ -107,50 +104,23 @@ extension ConnectionManager {
 
         return fetcher
     }
-
-    private static func pageFetcher(
-        for fetcher: F,
-        end: End,
-        pageSize: Int,
-        cursor: String?)
-        -> PageFetcher<F>
-    {
-        return PageFetcher(fetchablePage: {
-            switch end {
-            case .head:
-                // Paginating backward: `pageSize and `cursor` will be passed as the `last` and `before` arguments.
-                return fetcher.fetch(first: nil, after: nil, last: pageSize, before: cursor)
-            case .tail:
-                // Paginating forward: `pageSize and `cursor` will be passed as the `first` and `after` arguments.
-                return fetcher.fetch(first: pageSize, after: cursor, last: nil, before: nil)
-            }
-        })
-    }
 }
 
 extension ConnectionManager {
-    private var canLoadPreviousPage: Bool {
-        guard self.paginationManager.hasPreviousPage else {
-            return false
-        }
-
+    private var canLoadHead: Bool {
         switch self.headState {
-        case .idle, .error:
+        case .hasNextPage, .failedToFetchNextPage:
             return true
-        case .fetching:
+        case .isFetchingNextPage, .hasFetchedLastPage:
             return false
         }
     }
 
-    private var canLoadNextPage: Bool {
-        guard self.paginationManager.hasNextPage else {
-            return false
-        }
-
+    private var canLoadTail: Bool {
         switch self.tailState {
-        case .idle, .error:
+        case .hasNextPage, .failedToFetchNextPage:
             return true
-        case .fetching:
+        case .isFetchingNextPage, .hasFetchedLastPage:
             return false
         }
     }
@@ -208,18 +178,12 @@ extension ConnectionManager {
      */
     public func loadNextPage(from end: End) {
         switch end {
-        case .head:
-            if !self.canLoadPreviousPage {
-                return assertionFailure("Can't load next page from this state")
-            }
-
+        case .head where self.canLoadHead:
             self.headFetcher.fetchPage()
-        case .tail:
-            if !self.canLoadNextPage {
-                return assertionFailure("Can't load next page from this state")
-            }
-
+        case .tail where self.canLoadTail:
             self.tailFetcher.fetchPage()
+        case .head, .tail:
+            return assertionFailure("Can't load next page from this state")
         }
     }
 

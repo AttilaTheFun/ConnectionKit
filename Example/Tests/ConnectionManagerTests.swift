@@ -74,7 +74,7 @@ extension ConnectionManagerTests {
         manager.tailStateObservable
             .take(1)
             .subscribe(onNext: { state in
-                XCTAssertEqual(state, EndState.idle)
+                XCTAssertEqual(state, EndState.hasNextPage)
                 receivedIdleStateExpectation.fulfill()
             })
             .disposed(by: self.disposeBag)
@@ -87,7 +87,7 @@ extension ConnectionManagerTests {
             .skip(1)
             .take(1)
             .subscribe(onNext: { state in
-                XCTAssertEqual(state, EndState.fetching)
+                XCTAssertEqual(state, EndState.isFetchingNextPage)
                 receivedFetchingStateExpectation.fulfill()
             })
             .disposed(by: self.disposeBag)
@@ -105,7 +105,7 @@ extension ConnectionManagerTests {
             .skip(2)
             .take(1)
             .subscribe(onNext: { state in
-                guard case .idle = state else {
+                guard case .hasNextPage = state else {
                     XCTFail("Invalid state")
                     return
                 }

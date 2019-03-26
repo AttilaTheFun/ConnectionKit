@@ -25,6 +25,7 @@ TODO: Add long description of the pod here.
 
   # s.frameworks = 'UIKit', 'MapKit'
 
+  s.swift_version = '5.0'
   s.dependency 'RxCocoa'
   s.dependency 'RxSwift'
 end
