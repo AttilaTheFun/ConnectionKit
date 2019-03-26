@@ -50,12 +50,19 @@ extension PageManager {
      - If the fourth page is ingested from the tail it will have index 2.
      */
     func ingest(edges: [Edge<F>], from end: End) {
+        // Drop empty pages:
+        if edges.count == 0 {
+            return
+        }
+
+        // If initial page, always index 0:
         if self.pages.count == 0 {
             let initialPage = Page<F>(index: 0, edges: edges)
             self.pagesRelay.accept([initialPage])
             return
         }
 
+        // Append the page to the beginning or end if ingesting from the head or tail respectively.
         switch end {
         case .head:
             let headPage = Page<F>(index: self.headPageIndex - 1, edges: edges)
