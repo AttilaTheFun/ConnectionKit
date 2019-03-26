@@ -1,15 +1,26 @@
 import RxCocoa
 import RxSwift
 
-// TODO: Do not append empty pages.
+/**
+ Stores a collection of pages of data and their indices.
 
-final class PageManager<F> where F: ConnectionFetcher {
+ The initial page index is always 0.
+ Pages ingested from the head have index [previous head index] - 1.
+ Pages ingested from the tail have index [previous tail index] + 1.
+
+ Examples:
+ - The first page will have index 0 regardless of whether it is ingested from the head or the tail.
+ - If the second page is ingested from the head, it will have index -1.
+ - If the third page is ingested from the tail it will have index 1.
+ - If the fourth page is ingested from the tail it will have index 2.
+ */
+final class PageStorer<F> where F: ConnectionFetcher {
     private let pagesRelay = BehaviorRelay<[Page<F>]>(value: [])
 }
 
 // MARK: Private
 
-extension PageManager {
+extension PageStorer {
     private var headPageIndex: Int {
         return self.pages.first?.index ?? 0
     }
@@ -21,7 +32,7 @@ extension PageManager {
 
 // MARK: Interface
 
-extension PageManager {
+extension PageStorer {
     /**
      Array of tuples of the page index and page of data.
      */
@@ -38,16 +49,6 @@ extension PageManager {
 
     /**
      Ingest a page of data into the manager.
-
-     The initial page index is always 0.
-     Pages ingested from the head have index [previous head index] - 1.
-     Pages ingested from the tail have index [previous tail index] + 1.
-
-     Examples:
-     - The first page will have index 0 regardless of whether it is ingested from the head or the tail.
-     - If the second page is ingested from the head, it will have index -1.
-     - If the third page is ingested from the tail it will have index 1.
-     - If the fourth page is ingested from the tail it will have index 2.
      */
     func ingest(edges: [Edge<F>], from end: End) {
         // Drop empty pages:

@@ -3,12 +3,12 @@ import RxBlocking
 import RxSwift
 import XCTest
 
-class PageManagerTests: XCTestCase {
+class PageStorerTests: XCTestCase {
 
     func testIsInitiallyEmpty() throws {
 
         // Create test data:
-        let manager = PageManager<TestFetcher>()
+        let manager = PageStorer<TestFetcher>()
 
         // Run test:
         XCTAssertEqual(manager.pages, [])
@@ -18,7 +18,7 @@ class PageManagerTests: XCTestCase {
 
         // Create test data:
         let edges: [TestEdge] = .create(count: 0)
-        let manager = PageManager<TestFetcher>()
+        let manager = PageStorer<TestFetcher>()
 
         // Run test:
         manager.ingest(edges: edges, from: .head)
@@ -31,7 +31,7 @@ class PageManagerTests: XCTestCase {
 
         // Create test data:
         let edges: [TestEdge] = .create(count: 5)
-        let manager = PageManager<TestFetcher>()
+        let manager = PageStorer<TestFetcher>()
 
         // Run test:
         manager.ingest(edges: edges, from: .head)
@@ -44,7 +44,7 @@ class PageManagerTests: XCTestCase {
 
         // Create test data:
         let edges: [TestEdge] = .create(count: 5)
-        let manager = PageManager<TestFetcher>()
+        let manager = PageStorer<TestFetcher>()
 
         // Run test:
         manager.ingest(edges: edges, from: .head)
@@ -63,7 +63,7 @@ class PageManagerTests: XCTestCase {
 
         // Create test data:
         let edges: [TestEdge] = .create(count: 5)
-        let manager = PageManager<TestFetcher>()
+        let manager = PageStorer<TestFetcher>()
 
         // Run test:
         for i in 0..<5 {
@@ -82,7 +82,7 @@ class PageManagerTests: XCTestCase {
 
         // Create test data:
         let edges: [TestEdge] = .create(count: 5)
-        let manager = PageManager<TestFetcher>()
+        let manager = PageStorer<TestFetcher>()
 
         // Run test:
         for i in 0..<5 {
@@ -101,7 +101,7 @@ class PageManagerTests: XCTestCase {
 
         // Create test data:
         let edges: [TestEdge] = .create(count: 5)
-        let manager = PageManager<TestFetcher>()
+        let manager = PageStorer<TestFetcher>()
 
         // Insert initial page (initial end doesn't matter):
         manager.ingest(edges: edges, from: .head)

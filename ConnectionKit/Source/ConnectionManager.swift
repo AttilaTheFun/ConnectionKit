@@ -19,7 +19,7 @@ public final class ConnectionManager<F> where F: ConnectionFetcher {
     // MARK: Dependencies
 
     private let paginationManager = PaginationManager<F>()
-    private let pageManager = PageManager<F>()
+    private let pageStorer = PageStorer<F>()
     private var headFetcher: PageFetcher<F>
     private var tailFetcher: PageFetcher<F>
 
@@ -61,7 +61,7 @@ extension ConnectionManager {
             relay.accept(.failedToFetchNextPage(error))
         case .completed(let edges, let pageInfo):
             self.paginationManager.ingest(pageInfo: pageInfo, from: end)
-            self.pageManager.ingest(edges: edges, from: end)
+            self.pageStorer.ingest(edges: edges, from: end)
             let fetcher = self.createFetcher(for: end, from: edges, isInitialPage: false, disposedBy: self.disposeBag)
             switch end {
             case .head:
@@ -151,14 +151,14 @@ extension ConnectionManager {
      - If the fourth page is fetched from the tail it will have index 2.
      */
     public var pages: [Page<F>] {
-        return self.pageManager.pages
+        return self.pageStorer.pages
     }
 
     /**
      An observable for the aforementioned pages.
      */
     public var pagesObservable: Observable<[Page<F>]> {
-        return self.pageManager.pagesObservable
+        return self.pageStorer.pagesObservable
     }
 
     public var tailState: EndState {
