@@ -4,6 +4,7 @@ import RxSwift
 import XCTest
 
 // TODO: Additional tests to write:
+// - page fetcher invalid cursor tests
 // - pagination tracker tests
 // - connection manager reset
 // - connection manager initial page tests
@@ -73,7 +74,7 @@ class ConnectionManagerTests: XCTestCase {
         // Create test data:
         let initialPageSize = 10
         let startIndex = 50
-        let endIndex = startIndex + 2
+        let endIndex = startIndex + initialPageSize
         let allEdges: [TestEdge] = .create(count: 100)
         let fetcher = TestFetcher(startIndex: startIndex, edges: allEdges)
         let expectedEdges = Array(allEdges[startIndex..<endIndex])
@@ -90,7 +91,7 @@ class ConnectionManagerTests: XCTestCase {
         // Create test data:
         let initialPageSize = 10
         let startIndex = 50
-        let endIndex = startIndex - 10
+        let endIndex = startIndex - initialPageSize
         let allEdges: [TestEdge] = .create(count: 100)
         let fetcher = TestFetcher(startIndex: startIndex, edges: allEdges)
         let expectedEdges = Array(allEdges[endIndex..<startIndex])
