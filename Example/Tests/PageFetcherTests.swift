@@ -19,7 +19,7 @@ class PageFetcherTests: XCTestCase {
         let startIndex = 0
         let edges: [TestEdge] = .create(count: 0)
         let config = FetchConfig(first: 10)
-        let fetcher = TestFetcher(startIndex: startIndex, edges: edges)
+        let fetcher = TestFetcher(defaultIndex: startIndex, edges: edges)
         let expectedPageInfo = TestPageInfo(hasNextPage: false, hasPreviousPage: false)
         let expectedEdges = edges
 
@@ -38,7 +38,7 @@ class PageFetcherTests: XCTestCase {
         let startIndex = 2
         let edges: [TestEdge] = .create(count: 5)
         let config = FetchConfig(first: 10)
-        let fetcher = TestFetcher(startIndex: startIndex, edges: edges)
+        let fetcher = TestFetcher(defaultIndex: startIndex, edges: edges)
         let expectedPageInfo = TestPageInfo(hasNextPage: false, hasPreviousPage: true)
         let expectedEdges = Array(edges[2...])
 
@@ -57,7 +57,7 @@ class PageFetcherTests: XCTestCase {
         let startIndex = 2
         let edges: [TestEdge] = .create(count: 5)
         let config = FetchConfig(last: 10)
-        let fetcher = TestFetcher(startIndex: startIndex, edges: edges)
+        let fetcher = TestFetcher(defaultIndex: startIndex, edges: edges)
         let expectedPageInfo = TestPageInfo(hasNextPage: false, hasPreviousPage: true)
         let expectedEdges = Array(edges[0..<2])
 
@@ -76,7 +76,7 @@ class PageFetcherTests: XCTestCase {
         let startIndex = 50
         let edges: [TestEdge] = .create(count: 100)
         let config = FetchConfig(first: 10)
-        let fetcher = TestFetcher(startIndex: startIndex, edges: edges)
+        let fetcher = TestFetcher(defaultIndex: startIndex, edges: edges)
         let expectedPageInfo = TestPageInfo(hasNextPage: true, hasPreviousPage: true)
         let expectedEdges = Array(edges[50..<60])
 
@@ -95,7 +95,7 @@ class PageFetcherTests: XCTestCase {
         let startIndex = 50
         let edges: [TestEdge] = .create(count: 100)
         let config = FetchConfig(last: 10)
-        let fetcher = TestFetcher(startIndex: startIndex, edges: edges)
+        let fetcher = TestFetcher(defaultIndex: startIndex, edges: edges)
         let expectedPageInfo = TestPageInfo(hasNextPage: true, hasPreviousPage: true)
         let expectedEdges = Array(edges[40..<50])
 

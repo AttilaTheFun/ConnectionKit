@@ -23,9 +23,9 @@ class ConnectionManagerTests: XCTestCase {
 
     func testEmptyConnection() throws {
         // Create test data:
-        let startIndex = 0
+        let defaultIndex = 0
         let allEdges: [TestEdge] = .create(count: 0)
-        let fetcher = TestFetcher(startIndex: startIndex, edges: allEdges)
+        let fetcher = TestFetcher(defaultIndex: defaultIndex, edges: allEdges)
         let expectedPages: [Page<TestFetcher>] = []
 
         // Create connection manager:
@@ -39,11 +39,11 @@ class ConnectionManagerTests: XCTestCase {
     func testIncompletePageForward() throws {
         // Create test data:
         let initialPageSize = 10
-        let startIndex = 5
-        let endIndex = startIndex + 5
+        let defaultIndex = 5
+        let endIndex = defaultIndex + 5
         let allEdges: [TestEdge] = .create(count: 10)
-        let fetcher = TestFetcher(startIndex: startIndex, edges: allEdges)
-        let expectedEdges = Array(allEdges[startIndex..<endIndex])
+        let fetcher = TestFetcher(defaultIndex: defaultIndex, edges: allEdges)
+        let expectedEdges = Array(allEdges[defaultIndex..<endIndex])
         let expectedPages = [Page<TestFetcher>(index: 0, edges: expectedEdges)]
 
         // Create connection manager:
@@ -56,11 +56,11 @@ class ConnectionManagerTests: XCTestCase {
     func testIncompletePageBackward() throws {
         // Create test data:
         let initialPageSize = 10
-        let startIndex = 5
+        let defaultIndex = 5
         let endIndex = 0
         let allEdges: [TestEdge] = .create(count: 10)
-        let fetcher = TestFetcher(startIndex: startIndex, edges: allEdges)
-        let expectedEdges = Array(allEdges[endIndex..<startIndex])
+        let fetcher = TestFetcher(defaultIndex: defaultIndex, edges: allEdges)
+        let expectedEdges = Array(allEdges[endIndex..<defaultIndex])
         let expectedPages = [Page<TestFetcher>(index: 0, edges: expectedEdges)]
 
         // Create connection manager:
@@ -73,11 +73,11 @@ class ConnectionManagerTests: XCTestCase {
     func testCompletePageForward() throws {
         // Create test data:
         let initialPageSize = 10
-        let startIndex = 50
-        let endIndex = startIndex + initialPageSize
+        let defaultIndex = 50
+        let endIndex = defaultIndex + initialPageSize
         let allEdges: [TestEdge] = .create(count: 100)
-        let fetcher = TestFetcher(startIndex: startIndex, edges: allEdges)
-        let expectedEdges = Array(allEdges[startIndex..<endIndex])
+        let fetcher = TestFetcher(defaultIndex: defaultIndex, edges: allEdges)
+        let expectedEdges = Array(allEdges[defaultIndex..<endIndex])
         let expectedPages = [Page<TestFetcher>(index: 0, edges: expectedEdges)]
 
         // Create connection manager:
@@ -90,11 +90,11 @@ class ConnectionManagerTests: XCTestCase {
     func testCompletePageBackward() throws {
         // Create test data:
         let initialPageSize = 10
-        let startIndex = 50
-        let endIndex = startIndex - initialPageSize
+        let defaultIndex = 50
+        let endIndex = defaultIndex - initialPageSize
         let allEdges: [TestEdge] = .create(count: 100)
-        let fetcher = TestFetcher(startIndex: startIndex, edges: allEdges)
-        let expectedEdges = Array(allEdges[endIndex..<startIndex])
+        let fetcher = TestFetcher(defaultIndex: defaultIndex, edges: allEdges)
+        let expectedEdges = Array(allEdges[endIndex..<defaultIndex])
         let expectedPages = [Page<TestFetcher>(index: 0, edges: expectedEdges)]
 
         // Create connection manager:
