@@ -10,8 +10,8 @@
 		000CE4883EC1007031DEF7A19F95270D /* UISearchBar+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AAAA20265E833B798B4CA36CFB1CEA /* UISearchBar+Rx.swift */; };
 		00B2D74AF238122BE21D04BF4EF0A24C /* _RX.h in Headers */ = {isa = PBXBuildFile; fileRef = CA9F5321B11A417CFCF022F5CB914D5C /* _RX.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		01AA92216291FB8E03EB28700D9C6F3C /* InvocableType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 303648FF450C67998CE597AC71882C55 /* InvocableType.swift */; };
-		01AD285F95A6C3FFA30F26A4AD719574 /* ConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEDCF4D5E02033844D71DDD9C6E21329 /* ConnectionManager.swift */; };
 		01AD95A6F51C70719FC6EF2AEB5AB924 /* _RXDelegateProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A0DC798777BA35C14DA9A11D79E1039 /* _RXDelegateProxy.m */; };
+		0287E56B224B716500021FAD /* ConnectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0287E56A224B716500021FAD /* ConnectionController.swift */; };
 		0496EAD1EA288E5BE787CC9A4D4A22C8 /* DispatchQueue+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B8FB6C9F36EDBCF7E18A391768F30C7 /* DispatchQueue+Extensions.swift */; };
 		07A600CA0E671BD57C455F623DF054AB /* Zip.swift in Sources */ = {isa = PBXBuildFile; fileRef = C682D620CF55B02A987BA2F388136EC9 /* Zip.swift */; };
 		0874C82A2ABD82CED086F83BCB094B67 /* ConnectionPageInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 817570A63E4665ED4B43D7FE2EE464D0 /* ConnectionPageInfo.swift */; };
@@ -451,6 +451,7 @@
 		01CD4CE0325BBE8505E628FAF06E19EB /* Empty.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Empty.swift; path = RxSwift/Observables/Empty.swift; sourceTree = "<group>"; };
 		023B10CA4C97F7E5A5C73D232953F543 /* RxWebViewDelegateProxy.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RxWebViewDelegateProxy.swift; path = RxCocoa/iOS/Proxies/RxWebViewDelegateProxy.swift; sourceTree = "<group>"; };
 		0279339868A8CAEC24A7CAE5E6CF497D /* SingleAsync.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SingleAsync.swift; path = RxSwift/Observables/SingleAsync.swift; sourceTree = "<group>"; };
+		0287E56A224B716500021FAD /* ConnectionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ConnectionController.swift; path = ConnectionKit/Source/ConnectionController.swift; sourceTree = "<group>"; };
 		0394DC08CB2694AFC4198554CAD1F9C1 /* RxSwift-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "RxSwift-dummy.m"; sourceTree = "<group>"; };
 		0399E26C66CA0D184B6AB2F37A462234 /* RxCocoa-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "RxCocoa-prefix.pch"; sourceTree = "<group>"; };
 		07C32E2506A16FE36EB527F440E41E51 /* AsMaybe.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AsMaybe.swift; path = RxSwift/Observables/AsMaybe.swift; sourceTree = "<group>"; };
@@ -814,7 +815,6 @@
 		FE1BFC990AC84A4ED2AD3CA9BBB319F5 /* DisposeBase.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DisposeBase.swift; path = RxSwift/Disposables/DisposeBase.swift; sourceTree = "<group>"; };
 		FE6EB50EDBB7549BA35CED6E754C57AC /* End.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = End.swift; sourceTree = "<group>"; };
 		FEBA98733C272BBBE4B50C862FF4406D /* Throttle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Throttle.swift; path = RxSwift/Observables/Throttle.swift; sourceTree = "<group>"; };
-		FEDCF4D5E02033844D71DDD9C6E21329 /* ConnectionManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConnectionManager.swift; path = ConnectionKit/Source/ConnectionManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1209,7 +1209,7 @@
 		AC58BB6E163FF07EF88E4294B440F60C /* ConnectionKit */ = {
 			isa = PBXGroup;
 			children = (
-				FEDCF4D5E02033844D71DDD9C6E21329 /* ConnectionManager.swift */,
+				0287E56A224B716500021FAD /* ConnectionController.swift */,
 				C906FBBCFECE4AB9E6400143D1B2EF53 /* PageFetcher.swift */,
 				0D98FD49DF6A07FAA2E88259C1AD147B /* PageStorer.swift */,
 				9172935203D553877E11D33538022F87 /* PaginationStateTracker.swift */,
@@ -2065,7 +2065,6 @@
 				99D608CDAF46FA1085484754757E7E52 /* ConnectionEdge.swift in Sources */,
 				EA8F2910847550B70683DA7462DCC016 /* ConnectionFetcher.swift in Sources */,
 				208EFBFD1DABA2B60DE9185FA42BDA1F /* ConnectionKit-dummy.m in Sources */,
-				01AD285F95A6C3FFA30F26A4AD719574 /* ConnectionManager.swift in Sources */,
 				0874C82A2ABD82CED086F83BCB094B67 /* ConnectionPageInfo.swift in Sources */,
 				70BD6F571E0A091867379E26946C12CB /* ConnectionProtocol.swift in Sources */,
 				B3EFBDB5DDDA2E45589DDC5F92282CD2 /* End.swift in Sources */,
@@ -2073,6 +2072,7 @@
 				4917298E810A4F9EEE4D32BB8ABC9857 /* ErrorWrapper.swift in Sources */,
 				3756730630903BA44DB120A0F06E74AB /* Page.swift in Sources */,
 				B70BC63F9FAAD760F21BE61CAE02D3BF /* PageFetcher.swift in Sources */,
+				0287E56B224B716500021FAD /* ConnectionController.swift in Sources */,
 				D3A49E125DAAFBE24F2D3922DAE361CC /* PageFetcherState.swift in Sources */,
 				175210A323CBD0657A060DCA7D449C8A /* PageStorer.swift in Sources */,
 				B1CC27AE9EC5E923D4F57F9B8DF55992 /* PaginationStateTracker.swift in Sources */,

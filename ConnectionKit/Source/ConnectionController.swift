@@ -6,7 +6,7 @@ import RxSwift
 // Will also need to determine what to do if fetching initial page and told to fetch separate page.
 // ? Use initial page size in both directions? This is the easiest.
 
-public final class ConnectionManager<F> where F: ConnectionFetcher {
+public final class ConnectionController<F> where F: ConnectionFetcher {
 
     // MARK: Constants
 
@@ -44,7 +44,7 @@ public final class ConnectionManager<F> where F: ConnectionFetcher {
 
 // MARK: Private
 
-extension ConnectionManager {
+extension ConnectionController {
     private func handle(state: PageFetcherState<F>, end: End) {
         let relay = end == .head ? self.headStateRelay : self.tailStateRelay
         switch state {
@@ -106,7 +106,7 @@ extension ConnectionManager {
     }
 }
 
-extension ConnectionManager {
+extension ConnectionController {
     private var canLoadHead: Bool {
         switch self.headState {
         case .hasNextPage, .failedToFetchNextPage:
@@ -128,7 +128,7 @@ extension ConnectionManager {
 
 // MARK: Interface
 
-extension ConnectionManager {
+extension ConnectionController {
     public var headState: EndState {
         return self.headStateRelay.value
     }

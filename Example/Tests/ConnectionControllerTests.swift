@@ -4,12 +4,12 @@ import RxSwift
 import XCTest
 
 // TODO: Additional tests to write:
-// - connection manager reset
-// - connection manager initial page tests
-// - connection manager multiple pages, both directions
+// - connection controller reset
+// - connection controller initial page tests
+// - connection controller multiple pages, both directions
 // - page fetcher invalid cursor tests
 
-class ConnectionManagerTests: XCTestCase {
+class ConnectionControllerTests: XCTestCase {
 
     private var disposeBag = DisposeBag()
 
@@ -27,12 +27,12 @@ class ConnectionManagerTests: XCTestCase {
         let fetcher = TestFetcher(defaultIndex: defaultIndex, edges: allEdges)
         let expectedPages: [Page<TestFetcher>] = []
 
-        // Create connection manager:
-        let manager = ConnectionManager(fetcher: fetcher, initialPageSize: 2, paginationPageSize: 5)
+        // Create connection controller:
+        let controller = ConnectionController(fetcher: fetcher, initialPageSize: 2, paginationPageSize: 5)
 
         // Run test:
-        try self.runHeadTest(manager: manager, expectedEndState: .hasFetchedLastPage, expectedPages: expectedPages)
-        try self.runTailTest(manager: manager, expectedEndState: .hasFetchedLastPage, expectedPages: expectedPages)
+        try self.runHeadTest(controller: controller, expectedEndState: .hasFetchedLastPage, expectedPages: expectedPages)
+        try self.runTailTest(controller: controller, expectedEndState: .hasFetchedLastPage, expectedPages: expectedPages)
     }
 
     func testForwardIncompletePage() throws {
@@ -45,11 +45,11 @@ class ConnectionManagerTests: XCTestCase {
         let expectedEdges = Array(allEdges[defaultIndex..<endIndex])
         let expectedPages = [Page<TestFetcher>(index: 0, edges: expectedEdges)]
 
-        // Create connection manager:
-        let manager = ConnectionManager(fetcher: fetcher, initialPageSize: initialPageSize)
+        // Create connection controller:
+        let controller = ConnectionController(fetcher: fetcher, initialPageSize: initialPageSize)
 
         // Run test:
-        try self.runTailTest(manager: manager, expectedEndState: .hasFetchedLastPage, expectedPages: expectedPages)
+        try self.runTailTest(controller: controller, expectedEndState: .hasFetchedLastPage, expectedPages: expectedPages)
     }
 
     func testBackwardIncompletePage() throws {
@@ -62,11 +62,11 @@ class ConnectionManagerTests: XCTestCase {
         let expectedEdges = Array(allEdges[endIndex..<defaultIndex])
         let expectedPages = [Page<TestFetcher>(index: 0, edges: expectedEdges)]
 
-        // Create connection manager:
-        let manager = ConnectionManager(fetcher: fetcher, initialPageSize: initialPageSize)
+        // Create connection controller:
+        let controller = ConnectionController(fetcher: fetcher, initialPageSize: initialPageSize)
 
         // Run test:
-        try self.runHeadTest(manager: manager, expectedEndState: .hasFetchedLastPage, expectedPages: expectedPages)
+        try self.runHeadTest(controller: controller, expectedEndState: .hasFetchedLastPage, expectedPages: expectedPages)
     }
 
     func testForwardCompletePage() throws {
@@ -80,11 +80,11 @@ class ConnectionManagerTests: XCTestCase {
         let expectedEdges = Array(allEdges[defaultIndex..<endIndex])
         let expectedPages = [Page<TestFetcher>(index: 0, edges: expectedEdges)]
 
-        // Create connection manager:
-        let manager = ConnectionManager(fetcher: fetcher, initialPageSize: initialPageSize)
+        // Create connection controller:
+        let controller = ConnectionController(fetcher: fetcher, initialPageSize: initialPageSize)
 
         // Run test:
-        try self.runTailTest(manager: manager, expectedEndState: .hasNextPage, expectedPages: expectedPages)
+        try self.runTailTest(controller: controller, expectedEndState: .hasNextPage, expectedPages: expectedPages)
     }
 
     func testBackwardCompletePage() throws {
@@ -98,11 +98,11 @@ class ConnectionManagerTests: XCTestCase {
         let expectedEdges = Array(allEdges[endIndex..<defaultIndex])
         let expectedPages = [Page<TestFetcher>(index: 0, edges: expectedEdges)]
 
-        // Create connection manager:
-        let manager = ConnectionManager(fetcher: fetcher, initialPageSize: initialPageSize)
+        // Create connection controller:
+        let controller = ConnectionController(fetcher: fetcher, initialPageSize: initialPageSize)
 
         // Run test:
-        try self.runHeadTest(manager: manager, expectedEndState: .hasNextPage, expectedPages: expectedPages)
+        try self.runHeadTest(controller: controller, expectedEndState: .hasNextPage, expectedPages: expectedPages)
     }
 
     func testBothCompletePages() throws {
@@ -120,12 +120,12 @@ class ConnectionManagerTests: XCTestCase {
         let expectedForwardEdges = Array(allEdges[defaultIndex..<forwardEndIndex])
         let expectedForwardPages = expectedBackwardPages + [Page<TestFetcher>(index: 1, edges: expectedForwardEdges)]
 
-        // Create connection manager:
-        let manager = ConnectionManager(fetcher: fetcher, initialPageSize: initialPageSize)
+        // Create connection controller:
+        let controller = ConnectionController(fetcher: fetcher, initialPageSize: initialPageSize)
 
         // Run test:
-        try self.runHeadTest(manager: manager, expectedEndState: .hasNextPage, expectedPages: expectedBackwardPages)
-        try self.runTailTest(manager: manager, expectedEndState: .hasNextPage, expectedPages: expectedForwardPages)
+        try self.runHeadTest(controller: controller, expectedEndState: .hasNextPage, expectedPages: expectedBackwardPages)
+        try self.runTailTest(controller: controller, expectedEndState: .hasNextPage, expectedPages: expectedForwardPages)
     }
 
     func testBothReset() throws {
@@ -143,50 +143,50 @@ class ConnectionManagerTests: XCTestCase {
         let expectedForwardEdges = Array(allEdges[defaultIndex..<forwardEndIndex])
         let expectedForwardPages = expectedBackwardPages + [Page<TestFetcher>(index: 1, edges: expectedForwardEdges)]
 
-        // Create connection manager:
-        let manager = ConnectionManager(fetcher: fetcher, initialPageSize: initialPageSize)
+        // Create connection controller:
+        let controller = ConnectionController(fetcher: fetcher, initialPageSize: initialPageSize)
 
         // Run test:
-        try self.runHeadTest(manager: manager, expectedEndState: .hasNextPage, expectedPages: expectedBackwardPages)
-        try self.runTailTest(manager: manager, expectedEndState: .hasNextPage, expectedPages: expectedForwardPages)
+        try self.runHeadTest(controller: controller, expectedEndState: .hasNextPage, expectedPages: expectedBackwardPages)
+        try self.runTailTest(controller: controller, expectedEndState: .hasNextPage, expectedPages: expectedForwardPages)
 
-        manager.reset()
-        XCTAssertEqual(manager.pages, [])
-        XCTAssertEqual(manager.headState, .hasNextPage)
-        XCTAssertEqual(manager.tailState, .hasNextPage)
+        controller.reset()
+        XCTAssertEqual(controller.pages, [])
+        XCTAssertEqual(controller.headState, .hasNextPage)
+        XCTAssertEqual(controller.tailState, .hasNextPage)
     }
 }
 
 // MARK: Head
 
-extension ConnectionManagerTests {
+extension ConnectionControllerTests {
     private func runHeadTest(
-        manager: ConnectionManager<TestFetcher>,
+        controller: ConnectionController<TestFetcher>,
         expectedEndState: EndState,
         expectedPages: [Page<TestFetcher>]) throws
     {
 
         // Create expectations:
         let expectations: [XCTestExpectation] = [
-            self.expectHeadHasNextPage(manager: manager),
-            self.expectHeadIsFetchingNextPage(manager: manager),
+            self.expectHeadHasNextPage(controller: controller),
+            self.expectHeadIsFetchingNextPage(controller: controller),
             self.expectHeadEndedInState(
-                manager: manager,
+                controller: controller,
                 expectedEndState: expectedEndState,
                 expectedPages: expectedPages
             )
         ]
 
         // Run the test:
-        manager.loadNextPage(from: .head)
+        controller.loadNextPage(from: .head)
 
         // Wait for expectations:
         wait(for: expectations, timeout: 1)
     }
 
-    private func expectHeadHasNextPage(manager: ConnectionManager<TestFetcher>) -> XCTestExpectation {
+    private func expectHeadHasNextPage(controller: ConnectionController<TestFetcher>) -> XCTestExpectation {
         let receivedIdleStateExpectation = XCTestExpectation(description: "Received idle state update")
-        manager.headStateObservable
+        controller.headStateObservable
             .take(1)
             .subscribe(onNext: { state in
                 XCTAssertEqual(state, EndState.hasNextPage)
@@ -196,9 +196,9 @@ extension ConnectionManagerTests {
         return receivedIdleStateExpectation
     }
 
-    private func expectHeadIsFetchingNextPage(manager: ConnectionManager<TestFetcher>) -> XCTestExpectation {
+    private func expectHeadIsFetchingNextPage(controller: ConnectionController<TestFetcher>) -> XCTestExpectation {
         let receivedFetchingStateExpectation = XCTestExpectation(description: "Received fetching state update")
-        manager.headStateObservable
+        controller.headStateObservable
             .skip(1)
             .take(1)
             .subscribe(onNext: { state in
@@ -211,13 +211,13 @@ extension ConnectionManagerTests {
     }
 
     private func expectHeadEndedInState(
-        manager: ConnectionManager<TestFetcher>,
+        controller: ConnectionController<TestFetcher>,
         expectedEndState: EndState,
         expectedPages: [Page<TestFetcher>])
         -> XCTestExpectation
     {
         let receivedCompletedStateExpectation = XCTestExpectation(description: "Received completed state update")
-        manager.headStateObservable
+        controller.headStateObservable
             .skip(2)
             .take(1)
             .subscribe(onNext: { state in
@@ -226,7 +226,7 @@ extension ConnectionManagerTests {
                     return
                 }
 
-                XCTAssertEqual(manager.pages, expectedPages)
+                XCTAssertEqual(controller.pages, expectedPages)
                 receivedCompletedStateExpectation.fulfill()
             })
             .disposed(by: self.disposeBag)
@@ -238,34 +238,34 @@ extension ConnectionManagerTests {
 
 // MARK: Tail
 
-extension ConnectionManagerTests {
+extension ConnectionControllerTests {
     private func runTailTest(
-        manager: ConnectionManager<TestFetcher>,
+        controller: ConnectionController<TestFetcher>,
         expectedEndState: EndState,
         expectedPages: [Page<TestFetcher>]) throws
     {
 
         // Create expectations:
         let expectations: [XCTestExpectation] = [
-            self.expectTailHasNextPage(manager: manager),
-            self.expectTailIsFetchingNextPage(manager: manager),
+            self.expectTailHasNextPage(controller: controller),
+            self.expectTailIsFetchingNextPage(controller: controller),
             self.expectTailEndedInState(
-                manager: manager,
+                controller: controller,
                 expectedEndState: expectedEndState,
                 expectedPages: expectedPages
             )
         ]
 
         // Run the test:
-        manager.loadNextPage(from: .tail)
+        controller.loadNextPage(from: .tail)
 
         // Wait for expectations:
         wait(for: expectations, timeout: 1)
     }
 
-    private func expectTailHasNextPage(manager: ConnectionManager<TestFetcher>) -> XCTestExpectation {
+    private func expectTailHasNextPage(controller: ConnectionController<TestFetcher>) -> XCTestExpectation {
         let receivedIdleStateExpectation = XCTestExpectation(description: "Received idle state update")
-        manager.tailStateObservable
+        controller.tailStateObservable
             .take(1)
             .subscribe(onNext: { state in
                 XCTAssertEqual(state, EndState.hasNextPage)
@@ -275,9 +275,9 @@ extension ConnectionManagerTests {
         return receivedIdleStateExpectation
     }
 
-    private func expectTailIsFetchingNextPage(manager: ConnectionManager<TestFetcher>) -> XCTestExpectation {
+    private func expectTailIsFetchingNextPage(controller: ConnectionController<TestFetcher>) -> XCTestExpectation {
         let receivedFetchingStateExpectation = XCTestExpectation(description: "Received fetching state update")
-        manager.tailStateObservable
+        controller.tailStateObservable
             .skip(1)
             .take(1)
             .subscribe(onNext: { state in
@@ -290,13 +290,13 @@ extension ConnectionManagerTests {
     }
 
     private func expectTailEndedInState(
-        manager: ConnectionManager<TestFetcher>,
+        controller: ConnectionController<TestFetcher>,
         expectedEndState: EndState,
         expectedPages: [Page<TestFetcher>])
         -> XCTestExpectation
     {
         let receivedCompletedStateExpectation = XCTestExpectation(description: "Received completed state update")
-        manager.tailStateObservable
+        controller.tailStateObservable
             .skip(2)
             .take(1)
             .subscribe(onNext: { state in
@@ -305,7 +305,7 @@ extension ConnectionManagerTests {
                     return
                 }
 
-                XCTAssertEqual(manager.pages, expectedPages)
+                XCTAssertEqual(controller.pages, expectedPages)
                 receivedCompletedStateExpectation.fulfill()
             })
             .disposed(by: self.disposeBag)
