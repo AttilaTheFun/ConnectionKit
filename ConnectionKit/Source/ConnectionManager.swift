@@ -191,6 +191,9 @@ extension ConnectionManager {
      Reset the connection back to its original state.
      */
     public func reset() {
-        fatalError("Not implemented yet")
+        self.paginationStateTracker.reset()
+        self.pageStorer.reset()
+        self.headFetcher = self.createFetcher(for: .head, from: [], isInitialPage: true, disposedBy: self.disposeBag)
+        self.tailFetcher = self.createFetcher(for: .tail, from: [], isInitialPage: true, disposedBy: self.disposeBag)
     }
 }

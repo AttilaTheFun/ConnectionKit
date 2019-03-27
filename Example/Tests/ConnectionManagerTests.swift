@@ -4,11 +4,10 @@ import RxSwift
 import XCTest
 
 // TODO: Additional tests to write:
-// - page fetcher invalid cursor tests
-// - pagination tracker tests
 // - connection manager reset
 // - connection manager initial page tests
 // - connection manager multiple pages, both directions
+// - page fetcher invalid cursor tests
 
 class ConnectionManagerTests: XCTestCase {
 
@@ -36,7 +35,7 @@ class ConnectionManagerTests: XCTestCase {
         try self.runTailTest(manager: manager, expectedEndState: .hasFetchedLastPage, expectedPages: expectedPages)
     }
 
-    func testIncompletePageForward() throws {
+    func testForwardIncompletePage() throws {
         // Create test data:
         let initialPageSize = 10
         let defaultIndex = 5
@@ -53,7 +52,7 @@ class ConnectionManagerTests: XCTestCase {
         try self.runTailTest(manager: manager, expectedEndState: .hasFetchedLastPage, expectedPages: expectedPages)
     }
 
-    func testIncompletePageBackward() throws {
+    func testBackwardIncompletePage() throws {
         // Create test data:
         let initialPageSize = 10
         let defaultIndex = 5
@@ -70,13 +69,14 @@ class ConnectionManagerTests: XCTestCase {
         try self.runHeadTest(manager: manager, expectedEndState: .hasFetchedLastPage, expectedPages: expectedPages)
     }
 
-    func testCompletePageForward() throws {
+    func testForwardCompletePage() throws {
         // Create test data:
         let initialPageSize = 10
         let defaultIndex = 50
         let endIndex = defaultIndex + initialPageSize
         let allEdges: [TestEdge] = .create(count: 100)
         let fetcher = TestFetcher(defaultIndex: defaultIndex, edges: allEdges)
+
         let expectedEdges = Array(allEdges[defaultIndex..<endIndex])
         let expectedPages = [Page<TestFetcher>(index: 0, edges: expectedEdges)]
 
@@ -87,13 +87,14 @@ class ConnectionManagerTests: XCTestCase {
         try self.runTailTest(manager: manager, expectedEndState: .hasNextPage, expectedPages: expectedPages)
     }
 
-    func testCompletePageBackward() throws {
+    func testBackwardCompletePage() throws {
         // Create test data:
         let initialPageSize = 10
         let defaultIndex = 50
         let endIndex = defaultIndex - initialPageSize
         let allEdges: [TestEdge] = .create(count: 100)
         let fetcher = TestFetcher(defaultIndex: defaultIndex, edges: allEdges)
+
         let expectedEdges = Array(allEdges[endIndex..<defaultIndex])
         let expectedPages = [Page<TestFetcher>(index: 0, edges: expectedEdges)]
 
@@ -102,6 +103,57 @@ class ConnectionManagerTests: XCTestCase {
 
         // Run test:
         try self.runHeadTest(manager: manager, expectedEndState: .hasNextPage, expectedPages: expectedPages)
+    }
+
+    func testBothCompletePages() throws {
+        // Create test data:
+        let initialPageSize = 10
+        let defaultIndex = 50
+        let allEdges: [TestEdge] = .create(count: 100)
+        let fetcher = TestFetcher(defaultIndex: defaultIndex, edges: allEdges)
+
+        let backwardEndIndex = defaultIndex - initialPageSize
+        let expectedBackwardEdges = Array(allEdges[backwardEndIndex..<defaultIndex])
+        let expectedBackwardPages = [Page<TestFetcher>(index: 0, edges: expectedBackwardEdges)]
+
+        let forwardEndIndex = defaultIndex + initialPageSize
+        let expectedForwardEdges = Array(allEdges[defaultIndex..<forwardEndIndex])
+        let expectedForwardPages = expectedBackwardPages + [Page<TestFetcher>(index: 1, edges: expectedForwardEdges)]
+
+        // Create connection manager:
+        let manager = ConnectionManager(fetcher: fetcher, initialPageSize: initialPageSize)
+
+        // Run test:
+        try self.runHeadTest(manager: manager, expectedEndState: .hasNextPage, expectedPages: expectedBackwardPages)
+        try self.runTailTest(manager: manager, expectedEndState: .hasNextPage, expectedPages: expectedForwardPages)
+    }
+
+    func testBothReset() throws {
+        // Create test data:
+        let initialPageSize = 10
+        let defaultIndex = 50
+        let allEdges: [TestEdge] = .create(count: 100)
+        let fetcher = TestFetcher(defaultIndex: defaultIndex, edges: allEdges)
+
+        let backwardEndIndex = defaultIndex - initialPageSize
+        let expectedBackwardEdges = Array(allEdges[backwardEndIndex..<defaultIndex])
+        let expectedBackwardPages = [Page<TestFetcher>(index: 0, edges: expectedBackwardEdges)]
+
+        let forwardEndIndex = defaultIndex + initialPageSize
+        let expectedForwardEdges = Array(allEdges[defaultIndex..<forwardEndIndex])
+        let expectedForwardPages = expectedBackwardPages + [Page<TestFetcher>(index: 1, edges: expectedForwardEdges)]
+
+        // Create connection manager:
+        let manager = ConnectionManager(fetcher: fetcher, initialPageSize: initialPageSize)
+
+        // Run test:
+        try self.runHeadTest(manager: manager, expectedEndState: .hasNextPage, expectedPages: expectedBackwardPages)
+        try self.runTailTest(manager: manager, expectedEndState: .hasNextPage, expectedPages: expectedForwardPages)
+
+        manager.reset()
+        XCTAssertEqual(manager.pages, [])
+        XCTAssertEqual(manager.headState, .hasNextPage)
+        XCTAssertEqual(manager.tailState, .hasNextPage)
     }
 }
 
