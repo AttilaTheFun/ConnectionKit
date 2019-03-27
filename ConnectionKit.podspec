@@ -23,6 +23,7 @@ It also provides reactive (RxSwift) bindings for observing that connection's sta
 
   s.ios.deployment_target = '8.0'
   s.swift_version = '5.0'
+  s.static_framework = true
 
   s.source_files = 'ConnectionKit/Source/**/*'
   s.dependency 'RxCocoa'
