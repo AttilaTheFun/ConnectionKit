@@ -11,7 +11,9 @@ Pod::Spec.new do |s|
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
   s.description      = <<-DESC
-TODO: Add long description of the pod here.
+This library provides utilities for managing a connection implementing the Relay Cursor Connections Specification.
+
+It also provides reactive (RxSwift) bindings for observing that connection's states.
                        DESC
 
   s.homepage         = 'https://github.com/AttilaTheFun/ConnectionKit'
