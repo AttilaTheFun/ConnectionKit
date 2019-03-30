@@ -186,8 +186,8 @@
 			children = (
 				02114E6222488592003BDBC1 /* Utils */,
 				0287E574224CBD1F00021FAD /* Connection Controller */,
-				607FACEB1AFB9204008FA782 /* PageFetcherTests.swift */,
 				02A1EBB7224B66AC00C1668E /* PaginationStateTrackerTests.swift */,
+				607FACEB1AFB9204008FA782 /* PageFetcherTests.swift */,
 				02A1EBB5224A142900C1668E /* PageStorerTests.swift */,
 				02114E6722489592003BDBC1 /* TestFetcherTests.swift */,
 				607FACE91AFB9204008FA782 /* Supporting Files */,
