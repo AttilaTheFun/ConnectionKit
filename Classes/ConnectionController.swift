@@ -16,6 +16,10 @@ public final class ConnectionController<F> where F: ConnectionFetcher {
     private let pageStorer = PageStorer<F>()
     private let pageFetcherFactory: PageFetcherFactory<F, PageStorer<F>>
     private let pageFetcherCoordinator: PageFetcherCoordinator<F>
+
+    private var initialLoadDisposable: Disposable
+    private var headNextPageDisposable: Disposable
+    private var tailNextPageDisposable: Disposable
     private let disposeBag = DisposeBag()
 
     // MARK: Initialization
@@ -33,26 +37,22 @@ public final class ConnectionController<F> where F: ConnectionFetcher {
             headPageFetcher: self.pageFetcherFactory.fetcher(for: .head, isInitial: false),
             tailPageFetcher: self.pageFetcherFactory.fetcher(for: .tail, isInitial: false)
         )
+        self.initialLoadDisposable = Disposables.create()
+        self.headNextPageDisposable = Disposables.create()
+        self.tailNextPageDisposable = Disposables.create()
 
-        // Bind observables:
-        self.observeInitialLoad(for: self.pageFetcherCoordinator.stateObservable(for: .initial), fetchingFrom: .tail)
-            .disposed(by: self.disposeBag)
-        self.observeNextPageLoad(for: self.pageFetcherCoordinator.stateObservable(for: .head), fetchingFrom: .head)
-            .disposed(by: self.disposeBag)
-        self.observeNextPageLoad(for: self.pageFetcherCoordinator.stateObservable(for: .tail), fetchingFrom: .tail)
-            .disposed(by: self.disposeBag)
+        // Update disposables:
+        self.initialLoadDisposable = self.observeInitialLoad(fetcher: self.pageFetcherCoordinator.stateObservable(for: .initial), end: .tail)
+        self.headNextPageDisposable = self.observeNextPageLoad(fetcher: self.pageFetcherCoordinator.stateObservable(for: .head), end: .head)
+        self.tailNextPageDisposable = self.observeNextPageLoad(fetcher: self.pageFetcherCoordinator.stateObservable(for: .tail), end: .tail)
     }
 }
 
 // MARK: Private
 
 extension ConnectionController {
-    private func observeInitialLoad(
-        for fetcherStateObservable: Observable<PageFetcherState<F>>,
-        fetchingFrom end: End)
-        -> Disposable
-    {
-        return fetcherStateObservable
+    private func observeInitialLoad(fetcher: Observable<PageFetcherState<F>>, end: End) -> Disposable {
+        let disposable = fetcher
             .subscribe(onNext: { [weak self] state in
                 guard let `self` = self,
                     case .completed(let edges, let pageInfo) = state else
@@ -68,14 +68,14 @@ extension ConnectionController {
                 self.pageFetcherCoordinator.replace(fetcher: .head, with: self.pageFetcherFactory.fetcher(for: .head, isInitial: false))
                 self.pageFetcherCoordinator.replace(fetcher: .tail, with: self.pageFetcherFactory.fetcher(for: .tail, isInitial: false))
             })
+
+        // Dispose on dealloc with bag:
+        disposable.disposed(by: self.disposeBag)
+        return disposable
     }
 
-    private func observeNextPageLoad(
-        for fetcherStateObservable: Observable<PageFetcherState<F>>,
-        fetchingFrom end: End)
-        -> Disposable
-    {
-        return fetcherStateObservable
+    private func observeNextPageLoad(fetcher: Observable<PageFetcherState<F>>, end: End) -> Disposable {
+        let disposable = fetcher
             .subscribe(onNext: { [weak self] state in
                 guard let `self` = self,
                     case .completed(let edges, let pageInfo) = state else
@@ -87,6 +87,10 @@ extension ConnectionController {
                 self.pageStorer.ingest(edges: edges, from: end)
                 self.paginationStateTracker.ingest(pageInfo: pageInfo, from: end)
             })
+
+        // Dispose on dealloc with bag:
+        disposable.disposed(by: self.disposeBag)
+        return disposable
     }
 }
 
@@ -102,17 +106,19 @@ extension ConnectionController {
      */
     public func loadInitialPage(from end: End) {
         let state = self.pageFetcherCoordinator.state(for: .initial)
-        if !state.canLoadPage {
+        if !self.pageFetcherCoordinator.state(for: .initial).canLoadPage {
             return assertionFailure("Can't load initial page from this state")
         }
 
-        // Replace the initial load observable:
-        self.observeInitialLoad(for: self.pageFetcherCoordinator.stateObservable(for: .initial), fetchingFrom: .tail)
-            .disposed(by: self.disposeBag)
-
-        // Replace the fetcher and load the initial page:
+        // Replace the fetcher:
         let initialPageFetcher = self.pageFetcherFactory.fetcher(for: end, isInitial: true)
         self.pageFetcherCoordinator.replace(fetcher: .initial, with: initialPageFetcher)
+
+        // Replace the initial load observable because the end may have changed:
+        let stateObservable = self.pageFetcherCoordinator.stateObservable(for: .initial)
+        self.initialLoadDisposable = self.observeInitialLoad(fetcher: stateObservable, end: end)
+
+        // Load the initial page:
         self.pageFetcherCoordinator.loadPage(from: .initial)
     }
 
@@ -153,6 +159,7 @@ extension ConnectionController {
     public var initialLoadStateObservable: Observable<InitialLoadState> {
         return self.pageFetcherCoordinator.stateObservable(for: .initial)
             .map(InitialLoadState.init)
+            .distinctUntilChanged()
     }
 
     /**
@@ -172,7 +179,7 @@ extension ConnectionController {
         let hasFetchedLastPageObservable = self.paginationStateTracker.hasFetchedLastPageObservable(from: end)
         return fetcherStateObservable.withLatestFrom(hasFetchedLastPageObservable) { fetcherState, hasFetchedLastPage in
             return EndState(pageFetcherState: fetcherState, hasFetchedLastPage: hasFetchedLastPage)
-        }
+        }.distinctUntilChanged()
     }
 
     /**
