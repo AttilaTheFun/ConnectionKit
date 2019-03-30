@@ -1,25 +1,31 @@
 
 /**
  Encapsulates the possible states of an end of a connection (head or tail).
- The initial state is hasNextPage.
  The possible transitions are:
- - hasNextPage -> isFetchingNextPage
- - isFetchingNextPage -> hasNextPage
- - isFetchingNextPage -> hasFetchedLastPage
- - isFetchingNextPage -> failedToFetchNextPage
- - failedToFetchNextPage -> isFetchingNextPage
- All states could revert to hasNextPage if the connection was reset.
+ - idle -> fetching
+ - fetching -> idle
+ - fetching -> error
+ - fetching -> end
+ All states could revert to idle if the connection was reset.
  */
 public enum EndState: Hashable {
-    // The manager has another page available from this end.
-    case hasNextPage
+    case idle
+    case fetching
+    case error(ErrorWrapper)
+    case end
+}
 
-    // The manager is actively the next page from this end.
-    case isFetchingNextPage
-
-    // The manager has fetched the last page available from this end.
-    case hasFetchedLastPage
-
-    // The manager failed to fetch a page from this end.
-    case failedToFetchNextPage(ErrorWrapper)
+extension EndState {
+    init<F>(pageFetcherState: PageFetcherState<F>, hasFetchedLastPage: Bool) {
+        switch (pageFetcherState, hasFetchedLastPage) {
+        case (.fetching, _):
+            self = .fetching
+        case (.error(let error), _):
+            self = .error(error)
+        case (.idle, false), (.completed, false):
+            self = .idle
+        case (.idle, true), (.completed, true):
+            self = .end
+        }
+    }
 }

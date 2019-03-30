@@ -22,6 +22,17 @@ enum PageFetcherState<F> where F: ConnectionFetcher {
     case error(ErrorWrapper)
 }
 
+extension PageFetcherState {
+    var canLoadPage: Bool {
+        switch self {
+        case .idle, .completed, .error:
+            return true
+        case .fetching:
+            return false
+        }
+    }
+}
+
 extension PageFetcherState: Equatable where
 F.FetchedConnection.ConnectedPageInfo : Equatable,
 F.FetchedConnection.ConnectedEdge: Equatable

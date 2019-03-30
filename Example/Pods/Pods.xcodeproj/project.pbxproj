@@ -12,6 +12,11 @@
 		01AA92216291FB8E03EB28700D9C6F3C /* InvocableType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 303648FF450C67998CE597AC71882C55 /* InvocableType.swift */; };
 		01AD95A6F51C70719FC6EF2AEB5AB924 /* _RXDelegateProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A0DC798777BA35C14DA9A11D79E1039 /* _RXDelegateProxy.m */; };
 		0287E56B224B716500021FAD /* ConnectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0287E56A224B716500021FAD /* ConnectionController.swift */; };
+		0287E56F224CA8E500021FAD /* InitialLoadState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0287E56E224CA8E500021FAD /* InitialLoadState.swift */; };
+		0287E57A224E068000021FAD /* PageFetcherCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0287E579224E068000021FAD /* PageFetcherCoordinator.swift */; };
+		0287E57D224E0A5700021FAD /* PageFetcherType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0287E57C224E0A5700021FAD /* PageFetcherType.swift */; };
+		0287E57F224E114C00021FAD /* PageFetcherFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0287E57E224E114C00021FAD /* PageFetcherFactory.swift */; };
+		0287E585224E14DC00021FAD /* PageProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0287E584224E14DC00021FAD /* PageProvider.swift */; };
 		0496EAD1EA288E5BE787CC9A4D4A22C8 /* DispatchQueue+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B8FB6C9F36EDBCF7E18A391768F30C7 /* DispatchQueue+Extensions.swift */; };
 		07A600CA0E671BD57C455F623DF054AB /* Zip.swift in Sources */ = {isa = PBXBuildFile; fileRef = C682D620CF55B02A987BA2F388136EC9 /* Zip.swift */; };
 		0874C82A2ABD82CED086F83BCB094B67 /* ConnectionPageInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 817570A63E4665ED4B43D7FE2EE464D0 /* ConnectionPageInfo.swift */; };
@@ -451,7 +456,12 @@
 		01CD4CE0325BBE8505E628FAF06E19EB /* Empty.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Empty.swift; path = RxSwift/Observables/Empty.swift; sourceTree = "<group>"; };
 		023B10CA4C97F7E5A5C73D232953F543 /* RxWebViewDelegateProxy.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RxWebViewDelegateProxy.swift; path = RxCocoa/iOS/Proxies/RxWebViewDelegateProxy.swift; sourceTree = "<group>"; };
 		0279339868A8CAEC24A7CAE5E6CF497D /* SingleAsync.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SingleAsync.swift; path = RxSwift/Observables/SingleAsync.swift; sourceTree = "<group>"; };
-		0287E56A224B716500021FAD /* ConnectionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ConnectionController.swift; path = ConnectionKit/Source/ConnectionController.swift; sourceTree = "<group>"; };
+		0287E56A224B716500021FAD /* ConnectionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionController.swift; sourceTree = "<group>"; };
+		0287E56E224CA8E500021FAD /* InitialLoadState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialLoadState.swift; sourceTree = "<group>"; };
+		0287E579224E068000021FAD /* PageFetcherCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageFetcherCoordinator.swift; sourceTree = "<group>"; };
+		0287E57C224E0A5700021FAD /* PageFetcherType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageFetcherType.swift; sourceTree = "<group>"; };
+		0287E57E224E114C00021FAD /* PageFetcherFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageFetcherFactory.swift; sourceTree = "<group>"; };
+		0287E584224E14DC00021FAD /* PageProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageProvider.swift; sourceTree = "<group>"; };
 		0394DC08CB2694AFC4198554CAD1F9C1 /* RxSwift-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "RxSwift-dummy.m"; sourceTree = "<group>"; };
 		0399E26C66CA0D184B6AB2F37A462234 /* RxCocoa-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "RxCocoa-prefix.pch"; sourceTree = "<group>"; };
 		07C32E2506A16FE36EB527F440E41E51 /* AsMaybe.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AsMaybe.swift; path = RxSwift/Observables/AsMaybe.swift; sourceTree = "<group>"; };
@@ -468,7 +478,7 @@
 		0C95B7C798C1BF140F5CC032C4897E97 /* _RXKVOObserver.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = _RXKVOObserver.m; path = RxCocoa/Runtime/_RXKVOObserver.m; sourceTree = "<group>"; };
 		0CAB4040C006184F281468219ABE94B9 /* UISwitch+Rx.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "UISwitch+Rx.swift"; path = "RxCocoa/iOS/UISwitch+Rx.swift"; sourceTree = "<group>"; };
 		0D76683CBD2F9045AD09D96CA2CCF6E5 /* UISegmentedControl+Rx.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "UISegmentedControl+Rx.swift"; path = "RxCocoa/iOS/UISegmentedControl+Rx.swift"; sourceTree = "<group>"; };
-		0D98FD49DF6A07FAA2E88259C1AD147B /* PageStorer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PageStorer.swift; path = ConnectionKit/Source/PageStorer.swift; sourceTree = "<group>"; };
+		0D98FD49DF6A07FAA2E88259C1AD147B /* PageStorer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PageStorer.swift; sourceTree = "<group>"; };
 		0F26620F7B397DB116153B79A65470A3 /* Deferred.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Deferred.swift; path = RxSwift/Observables/Deferred.swift; sourceTree = "<group>"; };
 		108241EB7E4A073154E361E9406627D1 /* SharedSequence.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SharedSequence.swift; path = RxCocoa/Traits/SharedSequence/SharedSequence.swift; sourceTree = "<group>"; };
 		10F79BDC6E2C78B2537AA5748AAA844A /* ConnectionKit-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "ConnectionKit-umbrella.h"; sourceTree = "<group>"; };
@@ -643,7 +653,7 @@
 		8FF6E910BBC41DAE987FA0F93F1ECC29 /* UITextView+Rx.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "UITextView+Rx.swift"; path = "RxCocoa/iOS/UITextView+Rx.swift"; sourceTree = "<group>"; };
 		8FFF911E57BA7DFD779BDBF09CEE1718 /* ScheduledItem.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ScheduledItem.swift; path = RxSwift/Schedulers/Internal/ScheduledItem.swift; sourceTree = "<group>"; };
 		915ABFE73B192AE9572A3BBD5A101117 /* Buffer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Buffer.swift; path = RxSwift/Observables/Buffer.swift; sourceTree = "<group>"; };
-		9172935203D553877E11D33538022F87 /* PaginationStateTracker.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PaginationStateTracker.swift; path = ConnectionKit/Source/PaginationStateTracker.swift; sourceTree = "<group>"; };
+		9172935203D553877E11D33538022F87 /* PaginationStateTracker.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PaginationStateTracker.swift; sourceTree = "<group>"; };
 		91DC53C4C915BD128AA960483482F5D0 /* RecursiveLock.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RecursiveLock.swift; path = Platform/RecursiveLock.swift; sourceTree = "<group>"; };
 		92275CFB0B0BD682A0AF3EE0E5C06C9B /* UIStepper+Rx.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "UIStepper+Rx.swift"; path = "RxCocoa/iOS/UIStepper+Rx.swift"; sourceTree = "<group>"; };
 		926C6F7AE0B4D5DB763AE2D875107026 /* ReplaySubject.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ReplaySubject.swift; path = RxSwift/Subjects/ReplaySubject.swift; sourceTree = "<group>"; };
@@ -728,7 +738,7 @@
 		C78544230E05038B9F5B0F1DC57A8BDA /* RxAtomic.c */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.c; name = RxAtomic.c; path = RxAtomic/RxAtomic.c; sourceTree = "<group>"; };
 		C7ADC22D5B0209ADA76217D9C06724EA /* HistoricalSchedulerTimeConverter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HistoricalSchedulerTimeConverter.swift; path = RxSwift/Schedulers/HistoricalSchedulerTimeConverter.swift; sourceTree = "<group>"; };
 		C86E7B6A1DA2DD65F35A539193299BAF /* TailRecursiveSink.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TailRecursiveSink.swift; path = RxSwift/Observers/TailRecursiveSink.swift; sourceTree = "<group>"; };
-		C906FBBCFECE4AB9E6400143D1B2EF53 /* PageFetcher.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PageFetcher.swift; path = ConnectionKit/Source/PageFetcher.swift; sourceTree = "<group>"; };
+		C906FBBCFECE4AB9E6400143D1B2EF53 /* PageFetcher.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PageFetcher.swift; sourceTree = "<group>"; };
 		C95EEBD24A1BE56D8E5A66214378AB9B /* _RX.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = _RX.m; path = RxCocoa/Runtime/_RX.m; sourceTree = "<group>"; };
 		CA0E5E874F139034AAA99421B4AA4CA6 /* TextInput.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TextInput.swift; path = RxCocoa/Common/TextInput.swift; sourceTree = "<group>"; };
 		CA38069C98709FAFFC4597E193C05B0F /* UIAlertAction+Rx.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "UIAlertAction+Rx.swift"; path = "RxCocoa/iOS/UIAlertAction+Rx.swift"; sourceTree = "<group>"; };
@@ -883,6 +893,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0287E57B224E068A00021FAD /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				0287E56A224B716500021FAD /* ConnectionController.swift */,
+				0287E57E224E114C00021FAD /* PageFetcherFactory.swift */,
+				0287E579224E068000021FAD /* PageFetcherCoordinator.swift */,
+				C906FBBCFECE4AB9E6400143D1B2EF53 /* PageFetcher.swift */,
+				0D98FD49DF6A07FAA2E88259C1AD147B /* PageStorer.swift */,
+				9172935203D553877E11D33538022F87 /* PaginationStateTracker.swift */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
 		165B2F14ED0EDFEBD02F3B629321C4EA /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -1209,11 +1232,8 @@
 		AC58BB6E163FF07EF88E4294B440F60C /* ConnectionKit */ = {
 			isa = PBXGroup;
 			children = (
-				0287E56A224B716500021FAD /* ConnectionController.swift */,
-				C906FBBCFECE4AB9E6400143D1B2EF53 /* PageFetcher.swift */,
-				0D98FD49DF6A07FAA2E88259C1AD147B /* PageStorer.swift */,
-				9172935203D553877E11D33538022F87 /* PaginationStateTracker.swift */,
 				6000B23AE28F6EABEC01CE08496E9987 /* Typealiases.swift */,
+				0287E57B224E068A00021FAD /* Classes */,
 				2604F733933FF44B56AAD7E9C6549C1D /* Pod */,
 				F7CF2DE067BB6555067F31AC65232C57 /* Protocols */,
 				F61A90FB5289FF767D8A26A4F8072C25 /* Structs & Enums */,
@@ -1409,9 +1429,11 @@
 			children = (
 				FE6EB50EDBB7549BA35CED6E754C57AC /* End.swift */,
 				F88CDBE6F4C36E1F05D8E99C639AD1CB /* EndState.swift */,
+				0287E56E224CA8E500021FAD /* InitialLoadState.swift */,
 				1906D581B127289AD0CCD8AE9490B445 /* ErrorWrapper.swift */,
 				E8516C5C411444A0A954ACB13E96BE23 /* Page.swift */,
 				DF13CF109C5336E4FB7530CA34260096 /* PageFetcherState.swift */,
+				0287E57C224E0A5700021FAD /* PageFetcherType.swift */,
 			);
 			name = "Structs & Enums";
 			path = "ConnectionKit/Source/Structs & Enums";
@@ -1420,6 +1442,7 @@
 		F7CF2DE067BB6555067F31AC65232C57 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
+				0287E584224E14DC00021FAD /* PageProvider.swift */,
 				FD043921263FDB4B6BE8D00CBC258FE4 /* ConnectionEdge.swift */,
 				B87ADA7D828C583009958A33AFD6F1B5 /* ConnectionFetcher.swift */,
 				817570A63E4665ED4B43D7FE2EE464D0 /* ConnectionPageInfo.swift */,
@@ -2062,7 +2085,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0287E57A224E068000021FAD /* PageFetcherCoordinator.swift in Sources */,
+				0287E585224E14DC00021FAD /* PageProvider.swift in Sources */,
 				99D608CDAF46FA1085484754757E7E52 /* ConnectionEdge.swift in Sources */,
+				0287E57D224E0A5700021FAD /* PageFetcherType.swift in Sources */,
 				EA8F2910847550B70683DA7462DCC016 /* ConnectionFetcher.swift in Sources */,
 				208EFBFD1DABA2B60DE9185FA42BDA1F /* ConnectionKit-dummy.m in Sources */,
 				0874C82A2ABD82CED086F83BCB094B67 /* ConnectionPageInfo.swift in Sources */,
@@ -2074,7 +2100,9 @@
 				B70BC63F9FAAD760F21BE61CAE02D3BF /* PageFetcher.swift in Sources */,
 				0287E56B224B716500021FAD /* ConnectionController.swift in Sources */,
 				D3A49E125DAAFBE24F2D3922DAE361CC /* PageFetcherState.swift in Sources */,
+				0287E56F224CA8E500021FAD /* InitialLoadState.swift in Sources */,
 				175210A323CBD0657A060DCA7D449C8A /* PageStorer.swift in Sources */,
+				0287E57F224E114C00021FAD /* PageFetcherFactory.swift in Sources */,
 				B1CC27AE9EC5E923D4F57F9B8DF55992 /* PaginationStateTracker.swift in Sources */,
 				E9344490895E821CDD0DFE09F19567D3 /* Typealiases.swift in Sources */,
 			);
