@@ -11,8 +11,6 @@ extension XCTestCase {
         expectedPages: [Page<TestFetcher>],
         disposedBy disposeBag: DisposeBag) throws
     {
-        controller.initialLoadStateObservable.debug().subscribe().disposed(by: disposeBag)
-
         // Create expectations:
         let expectations: [XCTestExpectation] = [
             try self.expectInitialLoadIdle(controller: controller, disposedBy: disposeBag),

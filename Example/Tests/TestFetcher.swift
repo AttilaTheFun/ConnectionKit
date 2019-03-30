@@ -24,7 +24,7 @@ extension TestFetcher: ConnectionFetcher {
     {
         guard let first = first else {
             if let last = last {
-                return self.fetch(last: last, before: before ?? String(self.defaultIndex))
+                return self.fetch(last: last, before: before)
             }
 
             return .error(TestFetcherError.neitherParameter)
@@ -34,14 +34,15 @@ extension TestFetcher: ConnectionFetcher {
             return .error(TestFetcherError.forwardAndBackwardParameters)
         }
 
-        return self.fetch(first: first, after: after ?? String(self.defaultIndex))
+        return self.fetch(first: first, after: after)
     }
 
     private func fetch(first: Int, after: String?) -> Maybe<TestConnection> {
         let startIndex: Int
         if let after = after {
             if let index = Int(after) {
-                startIndex = index
+                // Because we're looking *after* this value, we need to add one.
+                startIndex = index + 1
             } else {
                 return .error(TestFetcherError.invalidCursor)
             }
@@ -112,6 +113,7 @@ extension TestFetcher: ConnectionFetcher {
             lowest: 0,
             highest: self.edges.count
         )
+
         let edges = Array(self.edges[range])
         let connection = TestConnection(pageInfo: pageInfo, edges: edges)
 

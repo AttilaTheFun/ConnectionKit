@@ -114,8 +114,8 @@
 		0287E575224CBD3200021FAD /* Initial Load */ = {
 			isa = PBXGroup;
 			children = (
-				0287E572224CBD1800021FAD /* ConnectionControllerInitialLoadTestHelpers.swift */,
 				0287E570224CB45D00021FAD /* ConnectionControllerInitialLoadTests.swift */,
+				0287E572224CBD1800021FAD /* ConnectionControllerInitialLoadTestHelpers.swift */,
 			);
 			name = "Initial Load";
 			sourceTree = "<group>";

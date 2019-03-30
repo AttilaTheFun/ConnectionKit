@@ -3,12 +3,6 @@ import RxBlocking
 import RxSwift
 import XCTest
 
-// TODO: Additional tests to write:
-// - connection controller second initial load resets
-// - connection controller initial page tests
-// - connection controller multiple pages, both directions
-// - page fetcher invalid cursor tests
-
 class ConnectionControllerInitialLoadTests: XCTestCase {
 
     private var disposeBag = DisposeBag()
