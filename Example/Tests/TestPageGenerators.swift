@@ -2,11 +2,11 @@
 import XCTest
 
 extension XCTestCase {
-    func initialPage(
+    func initialEdges(
         defaultIndex: Int,
         initialPageSize: Int,
         edges: [TestEdge],
-        for end: End) -> Page<TestFetcher>
+        for end: End) -> [TestEdge]
     {
         let initialPageEdges: [TestEdge]
 
@@ -21,8 +21,16 @@ extension XCTestCase {
             initialPageEdges = Array(edges[initialPageStartIndex..<initialPageEndIndex])
         }
 
-        
+        return initialPageEdges
+    }
 
+    func initialPage(
+        defaultIndex: Int,
+        initialPageSize: Int,
+        edges: [TestEdge],
+        for end: End) -> Page<TestFetcher>
+    {
+        let initialPageEdges = self.initialEdges(defaultIndex: defaultIndex, initialPageSize: initialPageSize, edges: edges, for: end)
         return Page<TestFetcher>(index: 0, edges: initialPageEdges)
     }
 
