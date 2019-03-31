@@ -1,9 +1,9 @@
 {
   "name": "ConnectionKit",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "summary": "Manages a connection implementing the Relay Cursor Connections Specification",
-  "description": "TODO: Add long description of the pod here.",
-  "homepage": "https://github.com/logan.shire@gmail.com/ConnectionKit",
+  "description": "This library provides utilities for managing a connection implementing the Relay Cursor Connections Specification.\n\nIt also provides reactive (RxSwift) bindings for observing that connection's states.",
+  "homepage": "https://github.com/AttilaTheFun/ConnectionKit",
   "license": {
     "type": "MIT",
     "file": "LICENSE"
@@ -12,14 +12,15 @@
     "logan.shire@gmail.com": "logan.shire@gmail.com"
   },
   "source": {
-    "git": "https://github.com/logan.shire@gmail.com/ConnectionKit.git",
-    "tag": "0.1.0"
+    "git": "https://github.com/AttilaTheFun/ConnectionKit.git",
+    "tag": "0.2.0"
   },
   "platforms": {
     "ios": "8.0"
   },
-  "source_files": "ConnectionKit/Source/**/*",
   "swift_version": "5.0",
+  "static_framework": true,
+  "source_files": "ConnectionKit/Source/**/*",
   "dependencies": {
     "RxCocoa": [
 

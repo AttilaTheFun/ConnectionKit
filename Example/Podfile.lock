@@ -1,5 +1,5 @@
 PODS:
-  - ConnectionKit (0.1.0):
+  - ConnectionKit (0.2.0):
     - RxCocoa
     - RxSwift
   - RxAtomic (4.4.2)
@@ -27,7 +27,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  ConnectionKit: 4f3fff95781215f3e6e2cb9b563318521e9b20f4
+  ConnectionKit: 566d35f23870f114615dad4f8e57b7c57332d70d
   RxAtomic: d00e97c10db88c6f08540e0bf2752fc5a2404167
   RxBlocking: e96fdda1473d81332a6ed2cface935dc2167a122
   RxCocoa: 477990dc3b4c3ff55fb0ac77e1cc06244e0aaec8
