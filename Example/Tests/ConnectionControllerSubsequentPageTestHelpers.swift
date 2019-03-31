@@ -21,13 +21,14 @@ extension XCTestCase {
                 observable: observable,
                 controller: controller,
                 expectedEndState: expectedEndState,
-                expectedPages: expectedPages,
                 disposedBy: disposeBag
             )
         ]
 
         // Run the test:
         controller.loadNextPage(from: end)
+
+        XCTAssertEqual(controller.pages, expectedPages)
 
         // Wait for expectations:
         wait(for: expectations, timeout: 1)
@@ -69,7 +70,6 @@ extension XCTestCase {
         observable: Observable<EndState>,
         controller: ConnectionController<TestFetcher>,
         expectedEndState: EndState,
-        expectedPages: [Page<TestFetcher>],
         disposedBy disposeBag: DisposeBag) throws -> XCTestExpectation
     {
         let receivedCompletedStateExpectation = XCTestExpectation(description: "Received completed state update")
@@ -82,7 +82,6 @@ extension XCTestCase {
                     return
                 }
 
-                XCTAssertEqual(controller.pages, expectedPages)
                 receivedCompletedStateExpectation.fulfill()
             })
             .disposed(by: disposeBag)

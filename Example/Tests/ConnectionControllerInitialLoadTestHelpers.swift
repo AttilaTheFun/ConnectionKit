@@ -13,12 +13,20 @@ extension XCTestCase {
     {
         // Create expectations:
         let expectations: [XCTestExpectation] = [
-            try self.expectInitialLoadIdle(controller: controller, disposedBy: disposeBag),
-            try self.expectInitialLoadIsFetchingInitialPage(controller: controller, disposedBy: disposeBag),
+            try self.expectInitialLoadIdle(
+                controller: controller,
+                fetchFrom: end,
+                disposedBy: disposeBag
+            ),
+            try self.expectInitialLoadIsFetchingInitialPage(
+                controller: controller,
+                fetchFrom: end,
+                disposedBy: disposeBag
+            ),
             try self.expectInitialLoadEndedInState(
                 controller: controller,
+                fetchFrom: end,
                 expectedEndState: expectedEndState,
-                expectedPages: expectedPages,
                 disposedBy: disposeBag
             )
         ]
@@ -26,15 +34,18 @@ extension XCTestCase {
         // Run the test:
         controller.loadInitialPage(from: end)
 
+        XCTAssertEqual(controller.pages, expectedPages)
+
         // Wait for expectations:
         wait(for: expectations, timeout: 1)
     }
 
     private func expectInitialLoadIdle(controller: ConnectionController<TestFetcher>,
+                                       fetchFrom end: End,
                                        disposedBy disposeBag: DisposeBag) throws -> XCTestExpectation
     {
         let receivedIdleStateExpectation = XCTestExpectation(description: "Received idle state update")
-        controller.initialLoadStateObservable
+        controller.initialLoadStateObservable(for: end)
             .take(1)
             .subscribe(onNext: { state in
                 XCTAssertEqual(state, .idle)
@@ -45,10 +56,11 @@ extension XCTestCase {
     }
 
     private func expectInitialLoadIsFetchingInitialPage(controller: ConnectionController<TestFetcher>,
+                                                        fetchFrom end: End,
                                                         disposedBy disposeBag: DisposeBag) throws -> XCTestExpectation
     {
         let receivedFetchingStateExpectation = XCTestExpectation(description: "Received fetching state update")
-        controller.initialLoadStateObservable
+        controller.initialLoadStateObservable(for: end)
             .skip(1)
             .take(1)
             .subscribe(onNext: { state in
@@ -62,12 +74,12 @@ extension XCTestCase {
 
     private func expectInitialLoadEndedInState(
         controller: ConnectionController<TestFetcher>,
+        fetchFrom end: End,
         expectedEndState: InitialLoadState,
-        expectedPages: [Page<TestFetcher>],
         disposedBy disposeBag: DisposeBag) throws -> XCTestExpectation
     {
         let receivedCompletedStateExpectation = XCTestExpectation(description: "Received completed state update")
-        controller.initialLoadStateObservable
+        controller.initialLoadStateObservable(for: end)
             .skip(2)
             .take(1)
             .subscribe(onNext: { state in
@@ -76,7 +88,6 @@ extension XCTestCase {
                     return
                 }
 
-                XCTAssertEqual(controller.pages, expectedPages)
                 receivedCompletedStateExpectation.fulfill()
             })
             .disposed(by: disposeBag)

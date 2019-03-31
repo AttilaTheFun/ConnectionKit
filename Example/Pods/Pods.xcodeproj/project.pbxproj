@@ -14,7 +14,6 @@
 		0287E56B224B716500021FAD /* ConnectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0287E56A224B716500021FAD /* ConnectionController.swift */; };
 		0287E56F224CA8E500021FAD /* InitialLoadState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0287E56E224CA8E500021FAD /* InitialLoadState.swift */; };
 		0287E57A224E068000021FAD /* PageFetcherCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0287E579224E068000021FAD /* PageFetcherCoordinator.swift */; };
-		0287E57D224E0A5700021FAD /* PageFetcherType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0287E57C224E0A5700021FAD /* PageFetcherType.swift */; };
 		0287E57F224E114C00021FAD /* PageFetcherFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0287E57E224E114C00021FAD /* PageFetcherFactory.swift */; };
 		0287E585224E14DC00021FAD /* PageProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0287E584224E14DC00021FAD /* PageProvider.swift */; };
 		0496EAD1EA288E5BE787CC9A4D4A22C8 /* DispatchQueue+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B8FB6C9F36EDBCF7E18A391768F30C7 /* DispatchQueue+Extensions.swift */; };
@@ -459,7 +458,6 @@
 		0287E56A224B716500021FAD /* ConnectionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionController.swift; sourceTree = "<group>"; };
 		0287E56E224CA8E500021FAD /* InitialLoadState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialLoadState.swift; sourceTree = "<group>"; };
 		0287E579224E068000021FAD /* PageFetcherCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageFetcherCoordinator.swift; sourceTree = "<group>"; };
-		0287E57C224E0A5700021FAD /* PageFetcherType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageFetcherType.swift; sourceTree = "<group>"; };
 		0287E57E224E114C00021FAD /* PageFetcherFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageFetcherFactory.swift; sourceTree = "<group>"; };
 		0287E584224E14DC00021FAD /* PageProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageProvider.swift; sourceTree = "<group>"; };
 		0394DC08CB2694AFC4198554CAD1F9C1 /* RxSwift-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "RxSwift-dummy.m"; sourceTree = "<group>"; };
@@ -1433,7 +1431,6 @@
 				1906D581B127289AD0CCD8AE9490B445 /* ErrorWrapper.swift */,
 				E8516C5C411444A0A954ACB13E96BE23 /* Page.swift */,
 				DF13CF109C5336E4FB7530CA34260096 /* PageFetcherState.swift */,
-				0287E57C224E0A5700021FAD /* PageFetcherType.swift */,
 			);
 			name = "Structs & Enums";
 			path = "ConnectionKit/Source/Structs & Enums";
@@ -2088,7 +2085,6 @@
 				0287E57A224E068000021FAD /* PageFetcherCoordinator.swift in Sources */,
 				0287E585224E14DC00021FAD /* PageProvider.swift in Sources */,
 				99D608CDAF46FA1085484754757E7E52 /* ConnectionEdge.swift in Sources */,
-				0287E57D224E0A5700021FAD /* PageFetcherType.swift in Sources */,
 				EA8F2910847550B70683DA7462DCC016 /* ConnectionFetcher.swift in Sources */,
 				208EFBFD1DABA2B60DE9185FA42BDA1F /* ConnectionKit-dummy.m in Sources */,
 				0874C82A2ABD82CED086F83BCB094B67 /* ConnectionPageInfo.swift in Sources */,

@@ -42,12 +42,10 @@ extension PageFetcher {
      */
     func fetchPage() {
         switch self.state {
-        case .idle, .error:
+        case .idle, .error, .completed:
             self.restartFetch()
         case .fetching:
             return assertionFailure("Already fetching")
-        case .completed:
-            return assertionFailure("Already complete")
         }
     }
 

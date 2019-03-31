@@ -162,4 +162,42 @@ class ConnectionControllerInitialLoadTests: XCTestCase {
         XCTAssertEqual(controller.state(for: .head), .idle)
         XCTAssertEqual(controller.state(for: .tail), .idle)
     }
+
+    func testInitialLoadResetHead() throws {
+        // Create test data:
+        let initialPageSize = 10
+        let defaultIndex = 50
+        let endIndex = defaultIndex - initialPageSize
+
+        let allEdges: [TestEdge] = .create(count: 100)
+        let fetcher = TestFetcher(defaultIndex: defaultIndex, edges: allEdges)
+        let expectedPages = [Page<TestFetcher>(index: 0, edges: Array(allEdges[endIndex..<defaultIndex]))]
+
+        // Create connection controller:
+        let controller = ConnectionController(fetcher: fetcher, initialPageSize: initialPageSize)
+
+        // Run test:
+        try self.runInitialLoadTest(
+            controller: controller,
+            fetchFrom: .head,
+            expectedEndState: .idle,
+            expectedPages: expectedPages,
+            disposedBy: self.disposeBag
+        )
+
+        XCTAssertEqual(controller.state(for: .head), .idle)
+        XCTAssertEqual(controller.state(for: .tail), .idle)
+
+        // Run test again, resetting connection:
+        try self.runInitialLoadTest(
+            controller: controller,
+            fetchFrom: .head,
+            expectedEndState: .idle,
+            expectedPages: expectedPages,
+            disposedBy: self.disposeBag
+        )
+
+        XCTAssertEqual(controller.state(for: .head), .idle)
+        XCTAssertEqual(controller.state(for: .tail), .idle)
+    }
 }
