@@ -22,19 +22,9 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
         let allEdges: [TestEdge] = .create(count: 20)
         let fetcher = TestFetcher(defaultIndex: defaultIndex, edges: allEdges)
 
-        let initialPageStartIndex = max(defaultIndex - initialPageSize, 0)
-        let initialPageEndIndex = defaultIndex
-        let subsequentPageStartIndex = max(initialPageStartIndex - paginationPageSize, 0)
-        let subsequentPageEndIndex = initialPageStartIndex
-
-        let initialPageEdges = Array(allEdges[initialPageStartIndex..<initialPageEndIndex])
-        let initialPage = Page<TestFetcher>(index: 0, edges: initialPageEdges)
-        let subsequentPageEdges = Array(allEdges[subsequentPageStartIndex..<subsequentPageEndIndex])
-        let subsequentPage = Page<TestFetcher>(index: -1, edges: subsequentPageEdges)
-        let expectedPages = [
-            subsequentPage,
-            initialPage,
-        ]
+        // Calculate pages:
+        let initialHeadPage = self.initialPage(defaultIndex: defaultIndex, initialPageSize: initialPageSize, edges: allEdges, for: .head)
+        let subsequentHeadPage = self.subsequentPage(relativeTo: [initialHeadPage], paginationPageSize: paginationPageSize, edges: allEdges, for: .head)
 
         // Create connection controller:
         let controller = ConnectionController(
@@ -48,7 +38,7 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
             controller: controller,
             fetchFrom: .head,
             expectedEndState: .idle,
-            expectedPages: [initialPage],
+            expectedPages: [initialHeadPage],
             disposedBy: self.disposeBag
         )
 
@@ -60,7 +50,10 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
             controller: controller,
             fetchFrom: .head,
             expectedEndState: .end,
-            expectedPages: expectedPages,
+            expectedPages: [
+                subsequentHeadPage,
+                initialHeadPage,
+            ],
             disposedBy: self.disposeBag
         )
 
@@ -76,19 +69,9 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
         let allEdges: [TestEdge] = .create(count: 20)
         let fetcher = TestFetcher(defaultIndex: defaultIndex, edges: allEdges)
 
-        let initialPageStartIndex = defaultIndex
-        let initialPageEndIndex = min(defaultIndex + initialPageSize, allEdges.count)
-        let subsequentPageStartIndex = initialPageEndIndex
-        let subsequentPageEndIndex = min(initialPageEndIndex + paginationPageSize, allEdges.count)
-
-        let initialPageEdges = Array(allEdges[initialPageStartIndex..<initialPageEndIndex])
-        let initialPage = Page<TestFetcher>(index: 0, edges: initialPageEdges)
-        let subsequentPageEdges = Array(allEdges[subsequentPageStartIndex..<subsequentPageEndIndex])
-        let subsequentPage = Page<TestFetcher>(index: 1, edges: subsequentPageEdges)
-        let expectedPages = [
-            initialPage,
-            subsequentPage,
-        ]
+        // Calculate pages:
+        let initialTailPage = self.initialPage(defaultIndex: defaultIndex, initialPageSize: initialPageSize, edges: allEdges, for: .tail)
+        let subsequentTailPage = self.subsequentPage(relativeTo: [initialTailPage], paginationPageSize: paginationPageSize, edges: allEdges, for: .tail)
 
         // Create connection controller:
         let controller = ConnectionController(
@@ -102,7 +85,7 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
             controller: controller,
             fetchFrom: .tail,
             expectedEndState: .idle,
-            expectedPages: [initialPage],
+            expectedPages: [initialTailPage],
             disposedBy: self.disposeBag
         )
 
@@ -114,7 +97,10 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
             controller: controller,
             fetchFrom: .tail,
             expectedEndState: .end,
-            expectedPages: expectedPages,
+            expectedPages: [
+                initialTailPage,
+                subsequentTailPage,
+            ],
             disposedBy: self.disposeBag
         )
 
@@ -130,23 +116,15 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
         let allEdges: [TestEdge] = .create(count: 15)
         let fetcher = TestFetcher(defaultIndex: defaultIndex, edges: allEdges)
 
-        // Calculate initial head page:
-        let initialHeadPageStartIndex = max(defaultIndex - initialPageSize, 0)
-        let initialHeadPageEndIndex = defaultIndex
-        let initialHeadPageEdges = Array(allEdges[initialHeadPageStartIndex..<initialHeadPageEndIndex])
-        let initialHeadPage = Page<TestFetcher>(index: 0, edges: initialHeadPageEdges)
-
-        // Calculate subsequent head page:
-        let subsequentHeadPageStartIndex = max(initialHeadPageStartIndex - paginationPageSize, 0)
-        let subsequentHeadPageEndIndex = initialHeadPageStartIndex
-        let subsequentHeadPageEdges = Array(allEdges[subsequentHeadPageStartIndex..<subsequentHeadPageEndIndex])
-        let subsequentHeadPage = Page<TestFetcher>(index: -1, edges: subsequentHeadPageEdges)
-
-        // Calculate subsequent tail page:
-        let subsequentTailPageStartIndex = defaultIndex
-        let subsequentTailPageEndIndex = min(defaultIndex + paginationPageSize, allEdges.count)
-        let subsequentTailPageEdges = Array(allEdges[subsequentTailPageStartIndex..<subsequentTailPageEndIndex])
-        let subsequentTailPage = Page<TestFetcher>(index: 1, edges: subsequentTailPageEdges)
+        // Calculate pages:
+        let initialHeadPage = self.initialPage(defaultIndex: defaultIndex, initialPageSize: initialPageSize, edges: allEdges, for: .head)
+        let subsequentHeadPage = self.subsequentPage(relativeTo: [initialHeadPage], paginationPageSize: paginationPageSize, edges: allEdges, for: .head)
+        let subsequentTailPage = self.subsequentPage(
+            relativeTo: [subsequentHeadPage, initialHeadPage],
+            paginationPageSize: paginationPageSize,
+            edges: allEdges,
+            for: .tail
+        )
 
         // Create connection controller:
         let controller = ConnectionController(
@@ -207,19 +185,9 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
         let allEdges: [TestEdge] = .create(count: 100)
         let fetcher = TestFetcher(defaultIndex: defaultIndex, edges: allEdges)
 
-        let initialPageStartIndex = max(defaultIndex - initialPageSize, 0)
-        let initialPageEndIndex = defaultIndex
-        let subsequentPageStartIndex = max(initialPageStartIndex - paginationPageSize, 0)
-        let subsequentPageEndIndex = initialPageStartIndex
-
-        let initialPageEdges = Array(allEdges[initialPageStartIndex..<initialPageEndIndex])
-        let initialPage = Page<TestFetcher>(index: 0, edges: initialPageEdges)
-        let subsequentPageEdges = Array(allEdges[subsequentPageStartIndex..<subsequentPageEndIndex])
-        let subsequentPage = Page<TestFetcher>(index: -1, edges: subsequentPageEdges)
-        let expectedPages = [
-            subsequentPage,
-            initialPage,
-        ]
+        // Calculate pages:
+        let initialHeadPage = self.initialPage(defaultIndex: defaultIndex, initialPageSize: initialPageSize, edges: allEdges, for: .head)
+        let subsequentHeadPage = self.subsequentPage(relativeTo: [initialHeadPage], paginationPageSize: paginationPageSize, edges: allEdges, for: .head)
 
         // Create connection controller:
         let controller = ConnectionController(
@@ -233,7 +201,7 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
             controller: controller,
             fetchFrom: .head,
             expectedEndState: .idle,
-            expectedPages: [initialPage],
+            expectedPages: [initialHeadPage],
             disposedBy: self.disposeBag
         )
 
@@ -245,7 +213,10 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
             controller: controller,
             fetchFrom: .head,
             expectedEndState: .idle,
-            expectedPages: expectedPages,
+            expectedPages: [
+                subsequentHeadPage,
+                initialHeadPage
+            ],
             disposedBy: self.disposeBag
         )
 
@@ -261,19 +232,9 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
         let allEdges: [TestEdge] = .create(count: 100)
         let fetcher = TestFetcher(defaultIndex: defaultIndex, edges: allEdges)
 
-        let initialPageStartIndex = defaultIndex
-        let initialPageEndIndex = min(defaultIndex + initialPageSize, allEdges.count)
-        let subsequentPageStartIndex = initialPageEndIndex
-        let subsequentPageEndIndex = min(initialPageEndIndex + paginationPageSize, allEdges.count)
-
-        let initialPageEdges = Array(allEdges[initialPageStartIndex..<initialPageEndIndex])
-        let initialPage = Page<TestFetcher>(index: 0, edges: initialPageEdges)
-        let subsequentPageEdges = Array(allEdges[subsequentPageStartIndex..<subsequentPageEndIndex])
-        let subsequentPage = Page<TestFetcher>(index: 1, edges: subsequentPageEdges)
-        let expectedPages = [
-            initialPage,
-            subsequentPage,
-        ]
+        // Calculate pages:
+        let initialTailPage = self.initialPage(defaultIndex: defaultIndex, initialPageSize: initialPageSize, edges: allEdges, for: .tail)
+        let subsequentTailPage = self.subsequentPage(relativeTo: [initialTailPage], paginationPageSize: paginationPageSize, edges: allEdges, for: .tail)
 
         // Create connection controller:
         let controller = ConnectionController(
@@ -287,7 +248,7 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
             controller: controller,
             fetchFrom: .tail,
             expectedEndState: .idle,
-            expectedPages: [initialPage],
+            expectedPages: [initialTailPage],
             disposedBy: self.disposeBag
         )
 
@@ -299,7 +260,10 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
             controller: controller,
             fetchFrom: .tail,
             expectedEndState: .idle,
-            expectedPages: expectedPages,
+            expectedPages: [
+                initialTailPage,
+                subsequentTailPage
+            ],
             disposedBy: self.disposeBag
         )
 
@@ -315,19 +279,9 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
         let allEdges: [TestEdge] = .create(count: 100)
         let fetcher = TestFetcher(defaultIndex: defaultIndex, edges: allEdges)
 
-        let initialPageStartIndex = max(defaultIndex - initialPageSize, 0)
-        let initialPageEndIndex = defaultIndex
-        let subsequentPageStartIndex = max(initialPageStartIndex - paginationPageSize, 0)
-        let subsequentPageEndIndex = initialPageStartIndex
-
-        let initialPageEdges = Array(allEdges[initialPageStartIndex..<initialPageEndIndex])
-        let initialPage = Page<TestFetcher>(index: 0, edges: initialPageEdges)
-        let subsequentPageEdges = Array(allEdges[subsequentPageStartIndex..<subsequentPageEndIndex])
-        let subsequentPage = Page<TestFetcher>(index: -1, edges: subsequentPageEdges)
-        let expectedPages = [
-            subsequentPage,
-            initialPage,
-        ]
+        // Calculate pages:
+        let initialHeadPage = self.initialPage(defaultIndex: defaultIndex, initialPageSize: initialPageSize, edges: allEdges, for: .head)
+        let subsequentHeadPage = self.subsequentPage(relativeTo: [initialHeadPage], paginationPageSize: paginationPageSize, edges: allEdges, for: .head)
 
         // Create connection controller:
         let controller = ConnectionController(
@@ -341,7 +295,7 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
             controller: controller,
             fetchFrom: .head,
             expectedEndState: .idle,
-            expectedPages: [initialPage],
+            expectedPages: [initialHeadPage],
             disposedBy: self.disposeBag
         )
 
@@ -353,7 +307,10 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
             controller: controller,
             fetchFrom: .head,
             expectedEndState: .idle,
-            expectedPages: expectedPages,
+            expectedPages: [
+                subsequentHeadPage,
+                initialHeadPage
+            ],
             disposedBy: self.disposeBag
         )
 
@@ -365,7 +322,7 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
             controller: controller,
             fetchFrom: .head,
             expectedEndState: .idle,
-            expectedPages: [initialPage],
+            expectedPages: [initialHeadPage],
             disposedBy: self.disposeBag
         )
 
@@ -377,7 +334,10 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
             controller: controller,
             fetchFrom: .head,
             expectedEndState: .idle,
-            expectedPages: expectedPages,
+            expectedPages: [
+                subsequentHeadPage,
+                initialHeadPage
+            ],
             disposedBy: self.disposeBag
         )
 
@@ -393,19 +353,9 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
         let allEdges: [TestEdge] = .create(count: 100)
         let fetcher = TestFetcher(defaultIndex: defaultIndex, edges: allEdges)
 
-        let initialPageStartIndex = defaultIndex
-        let initialPageEndIndex = min(defaultIndex + initialPageSize, allEdges.count)
-        let subsequentPageStartIndex = initialPageEndIndex
-        let subsequentPageEndIndex = min(initialPageEndIndex + paginationPageSize, allEdges.count)
-
-        let initialPageEdges = Array(allEdges[initialPageStartIndex..<initialPageEndIndex])
-        let initialPage = Page<TestFetcher>(index: 0, edges: initialPageEdges)
-        let subsequentPageEdges = Array(allEdges[subsequentPageStartIndex..<subsequentPageEndIndex])
-        let subsequentPage = Page<TestFetcher>(index: 1, edges: subsequentPageEdges)
-        let expectedPages = [
-            initialPage,
-            subsequentPage,
-        ]
+        // Calculate pages:
+        let initialTailPage = self.initialPage(defaultIndex: defaultIndex, initialPageSize: initialPageSize, edges: allEdges, for: .tail)
+        let subsequentTailPage = self.subsequentPage(relativeTo: [initialTailPage], paginationPageSize: paginationPageSize, edges: allEdges, for: .tail)
 
         // Create connection controller:
         let controller = ConnectionController(
@@ -419,7 +369,7 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
             controller: controller,
             fetchFrom: .tail,
             expectedEndState: .idle,
-            expectedPages: [initialPage],
+            expectedPages: [initialTailPage],
             disposedBy: self.disposeBag
         )
 
@@ -431,7 +381,10 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
             controller: controller,
             fetchFrom: .tail,
             expectedEndState: .idle,
-            expectedPages: expectedPages,
+            expectedPages: [
+                initialTailPage,
+                subsequentTailPage,
+            ],
             disposedBy: self.disposeBag
         )
 
@@ -443,7 +396,7 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
             controller: controller,
             fetchFrom: .tail,
             expectedEndState: .idle,
-            expectedPages: [initialPage],
+            expectedPages: [initialTailPage],
             disposedBy: self.disposeBag
         )
 
@@ -455,7 +408,10 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
             controller: controller,
             fetchFrom: .tail,
             expectedEndState: .idle,
-            expectedPages: expectedPages,
+            expectedPages: [
+                initialTailPage,
+                subsequentTailPage,
+            ],
             disposedBy: self.disposeBag
         )
 

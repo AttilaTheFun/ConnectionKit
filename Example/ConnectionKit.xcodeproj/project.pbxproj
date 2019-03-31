@@ -12,6 +12,7 @@
 		02114E6622488944003BDBC1 /* TestFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02114E6422488782003BDBC1 /* TestFetcher.swift */; };
 		02114E6822489592003BDBC1 /* TestFetcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02114E6722489592003BDBC1 /* TestFetcherTests.swift */; };
 		02114E6A22489DCB003BDBC1 /* Range+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02114E6922489DCB003BDBC1 /* Range+Extensions.swift */; };
+		0267D80122504D6700A05B00 /* TestPageGenerators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0267D80022504D6700A05B00 /* TestPageGenerators.swift */; };
 		0287E569224B711E00021FAD /* ConnectionControllerSubsequentPageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0287E568224B711E00021FAD /* ConnectionControllerSubsequentPageTests.swift */; };
 		0287E571224CB45D00021FAD /* ConnectionControllerInitialLoadTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0287E570224CB45D00021FAD /* ConnectionControllerInitialLoadTests.swift */; };
 		0287E573224CBD1800021FAD /* ConnectionControllerInitialLoadTestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0287E572224CBD1800021FAD /* ConnectionControllerInitialLoadTestHelpers.swift */; };
@@ -44,6 +45,7 @@
 		02114E6422488782003BDBC1 /* TestFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestFetcher.swift; sourceTree = "<group>"; };
 		02114E6722489592003BDBC1 /* TestFetcherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestFetcherTests.swift; sourceTree = "<group>"; };
 		02114E6922489DCB003BDBC1 /* Range+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Range+Extensions.swift"; sourceTree = "<group>"; };
+		0267D80022504D6700A05B00 /* TestPageGenerators.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestPageGenerators.swift; sourceTree = "<group>"; };
 		0287E568224B711E00021FAD /* ConnectionControllerSubsequentPageTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionControllerSubsequentPageTests.swift; sourceTree = "<group>"; };
 		0287E570224CB45D00021FAD /* ConnectionControllerInitialLoadTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionControllerInitialLoadTests.swift; sourceTree = "<group>"; };
 		0287E572224CBD1800021FAD /* ConnectionControllerInitialLoadTestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionControllerInitialLoadTestHelpers.swift; sourceTree = "<group>"; };
@@ -102,9 +104,18 @@
 			name = Utils;
 			sourceTree = "<group>";
 		};
+		0267D7FF22504D4600A05B00 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				0267D80022504D6700A05B00 /* TestPageGenerators.swift */,
+			);
+			name = Common;
+			sourceTree = "<group>";
+		};
 		0287E574224CBD1F00021FAD /* Connection Controller */ = {
 			isa = PBXGroup;
 			children = (
+				0267D7FF22504D4600A05B00 /* Common */,
 				0287E576224CBD8600021FAD /* Subsequent Page */,
 				0287E575224CBD3200021FAD /* Initial Load */,
 			);
@@ -449,6 +460,7 @@
 				0287E569224B711E00021FAD /* ConnectionControllerSubsequentPageTests.swift in Sources */,
 				607FACEC1AFB9204008FA782 /* PageFetcherTests.swift in Sources */,
 				02A1EBB6224A142900C1668E /* PageStorerTests.swift in Sources */,
+				0267D80122504D6700A05B00 /* TestPageGenerators.swift in Sources */,
 				02114E60224883B1003BDBC1 /* TestTypes.swift in Sources */,
 				02A1EBB8224B66AC00C1668E /* PaginationStateTrackerTests.swift in Sources */,
 				0287E578224CBDB600021FAD /* ConnectionControllerSubsequentPageTestHelpers.swift in Sources */,
