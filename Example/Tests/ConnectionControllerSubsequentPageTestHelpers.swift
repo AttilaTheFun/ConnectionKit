@@ -5,10 +5,10 @@ import XCTest
 
 extension XCTestCase {
     func runSubsequentPageTest(
-        controller: ConnectionController<TestFetcher>,
+        controller: ConnectionController<TestFetcher, TestParser>,
         fetchFrom end: End,
         expectedEndState: EndState,
-        expectedPages: [Page<TestFetcher>],
+        expectedPages: [Page<TestModel>],
         disposedBy disposeBag: DisposeBag) throws
     {
         let observable = controller.stateObservable(for: end)
@@ -19,7 +19,6 @@ extension XCTestCase {
             try self.expectIsFetchingNextPage(observable: observable, disposedBy: disposeBag),
             try self.expectHeadEndedInState(
                 observable: observable,
-                controller: controller,
                 expectedEndState: expectedEndState,
                 disposedBy: disposeBag
             )
@@ -68,7 +67,6 @@ extension XCTestCase {
 
     private func expectHeadEndedInState(
         observable: Observable<EndState>,
-        controller: ConnectionController<TestFetcher>,
         expectedEndState: EndState,
         disposedBy disposeBag: DisposeBag) throws -> XCTestExpectation
     {

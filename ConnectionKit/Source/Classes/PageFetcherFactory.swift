@@ -1,20 +1,26 @@
 import RxCocoa
 import RxSwift
 
-final class PageFetcherFactory<F, P> where P: PageProvider, P.Fetcher == F {
+final class PageFetcherFactory<Fetcher, Parser, Provider>
+    where Fetcher: ConnectionFetcher, Parser: ModelParser, Provider: PageProvider,
+    Fetcher.FetchedConnection.ConnectedEdge.Node == Parser.Node, Parser.Model == Provider.Model
+{
+    private let fetcher: Fetcher
+    private let parser: Parser.Type
+    private let provider: Provider
 
-    private let fetcher: F
     private let initialPageSize: Int
     private let paginationPageSize: Int
-    private let pageProvider: P
 
     // MARK: Initialization
 
-    init(fetcher: F, pageProvider: P, initialPageSize: Int, paginationPageSize: Int) {
+    init(fetcher: Fetcher, parser: Parser.Type, provider: Provider, initialPageSize: Int, paginationPageSize: Int) {
         self.fetcher = fetcher
+        self.parser = parser
+        self.provider = provider
+
         self.initialPageSize = initialPageSize
         self.paginationPageSize = paginationPageSize
-        self.pageProvider = pageProvider
     }
 }
 
@@ -22,7 +28,7 @@ final class PageFetcherFactory<F, P> where P: PageProvider, P.Fetcher == F {
 
 extension PageFetcherFactory {
     private func cursor(for end: End) -> String? {
-        let pages = self.pageProvider.pages
+        let pages = self.provider.pages
         guard let page = end == .head ? pages.first : pages.last else {
             return nil
         }
@@ -41,11 +47,13 @@ extension PageFetcherFactory {
     /**
      Create a new fetcher with the appropriate page size which will fetch with the associated cursor for the end.
      */
-    func fetcher(for end: End, isInitial: Bool) -> PageFetcher<F> {
+    func fetcher(for end: End, isInitial: Bool) -> PageFetcher<Fetcher, Parser> {
+        let pageSize = isInitial ? self.initialPageSize : self.paginationPageSize
         return PageFetcher(
             for: self.fetcher,
+            parser: self.parser,
             end: end,
-            pageSize: isInitial ? self.initialPageSize : self.paginationPageSize,
+            pageSize: pageSize,
             cursor: self.cursor(for: end)
         )
     }

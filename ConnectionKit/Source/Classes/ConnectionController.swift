@@ -1,30 +1,27 @@
 import RxCocoa
 import RxSwift
 
-// TODO: Improve handling around initial page.
-// Will need some form of state to know if we have fetched the initial page.
-// Will also need to determine what to do if fetching initial page and told to fetch separate page.
-// ? Use initial page size in both directions? This is the easiest.
-
 // TODO: For initial page, should it be okay to fetch next / prev page while fetching initial page?
 
-public final class ConnectionController<F> where F: ConnectionFetcher {
-
+public final class ConnectionController<Fetcher, Parser>
+    where Fetcher: ConnectionFetcher, Parser: ModelParser,
+    Fetcher.FetchedConnection.ConnectedEdge.Node == Parser.Node
+{
     // MARK: Dependencies
 
-    private let paginationStateTracker = PaginationStateTracker<F>()
-    private let pageStorer = PageStorer<F>()
-    private let pageFetcherFactory: PageFetcherFactory<F, PageStorer<F>>
-    private let pageFetcherCoordinator: PageFetcherCoordinator<F>
-
+    private let paginationStateTracker = PaginationStateTracker()
+    private let pageStorer = PageStorer<Parser.Model>()
+    private let pageFetcherFactory: PageFetcherFactory<Fetcher, Parser, PageStorer<Parser.Model>>
+    private let pageFetcherCoordinator: PageFetcherCoordinator<Fetcher, Parser>
     private let disposeBag = DisposeBag()
 
     // MARK: Initialization
 
-    public init(fetcher: F, initialPageSize: Int = 2, paginationPageSize: Int = 4) {
+    public init(fetcher: Fetcher, parser: Parser.Type, initialPageSize: Int, paginationPageSize: Int) {
         self.pageFetcherFactory = PageFetcherFactory(
             fetcher: fetcher,
-            pageProvider: self.pageStorer,
+            parser: parser,
+            provider: self.pageStorer,
             initialPageSize: initialPageSize,
             paginationPageSize: paginationPageSize
         )
@@ -47,7 +44,7 @@ public final class ConnectionController<F> where F: ConnectionFetcher {
 // MARK: Private
 
 extension ConnectionController {
-    private func observeInitialLoad(fetcher: Observable<PageFetcherState<F>>, end: End) {
+    private func observeInitialLoad(fetcher: Observable<PageFetcherState<Parser.Model>>, end: End) {
         fetcher
             .subscribe(onNext: { [weak self] state in
                 guard let `self` = self,
@@ -69,7 +66,7 @@ extension ConnectionController {
             .disposed(by: self.disposeBag)
     }
 
-    private func observeNextPageLoad(fetcher: Observable<PageFetcherState<F>>, end: End) {
+    private func observeNextPageLoad(fetcher: Observable<PageFetcherState<Parser.Model>>, end: End) {
         fetcher
             .subscribe(onNext: { [weak self] state in
                 guard let `self` = self,
@@ -83,6 +80,25 @@ extension ConnectionController {
                 self.paginationStateTracker.ingest(pageInfo: pageInfo, from: end)
             })
             .disposed(by: self.disposeBag)
+    }
+}
+
+// MARK: Initialization
+
+extension ConnectionController {
+    /**
+     Convenience initializer for when the node and model are the same.
+     */
+    public static func passthrough<Fetcher>(fetcher: Fetcher, initialPageSize: Int, paginationPageSize: Int)
+        -> ConnectionController<Fetcher, DefaultParser<Fetcher.FetchedConnection.ConnectedEdge.Node>>
+        where Fetcher: ConnectionFetcher, Fetcher.FetchedConnection.ConnectedEdge.Node: Hashable
+    {
+        return ConnectionController<Fetcher, DefaultParser<Fetcher.FetchedConnection.ConnectedEdge.Node>>(
+            fetcher: fetcher,
+            parser: DefaultParser<Fetcher.FetchedConnection.ConnectedEdge.Node>.self,
+            initialPageSize: initialPageSize,
+            paginationPageSize: paginationPageSize
+        )
     }
 }
 
@@ -178,14 +194,14 @@ extension ConnectionController {
      - If the third page is fetched from the tail it will have index 1.
      - If the fourth page is fetched from the tail it will have index 2.
      */
-    public var pages: [Page<F>] {
+    public var pages: [Page<Parser.Model>] {
         return self.pageStorer.pages
     }
 
     /**
      An observable for the aforementioned pages.
      */
-    public var pagesObservable: Observable<[Page<F>]> {
+    public var pagesObservable: Observable<[Page<Parser.Model>]> {
         return self.pageStorer.pagesObservable
     }
 }

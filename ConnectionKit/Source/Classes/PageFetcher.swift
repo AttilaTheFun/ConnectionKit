@@ -1,13 +1,18 @@
 import RxCocoa
 import RxSwift
 
-final class PageFetcher<F> where F: ConnectionFetcher {
-    private let stateRelay = BehaviorRelay<PageFetcherState<F>>(value: .idle)
-    private let fetchablePage: FetchablePage<F>
+final class PageFetcher<Fetcher, Parser>
+    where Fetcher: ConnectionFetcher, Parser: ModelParser,
+    Fetcher.FetchedConnection.ConnectedEdge.Node == Parser.Node
+{
+    private let parser: Parser.Type
+    private let stateRelay = BehaviorRelay<PageFetcherState<Parser.Model>>(value: .idle)
+    private let fetchablePage: FetchablePage<Fetcher>
     private let disposeBag = DisposeBag()
 
-    init(fetchablePage: @escaping FetchablePage<F>) {
+    init(fetchablePage: @escaping FetchablePage<Fetcher>, parser: Parser.Type) {
         self.fetchablePage = fetchablePage
+        self.parser = parser
     }
 }
 
@@ -24,12 +29,12 @@ extension PageFetcher {
 extension PageFetcher {
 
     // The current state of the fetcher.
-    var state: PageFetcherState<F> {
+    var state: PageFetcherState<Parser.Model> {
         return self.stateRelay.value
     }
 
     // Observe the state of the fetch page.
-    var stateObservable: Observable<PageFetcherState<F>> {
+    var stateObservable: Observable<PageFetcherState<Parser.Model>> {
         return self.stateRelay.asObservable()
     }
 
@@ -54,7 +59,17 @@ extension PageFetcher {
         self.fetchablePage()
             .subscribe(
                 onSuccess: { [weak self] connection in
-                    self?.stateRelay.accept(.completed(connection.edges, connection.pageInfo))
+                    guard let `self` = self else {
+                        return
+                    }
+
+                    let edges = connection.edges.map { edge -> Edge<Parser.Model> in
+                        let node = self.parser.parse(node: edge.node)
+                        return Edge(node: node, cursor: edge.cursor)
+                    }
+
+                    let pageInfo = PageInfo(connectionPageInfo: connection.pageInfo)
+                    self.stateRelay.accept(.completed(edges, pageInfo))
                 },
                 onError: { [weak self] error in
                     let wrappedError = ErrorWrapper(error: error)
@@ -72,20 +87,24 @@ extension PageFetcher {
 
 extension PageFetcher {
     convenience init(
-        for fetcher: F,
+        for fetcher: Fetcher,
+        parser: Parser.Type,
         end: End,
         pageSize: Int,
         cursor: String?)
     {
-        self.init(fetchablePage: {
-            switch end {
-            case .head:
-                // Paginating backward: `pageSize and `cursor` will be passed as the `last` and `before` arguments.
-                return fetcher.fetch(first: nil, after: nil, last: pageSize, before: cursor)
-            case .tail:
-                // Paginating forward: `pageSize and `cursor` will be passed as the `first` and `after` arguments.
-                return fetcher.fetch(first: pageSize, after: cursor, last: nil, before: nil)
-            }
-        })
+        self.init(
+            fetchablePage: {
+                switch end {
+                case .head:
+                    // Paginating backward: `pageSize and `cursor` will be passed as the `last` and `before` arguments.
+                    return fetcher.fetch(first: nil, after: nil, last: pageSize, before: cursor)
+                case .tail:
+                    // Paginating forward: `pageSize and `cursor` will be passed as the `first` and `after` arguments.
+                    return fetcher.fetch(first: pageSize, after: cursor, last: nil, before: nil)
+                }
+            },
+            parser: parser
+        )
     }
 }

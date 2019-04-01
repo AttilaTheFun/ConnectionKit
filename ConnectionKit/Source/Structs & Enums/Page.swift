@@ -1,15 +1,5 @@
 
-public struct Page<F> where F: ConnectionFetcher {
+public struct Page<M>: Hashable where M: Hashable {
     public let index: Int
-    public let edges: [Edge<F>]
+    public let edges: [Edge<M>]
 }
-
-extension Page: Equatable where
-    F.FetchedConnection.ConnectedPageInfo : Equatable,
-    F.FetchedConnection.ConnectedEdge: Equatable
-{}
-
-extension Page: Hashable where
-    F.FetchedConnection.ConnectedPageInfo : Hashable,
-    F.FetchedConnection.ConnectedEdge: Hashable
-{}

@@ -1,15 +1,15 @@
 import RxSwift
 
 protocol PageProvider {
-    associatedtype Fetcher: ConnectionFetcher
+    associatedtype Model: Hashable
 
     /**
      Array of tuples of the page index and page of data.
      */
-    var pages: [Page<Fetcher>] { get }
+    var pages: [Page<Model>] { get }
 
     /**
      Observable for the pages.
      */
-    var pagesObservable: Observable<[Page<Fetcher>]> { get }
+    var pagesObservable: Observable<[Page<Model>]> { get }
 }

@@ -1,17 +1,20 @@
 import RxCocoa
 import RxSwift
 
-final class PageFetcherCoordinator<F> where F: ConnectionFetcher {
+final class PageFetcherCoordinator<Fetcher, Parser>
+    where Fetcher: ConnectionFetcher, Parser: ModelParser,
+    Fetcher.FetchedConnection.ConnectedEdge.Node == Parser.Node
+{
 
-    private var initialHeadPageFetcher: PageFetcher<F>
-    private var initialTailPageFetcher: PageFetcher<F>
-    private var headPageFetcher: PageFetcher<F>
-    private var tailPageFetcher: PageFetcher<F>
+    private var initialHeadPageFetcher: PageFetcher<Fetcher, Parser>
+    private var initialTailPageFetcher: PageFetcher<Fetcher, Parser>
+    private var headPageFetcher: PageFetcher<Fetcher, Parser>
+    private var tailPageFetcher: PageFetcher<Fetcher, Parser>
 
-    private let initialHeadPageFetcherStateRelay: BehaviorRelay<PageFetcherState<F>>
-    private let initialTailPageFetcherStateRelay: BehaviorRelay<PageFetcherState<F>>
-    private let headPageFetcherStateRelay: BehaviorRelay<PageFetcherState<F>>
-    private let tailPageFetcherStateRelay: BehaviorRelay<PageFetcherState<F>>
+    private let initialHeadPageFetcherStateRelay: BehaviorRelay<PageFetcherState<Parser.Model>>
+    private let initialTailPageFetcherStateRelay: BehaviorRelay<PageFetcherState<Parser.Model>>
+    private let headPageFetcherStateRelay: BehaviorRelay<PageFetcherState<Parser.Model>>
+    private let tailPageFetcherStateRelay: BehaviorRelay<PageFetcherState<Parser.Model>>
 
     private var initialHeadPageDisposable = Disposables.create()
     private var initialTailPageDisposable = Disposables.create()
@@ -22,10 +25,10 @@ final class PageFetcherCoordinator<F> where F: ConnectionFetcher {
     // MARK: Initialization
 
     public init(
-        initialHeadPageFetcher: PageFetcher<F>,
-        initialTailPageFetcher: PageFetcher<F>,
-        headPageFetcher: PageFetcher<F>,
-        tailPageFetcher: PageFetcher<F>)
+        initialHeadPageFetcher: PageFetcher<Fetcher, Parser>,
+        initialTailPageFetcher: PageFetcher<Fetcher, Parser>,
+        headPageFetcher: PageFetcher<Fetcher, Parser>,
+        tailPageFetcher: PageFetcher<Fetcher, Parser>)
     {
         self.initialHeadPageFetcher = initialHeadPageFetcher
         self.initialTailPageFetcher = initialTailPageFetcher
@@ -48,7 +51,7 @@ final class PageFetcherCoordinator<F> where F: ConnectionFetcher {
 // MARK: Private
 
 extension PageFetcherCoordinator {
-    private func fetcher(for end: End, isInitial: Bool) -> PageFetcher<F> {
+    private func fetcher(for end: End, isInitial: Bool) -> PageFetcher<Fetcher, Parser> {
         switch (end, isInitial) {
         case (.head, true):
             return self.initialHeadPageFetcher
@@ -61,7 +64,7 @@ extension PageFetcherCoordinator {
         }
     }
 
-    private func relay(for end: End, isInitial: Bool) -> BehaviorRelay<PageFetcherState<F>> {
+    private func relay(for end: End, isInitial: Bool) -> BehaviorRelay<PageFetcherState<Parser.Model>> {
         switch (end, isInitial) {
         case (.head, true):
             return self.initialHeadPageFetcherStateRelay
@@ -93,7 +96,7 @@ extension PageFetcherCoordinator {
         newDisposable.disposed(by: self.disposeBag)
     }
 
-    private func bind(fetcher: PageFetcher<F>, for end: End, isInitial: Bool) {
+    private func bind(fetcher: PageFetcher<Fetcher, Parser>, for end: End, isInitial: Bool) {
         let relay = self.relay(for: end, isInitial: isInitial)
         let newDisposable = fetcher.stateObservable.bind(to: relay)
         self.replaceDisposable(for: end, isInitial: isInitial, with: newDisposable)
@@ -106,14 +109,14 @@ extension PageFetcherCoordinator {
     /**
      Retrieve the state for the fetcher matching the given parameters.
      */
-    func state(for end: End, isInitial: Bool) -> PageFetcherState<F> {
+    func state(for end: End, isInitial: Bool) -> PageFetcherState<Parser.Model> {
         return self.relay(for: end, isInitial: isInitial).value
     }
 
     /**
      Observable for the aforementioned state.
      */
-    func stateObservable(for end: End, isInitial: Bool) -> Observable<PageFetcherState<F>> {
+    func stateObservable(for end: End, isInitial: Bool) -> Observable<PageFetcherState<Parser.Model>> {
         return self.relay(for: end, isInitial: isInitial).asObservable()
     }
 }
@@ -136,7 +139,7 @@ extension PageFetcherCoordinator {
      Replace the next page fetcher at the given end.
      The initial load fetchers cannot be replaced as they do not change.
      */
-    func replaceNextPageFetcher(at end: End, with fetcher: PageFetcher<F>) {
+    func replaceNextPageFetcher(at end: End, with fetcher: PageFetcher<Fetcher, Parser>) {
         switch end {
         case .head:
             self.headPageFetcher = fetcher

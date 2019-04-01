@@ -8,7 +8,7 @@
  - fetching -> error
  - error -> fetching
  */
-enum PageFetcherState<F> where F: ConnectionFetcher {
+enum PageFetcherState<M>: Hashable where M: Hashable {
     // The fetcher has not started fetching a page.
     case idle
 
@@ -16,7 +16,7 @@ enum PageFetcherState<F> where F: ConnectionFetcher {
     case fetching
 
     // The fetcher completed fetching a page.
-    case completed([Edge<F>], PageInfo<F>)
+    case completed([Edge<M>], PageInfo)
 
     // The fetcher failed to fetch a page.
     case error(ErrorWrapper)
@@ -32,13 +32,3 @@ extension PageFetcherState {
         }
     }
 }
-
-extension PageFetcherState: Equatable where
-F.FetchedConnection.ConnectedPageInfo : Equatable,
-F.FetchedConnection.ConnectedEdge: Equatable
-{}
-
-extension PageFetcherState: Hashable where
-    F.FetchedConnection.ConnectedPageInfo : Hashable,
-    F.FetchedConnection.ConnectedEdge: Hashable
-{}

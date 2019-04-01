@@ -15,39 +15,28 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
     }
 
     func testSubsequentIncompletePageHead() throws {
-        // Create test data:
-        let initialPageSize = 5
-        let paginationPageSize = 10
-        let defaultIndex = 10
-        let allEdges: [TestEdge] = .create(count: 20)
-        let fetcher = TestFetcher(defaultIndex: defaultIndex, edges: allEdges)
+        // Create test config:
+        let config = ConnectionTestConfig(initialPageSize: 5, paginationPageSize: 10, edgeCount: 20, defaultIndex: 10)
 
         // Calculate pages:
-        let initialHeadPage = self.initialPage(defaultIndex: defaultIndex, initialPageSize: initialPageSize, edges: allEdges, for: .head)
-        let subsequentHeadPage = self.subsequentPage(relativeTo: [initialHeadPage], paginationPageSize: paginationPageSize, edges: allEdges, for: .head)
-
-        // Create connection controller:
-        let controller = ConnectionController(
-            fetcher: fetcher,
-            initialPageSize: initialPageSize,
-            paginationPageSize: paginationPageSize
-        )
+        let initialHeadPage = config.initialPage(for: .head)
+        let subsequentHeadPage = config.subsequentPage(relativeTo: [initialHeadPage], for: .head)
 
         // Load initial page:
         try self.runInitialLoadTest(
-            controller: controller,
+            controller: config.controller,
             fetchFrom: .head,
             expectedEndState: .idle,
             expectedPages: [initialHeadPage],
             disposedBy: self.disposeBag
         )
 
-        XCTAssertEqual(controller.state(for: .head), .idle)
-        XCTAssertEqual(controller.state(for: .tail), .idle)
+        XCTAssertEqual(config.controller.state(for: .head), .idle)
+        XCTAssertEqual(config.controller.state(for: .tail), .idle)
 
         // Run test:
         try self.runSubsequentPageTest(
-            controller: controller,
+            controller: config.controller,
             fetchFrom: .head,
             expectedEndState: .end,
             expectedPages: [
@@ -57,44 +46,33 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
             disposedBy: self.disposeBag
         )
 
-        XCTAssertEqual(controller.state(for: .head), .end)
-        XCTAssertEqual(controller.state(for: .tail), .idle)
+        XCTAssertEqual(config.controller.state(for: .head), .end)
+        XCTAssertEqual(config.controller.state(for: .tail), .idle)
     }
 
     func testSubsequentIncompletePageTail() throws {
-        // Create test data:
-        let initialPageSize = 5
-        let paginationPageSize = 10
-        let defaultIndex = 10
-        let allEdges: [TestEdge] = .create(count: 20)
-        let fetcher = TestFetcher(defaultIndex: defaultIndex, edges: allEdges)
+        // Create test config:
+        let config = ConnectionTestConfig(initialPageSize: 5, paginationPageSize: 10, edgeCount: 20, defaultIndex: 10)
 
         // Calculate pages:
-        let initialTailPage = self.initialPage(defaultIndex: defaultIndex, initialPageSize: initialPageSize, edges: allEdges, for: .tail)
-        let subsequentTailPage = self.subsequentPage(relativeTo: [initialTailPage], paginationPageSize: paginationPageSize, edges: allEdges, for: .tail)
-
-        // Create connection controller:
-        let controller = ConnectionController(
-            fetcher: fetcher,
-            initialPageSize: initialPageSize,
-            paginationPageSize: paginationPageSize
-        )
+        let initialTailPage = config.initialPage(for: .tail)
+        let subsequentTailPage = config.subsequentPage(relativeTo: [initialTailPage], for: .tail)
 
         // Load initial page:
         try self.runInitialLoadTest(
-            controller: controller,
+            controller: config.controller,
             fetchFrom: .tail,
             expectedEndState: .idle,
             expectedPages: [initialTailPage],
             disposedBy: self.disposeBag
         )
 
-        XCTAssertEqual(controller.state(for: .head), .idle)
-        XCTAssertEqual(controller.state(for: .tail), .idle)
+        XCTAssertEqual(config.controller.state(for: .head), .idle)
+        XCTAssertEqual(config.controller.state(for: .tail), .idle)
 
         // Run test:
         try self.runSubsequentPageTest(
-            controller: controller,
+            controller: config.controller,
             fetchFrom: .tail,
             expectedEndState: .end,
             expectedPages: [
@@ -104,50 +82,34 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
             disposedBy: self.disposeBag
         )
 
-        XCTAssertEqual(controller.state(for: .head), .idle)
-        XCTAssertEqual(controller.state(for: .tail), .end)
+        XCTAssertEqual(config.controller.state(for: .head), .idle)
+        XCTAssertEqual(config.controller.state(for: .tail), .end)
     }
 
     func testSubsequentIncompletePageBoth() throws {
-        // Create test data:
-        let initialPageSize = 5
-        let paginationPageSize = 10
-        let defaultIndex = 10
-        let allEdges: [TestEdge] = .create(count: 15)
-        let fetcher = TestFetcher(defaultIndex: defaultIndex, edges: allEdges)
+        // Create test config:
+        let config = ConnectionTestConfig(initialPageSize: 5, paginationPageSize: 10, edgeCount: 15, defaultIndex: 10)
 
         // Calculate pages:
-        let initialHeadPage = self.initialPage(defaultIndex: defaultIndex, initialPageSize: initialPageSize, edges: allEdges, for: .head)
-        let subsequentHeadPage = self.subsequentPage(relativeTo: [initialHeadPage], paginationPageSize: paginationPageSize, edges: allEdges, for: .head)
-        let subsequentTailPage = self.subsequentPage(
-            relativeTo: [subsequentHeadPage, initialHeadPage],
-            paginationPageSize: paginationPageSize,
-            edges: allEdges,
-            for: .tail
-        )
-
-        // Create connection controller:
-        let controller = ConnectionController(
-            fetcher: fetcher,
-            initialPageSize: initialPageSize,
-            paginationPageSize: paginationPageSize
-        )
+        let initialHeadPage = config.initialPage(for: .head)
+        let subsequentHeadPage = config.subsequentPage(relativeTo: [initialHeadPage], for: .head)
+        let subsequentTailPage = config.subsequentPage(relativeTo: [subsequentHeadPage, initialHeadPage], for: .tail)
 
         // Load initial page:
         try self.runInitialLoadTest(
-            controller: controller,
+            controller: config.controller,
             fetchFrom: .head,
             expectedEndState: .idle,
             expectedPages: [initialHeadPage],
             disposedBy: self.disposeBag
         )
 
-        XCTAssertEqual(controller.state(for: .head), .idle)
-        XCTAssertEqual(controller.state(for: .tail), .idle)
+        XCTAssertEqual(config.controller.state(for: .head), .idle)
+        XCTAssertEqual(config.controller.state(for: .tail), .idle)
 
         // Run head test:
         try self.runSubsequentPageTest(
-            controller: controller,
+            controller: config.controller,
             fetchFrom: .head,
             expectedEndState: .end,
             expectedPages: [
@@ -157,12 +119,12 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
             disposedBy: self.disposeBag
         )
 
-        XCTAssertEqual(controller.state(for: .head), .end)
-        XCTAssertEqual(controller.state(for: .tail), .idle)
+        XCTAssertEqual(config.controller.state(for: .head), .end)
+        XCTAssertEqual(config.controller.state(for: .tail), .idle)
 
         // Run tail test:
         try self.runSubsequentPageTest(
-            controller: controller,
+            controller: config.controller,
             fetchFrom: .tail,
             expectedEndState: .end,
             expectedPages: [
@@ -173,44 +135,33 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
             disposedBy: self.disposeBag
         )
 
-        XCTAssertEqual(controller.state(for: .head), .end)
-        XCTAssertEqual(controller.state(for: .tail), .end)
+        XCTAssertEqual(config.controller.state(for: .head), .end)
+        XCTAssertEqual(config.controller.state(for: .tail), .end)
     }
 
     func testSubsequentCompletePageHead() throws {
-        // Create test data:
-        let initialPageSize = 5
-        let paginationPageSize = 10
-        let defaultIndex = 50
-        let allEdges: [TestEdge] = .create(count: 100)
-        let fetcher = TestFetcher(defaultIndex: defaultIndex, edges: allEdges)
+        // Create test config:
+        let config = ConnectionTestConfig(initialPageSize: 5, paginationPageSize: 10, edgeCount: 100, defaultIndex: 50)
 
         // Calculate pages:
-        let initialHeadPage = self.initialPage(defaultIndex: defaultIndex, initialPageSize: initialPageSize, edges: allEdges, for: .head)
-        let subsequentHeadPage = self.subsequentPage(relativeTo: [initialHeadPage], paginationPageSize: paginationPageSize, edges: allEdges, for: .head)
-
-        // Create connection controller:
-        let controller = ConnectionController(
-            fetcher: fetcher,
-            initialPageSize: initialPageSize,
-            paginationPageSize: paginationPageSize
-        )
+        let initialHeadPage = config.initialPage(for: .head)
+        let subsequentHeadPage = config.subsequentPage(relativeTo: [initialHeadPage], for: .head)
 
         // Load initial page:
         try self.runInitialLoadTest(
-            controller: controller,
+            controller: config.controller,
             fetchFrom: .head,
             expectedEndState: .idle,
             expectedPages: [initialHeadPage],
             disposedBy: self.disposeBag
         )
 
-        XCTAssertEqual(controller.state(for: .head), .idle)
-        XCTAssertEqual(controller.state(for: .tail), .idle)
+        XCTAssertEqual(config.controller.state(for: .head), .idle)
+        XCTAssertEqual(config.controller.state(for: .tail), .idle)
 
         // Run test:
         try self.runSubsequentPageTest(
-            controller: controller,
+            controller: config.controller,
             fetchFrom: .head,
             expectedEndState: .idle,
             expectedPages: [
@@ -220,44 +171,33 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
             disposedBy: self.disposeBag
         )
 
-        XCTAssertEqual(controller.state(for: .head), .idle)
-        XCTAssertEqual(controller.state(for: .tail), .idle)
+        XCTAssertEqual(config.controller.state(for: .head), .idle)
+        XCTAssertEqual(config.controller.state(for: .tail), .idle)
     }
 
     func testSubsequentCompletePageTail() throws {
-        // Create test data:
-        let initialPageSize = 5
-        let paginationPageSize = 10
-        let defaultIndex = 50
-        let allEdges: [TestEdge] = .create(count: 100)
-        let fetcher = TestFetcher(defaultIndex: defaultIndex, edges: allEdges)
+        // Create test config:
+        let config = ConnectionTestConfig(initialPageSize: 5, paginationPageSize: 10, edgeCount: 100, defaultIndex: 50)
 
         // Calculate pages:
-        let initialTailPage = self.initialPage(defaultIndex: defaultIndex, initialPageSize: initialPageSize, edges: allEdges, for: .tail)
-        let subsequentTailPage = self.subsequentPage(relativeTo: [initialTailPage], paginationPageSize: paginationPageSize, edges: allEdges, for: .tail)
-
-        // Create connection controller:
-        let controller = ConnectionController(
-            fetcher: fetcher,
-            initialPageSize: initialPageSize,
-            paginationPageSize: paginationPageSize
-        )
+        let initialTailPage = config.initialPage(for: .tail)
+        let subsequentTailPage = config.subsequentPage(relativeTo: [initialTailPage], for: .tail)
 
         // Load initial page:
         try self.runInitialLoadTest(
-            controller: controller,
+            controller: config.controller,
             fetchFrom: .tail,
             expectedEndState: .idle,
             expectedPages: [initialTailPage],
             disposedBy: self.disposeBag
         )
 
-        XCTAssertEqual(controller.state(for: .head), .idle)
-        XCTAssertEqual(controller.state(for: .tail), .idle)
+        XCTAssertEqual(config.controller.state(for: .head), .idle)
+        XCTAssertEqual(config.controller.state(for: .tail), .idle)
 
         // Run test:
         try self.runSubsequentPageTest(
-            controller: controller,
+            controller: config.controller,
             fetchFrom: .tail,
             expectedEndState: .idle,
             expectedPages: [
@@ -267,44 +207,33 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
             disposedBy: self.disposeBag
         )
 
-        XCTAssertEqual(controller.state(for: .head), .idle)
-        XCTAssertEqual(controller.state(for: .tail), .idle)
+        XCTAssertEqual(config.controller.state(for: .head), .idle)
+        XCTAssertEqual(config.controller.state(for: .tail), .idle)
     }
 
     func testSubsequentResetHead() throws {
-        // Create test data:
-        let initialPageSize = 5
-        let paginationPageSize = 10
-        let defaultIndex = 50
-        let allEdges: [TestEdge] = .create(count: 100)
-        let fetcher = TestFetcher(defaultIndex: defaultIndex, edges: allEdges)
+        // Create test config:
+        let config = ConnectionTestConfig(initialPageSize: 5, paginationPageSize: 10, edgeCount: 100, defaultIndex: 50)
 
         // Calculate pages:
-        let initialHeadPage = self.initialPage(defaultIndex: defaultIndex, initialPageSize: initialPageSize, edges: allEdges, for: .head)
-        let subsequentHeadPage = self.subsequentPage(relativeTo: [initialHeadPage], paginationPageSize: paginationPageSize, edges: allEdges, for: .head)
-
-        // Create connection controller:
-        let controller = ConnectionController(
-            fetcher: fetcher,
-            initialPageSize: initialPageSize,
-            paginationPageSize: paginationPageSize
-        )
+        let initialHeadPage = config.initialPage(for: .head)
+        let subsequentHeadPage = config.subsequentPage(relativeTo: [initialHeadPage], for: .head)
 
         // Load initial page:
         try self.runInitialLoadTest(
-            controller: controller,
+            controller: config.controller,
             fetchFrom: .head,
             expectedEndState: .idle,
             expectedPages: [initialHeadPage],
             disposedBy: self.disposeBag
         )
 
-        XCTAssertEqual(controller.state(for: .head), .idle)
-        XCTAssertEqual(controller.state(for: .tail), .idle)
+        XCTAssertEqual(config.controller.state(for: .head), .idle)
+        XCTAssertEqual(config.controller.state(for: .tail), .idle)
 
         // Run test:
         try self.runSubsequentPageTest(
-            controller: controller,
+            controller: config.controller,
             fetchFrom: .head,
             expectedEndState: .idle,
             expectedPages: [
@@ -314,24 +243,24 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
             disposedBy: self.disposeBag
         )
 
-        XCTAssertEqual(controller.state(for: .head), .idle)
-        XCTAssertEqual(controller.state(for: .tail), .idle)
+        XCTAssertEqual(config.controller.state(for: .head), .idle)
+        XCTAssertEqual(config.controller.state(for: .tail), .idle)
 
         // Load initial page:
         try self.runInitialLoadTest(
-            controller: controller,
+            controller: config.controller,
             fetchFrom: .head,
             expectedEndState: .idle,
             expectedPages: [initialHeadPage],
             disposedBy: self.disposeBag
         )
 
-        XCTAssertEqual(controller.state(for: .head), .idle)
-        XCTAssertEqual(controller.state(for: .tail), .idle)
+        XCTAssertEqual(config.controller.state(for: .head), .idle)
+        XCTAssertEqual(config.controller.state(for: .tail), .idle)
 
         // Run test:
         try self.runSubsequentPageTest(
-            controller: controller,
+            controller: config.controller,
             fetchFrom: .head,
             expectedEndState: .idle,
             expectedPages: [
@@ -341,44 +270,33 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
             disposedBy: self.disposeBag
         )
 
-        XCTAssertEqual(controller.state(for: .head), .idle)
-        XCTAssertEqual(controller.state(for: .tail), .idle)
+        XCTAssertEqual(config.controller.state(for: .head), .idle)
+        XCTAssertEqual(config.controller.state(for: .tail), .idle)
     }
 
     func testSubsequentResetTail() throws {
-        // Create test data:
-        let initialPageSize = 5
-        let paginationPageSize = 10
-        let defaultIndex = 50
-        let allEdges: [TestEdge] = .create(count: 100)
-        let fetcher = TestFetcher(defaultIndex: defaultIndex, edges: allEdges)
+        // Create test config:
+        let config = ConnectionTestConfig(initialPageSize: 5, paginationPageSize: 10, edgeCount: 100, defaultIndex: 50)
 
         // Calculate pages:
-        let initialTailPage = self.initialPage(defaultIndex: defaultIndex, initialPageSize: initialPageSize, edges: allEdges, for: .tail)
-        let subsequentTailPage = self.subsequentPage(relativeTo: [initialTailPage], paginationPageSize: paginationPageSize, edges: allEdges, for: .tail)
-
-        // Create connection controller:
-        let controller = ConnectionController(
-            fetcher: fetcher,
-            initialPageSize: initialPageSize,
-            paginationPageSize: paginationPageSize
-        )
+        let initialTailPage = config.initialPage(for: .tail)
+        let subsequentTailPage = config.subsequentPage(relativeTo: [initialTailPage], for: .tail)
 
         // Load initial page:
         try self.runInitialLoadTest(
-            controller: controller,
+            controller: config.controller,
             fetchFrom: .tail,
             expectedEndState: .idle,
             expectedPages: [initialTailPage],
             disposedBy: self.disposeBag
         )
 
-        XCTAssertEqual(controller.state(for: .head), .idle)
-        XCTAssertEqual(controller.state(for: .tail), .idle)
+        XCTAssertEqual(config.controller.state(for: .head), .idle)
+        XCTAssertEqual(config.controller.state(for: .tail), .idle)
 
         // Run test:
         try self.runSubsequentPageTest(
-            controller: controller,
+            controller: config.controller,
             fetchFrom: .tail,
             expectedEndState: .idle,
             expectedPages: [
@@ -388,24 +306,24 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
             disposedBy: self.disposeBag
         )
 
-        XCTAssertEqual(controller.state(for: .head), .idle)
-        XCTAssertEqual(controller.state(for: .tail), .idle)
+        XCTAssertEqual(config.controller.state(for: .head), .idle)
+        XCTAssertEqual(config.controller.state(for: .tail), .idle)
 
         // Load initial page:
         try self.runInitialLoadTest(
-            controller: controller,
+            controller: config.controller,
             fetchFrom: .tail,
             expectedEndState: .idle,
             expectedPages: [initialTailPage],
             disposedBy: self.disposeBag
         )
 
-        XCTAssertEqual(controller.state(for: .head), .idle)
-        XCTAssertEqual(controller.state(for: .tail), .idle)
+        XCTAssertEqual(config.controller.state(for: .head), .idle)
+        XCTAssertEqual(config.controller.state(for: .tail), .idle)
 
         // Run test:
         try self.runSubsequentPageTest(
-            controller: controller,
+            controller: config.controller,
             fetchFrom: .tail,
             expectedEndState: .idle,
             expectedPages: [
@@ -415,8 +333,8 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
             disposedBy: self.disposeBag
         )
 
-        XCTAssertEqual(controller.state(for: .head), .idle)
-        XCTAssertEqual(controller.state(for: .tail), .idle)
+        XCTAssertEqual(config.controller.state(for: .head), .idle)
+        XCTAssertEqual(config.controller.state(for: .tail), .idle)
     }
 
 //    func testBothCompletePages() throws {

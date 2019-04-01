@@ -1,5 +1,10 @@
 import ConnectionKit
 
+struct TestModel: Hashable {
+    let id: String
+    let createdAt: Date
+}
+
 struct TestNode: Hashable {
     let id: String
     let createdAt: Date

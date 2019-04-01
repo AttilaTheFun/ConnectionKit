@@ -16,7 +16,6 @@ private struct PaginationState {
     }
 }
 
-
 /**
  This class tracks the paginablity from the two ends of the connection.
 
@@ -24,14 +23,14 @@ private struct PaginationState {
  Whenever we ingest new page info from either end, we update the state to indicate whether or not we can fetch any more
  pages from the relevant end.
  */
-final class PaginationStateTracker<F> where F: ConnectionFetcher {
+final class PaginationStateTracker {
     private let stateRelay = BehaviorRelay<PaginationState>(value: .initial)
 }
 
 // MARK: Private
 
 extension PaginationStateTracker {
-    private func applyUpdate(from previousState: PaginationState, pageInfo: PageInfo<F>, from end: End) {
+    private func applyUpdate(from previousState: PaginationState, pageInfo: PageInfo, from end: End) {
         let newState: PaginationState
         switch end {
         case .head:
@@ -75,7 +74,7 @@ extension PaginationStateTracker {
     /**
      Ingest a new page info object into the manager.
      */
-    func ingest(pageInfo: PageInfo<F>, from end: End) {
+    func ingest(pageInfo: PageInfo, from end: End) {
         self.applyUpdate(from: self.stateRelay.value, pageInfo: pageInfo, from: end)
     }
 
@@ -83,7 +82,7 @@ extension PaginationStateTracker {
      Resetting the manager reverts it to its initial state, i.e.:
      canFetchNextPageFromHead and canFetchNextPageFromTail are both true
      */
-    func reset(to pageInfo: PageInfo<F>, from end: End) {
+    func reset(to pageInfo: PageInfo, from end: End) {
         self.applyUpdate(from: .initial, pageInfo: pageInfo, from: end)
     }
 }
