@@ -22,9 +22,9 @@ extension EndState {
             self = .fetching
         case (.error(let error), _):
             self = .error(error)
-        case (.idle, false), (.completed, false):
+        case (.idle, false), (.complete, false):
             self = .idle
-        case (.idle, true), (.completed, true):
+        case (.idle, true), (.complete, true):
             self = .end
         }
     }

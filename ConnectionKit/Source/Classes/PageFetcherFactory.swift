@@ -5,12 +5,12 @@ final class PageFetcherFactory<Fetcher, Parser, Provider>
     where Fetcher: ConnectionFetcher, Parser: ModelParser, Provider: PageProvider,
     Fetcher.FetchedConnection.ConnectedEdge.Node == Parser.Node, Parser.Model == Provider.Model
 {
+    let initialPageSize: Int
+    let paginationPageSize: Int
+
     private let fetcher: Fetcher
     private let parser: Parser.Type
     private let provider: Provider
-
-    private let initialPageSize: Int
-    private let paginationPageSize: Int
 
     // MARK: Initialization
 

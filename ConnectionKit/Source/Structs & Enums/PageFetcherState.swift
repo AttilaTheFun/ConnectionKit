@@ -16,7 +16,7 @@ enum PageFetcherState<M>: Hashable where M: Hashable {
     case fetching
 
     // The fetcher completed fetching a page.
-    case completed([Edge<M>], PageInfo)
+    case complete([Edge<M>], PageInfo)
 
     // The fetcher failed to fetch a page.
     case error(ErrorWrapper)
@@ -25,7 +25,7 @@ enum PageFetcherState<M>: Hashable where M: Hashable {
 extension PageFetcherState {
     var canLoadPage: Bool {
         switch self {
-        case .idle, .completed, .error:
+        case .idle, .complete, .error:
             return true
         case .fetching:
             return false

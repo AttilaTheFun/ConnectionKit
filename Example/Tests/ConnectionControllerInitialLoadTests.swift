@@ -22,7 +22,7 @@ class ConnectionControllerInitialLoadTests: XCTestCase {
         try self.runInitialLoadTest(
             controller: config.controller,
             fetchFrom: .head,
-            expectedEndState: .idle,
+            expectedEndState: .complete,
             expectedPages: [],
             disposedBy: self.disposeBag
         )
@@ -39,7 +39,7 @@ class ConnectionControllerInitialLoadTests: XCTestCase {
         try self.runInitialLoadTest(
             controller: config.controller,
             fetchFrom: .tail,
-            expectedEndState: .idle,
+            expectedEndState: .complete,
             expectedPages: [],
             disposedBy: self.disposeBag
         )
@@ -59,7 +59,7 @@ class ConnectionControllerInitialLoadTests: XCTestCase {
         try self.runInitialLoadTest(
             controller: config.controller,
             fetchFrom: .head,
-            expectedEndState: .idle,
+            expectedEndState: .complete,
             expectedPages: [initialHeadPage],
             disposedBy: self.disposeBag
         )
@@ -79,7 +79,7 @@ class ConnectionControllerInitialLoadTests: XCTestCase {
         try self.runInitialLoadTest(
             controller: config.controller,
             fetchFrom: .tail,
-            expectedEndState: .idle,
+            expectedEndState: .complete,
             expectedPages: [initialTailPage],
             disposedBy: self.disposeBag
         )
@@ -99,7 +99,7 @@ class ConnectionControllerInitialLoadTests: XCTestCase {
         try self.runInitialLoadTest(
             controller: config.controller,
             fetchFrom: .head,
-            expectedEndState: .idle,
+            expectedEndState: .complete,
             expectedPages: [initialHeadPage],
             disposedBy: self.disposeBag
         )
@@ -119,7 +119,7 @@ class ConnectionControllerInitialLoadTests: XCTestCase {
         try self.runInitialLoadTest(
             controller: config.controller,
             fetchFrom: .tail,
-            expectedEndState: .idle,
+            expectedEndState: .complete,
             expectedPages: [initialTailPage],
             disposedBy: self.disposeBag
         )
@@ -139,7 +139,7 @@ class ConnectionControllerInitialLoadTests: XCTestCase {
         try self.runInitialLoadTest(
             controller: config.controller,
             fetchFrom: .head,
-            expectedEndState: .idle,
+            expectedEndState: .complete,
             expectedPages: [initialHeadPage],
             disposedBy: self.disposeBag
         )
@@ -151,7 +151,7 @@ class ConnectionControllerInitialLoadTests: XCTestCase {
         try self.runInitialLoadTest(
             controller: config.controller,
             fetchFrom: .head,
-            expectedEndState: .idle,
+            expectedEndState: .complete,
             expectedPages: [initialHeadPage],
             disposedBy: self.disposeBag
         )
@@ -171,7 +171,7 @@ class ConnectionControllerInitialLoadTests: XCTestCase {
         try self.runInitialLoadTest(
             controller: config.controller,
             fetchFrom: .tail,
-            expectedEndState: .idle,
+            expectedEndState: .complete,
             expectedPages: [initialTailPage],
             disposedBy: self.disposeBag
         )
@@ -183,7 +183,7 @@ class ConnectionControllerInitialLoadTests: XCTestCase {
         try self.runInitialLoadTest(
             controller: config.controller,
             fetchFrom: .tail,
-            expectedEndState: .idle,
+            expectedEndState: .complete,
             expectedPages: [initialTailPage],
             disposedBy: self.disposeBag
         )

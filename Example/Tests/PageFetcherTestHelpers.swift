@@ -81,7 +81,7 @@ extension XCTestCase {
             .skip(2)
             .take(1)
             .subscribe(onNext: { state in
-                guard case .completed(let edges, let pageInfo) = state else {
+                guard case .complete(let edges, let pageInfo) = state else {
                     XCTFail("Invalid state")
                     return
                 }

@@ -48,7 +48,7 @@ extension ConnectionController {
         fetcher
             .subscribe(onNext: { [weak self] state in
                 guard let `self` = self,
-                    case .completed(let edges, let pageInfo) = state else
+                    case .complete(let edges, let pageInfo) = state else
                 {
                     return
                 }
@@ -70,7 +70,7 @@ extension ConnectionController {
         fetcher
             .subscribe(onNext: { [weak self] state in
                 guard let `self` = self,
-                    case .completed(let edges, let pageInfo) = state else
+                    case .complete(let edges, let pageInfo) = state else
                 {
                     return
                 }
@@ -145,6 +145,20 @@ extension ConnectionController {
 // MARK: Getters
 
 extension ConnectionController {
+    /**
+     The initial page size for the connection.
+     */
+    public var initialPageSize: Int {
+        return self.pageFetcherFactory.initialPageSize
+    }
+
+    /**
+     The initial page size for the connection.
+     */
+    public var paginationPageSize: Int {
+        return self.pageFetcherFactory.paginationPageSize
+    }
+
     /**
      The state the initial load or refresh for the given end.
      */

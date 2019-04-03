@@ -15,9 +15,10 @@ extension XCTestCase {
 
         // Create expectations:
         let expectations: [XCTestExpectation] = [
-            try self.expectInitialLoadIdle(
+            try self.expectInitialLoadBeganInState(
                 observable: observable,
                 fetchFrom: end,
+                expectedBeginState: controller.initialLoadState(for: end) == .idle ? .idle : .complete,
                 disposedBy: disposeBag
             ),
             try self.expectInitialLoadIsFetchingInitialPage(
@@ -42,9 +43,10 @@ extension XCTestCase {
         wait(for: expectations, timeout: 1)
     }
 
-    private func expectInitialLoadIdle(
+    private func expectInitialLoadBeganInState(
         observable: Observable<InitialLoadState>,
         fetchFrom end: End,
+        expectedBeginState: InitialLoadState,
         disposedBy disposeBag: DisposeBag) throws
         -> XCTestExpectation
     {
@@ -52,7 +54,7 @@ extension XCTestCase {
         observable
             .take(1)
             .subscribe(onNext: { state in
-                XCTAssertEqual(state, .idle)
+                XCTAssertEqual(state, expectedBeginState)
                 receivedIdleStateExpectation.fulfill()
             })
             .disposed(by: disposeBag)

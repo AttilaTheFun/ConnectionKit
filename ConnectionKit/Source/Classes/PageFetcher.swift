@@ -47,7 +47,7 @@ extension PageFetcher {
      */
     func fetchPage() {
         switch self.state {
-        case .idle, .error, .completed:
+        case .idle, .error, .complete:
             self.restartFetch()
         case .fetching:
             return assertionFailure("Already fetching")
@@ -69,7 +69,7 @@ extension PageFetcher {
                     }
 
                     let pageInfo = PageInfo(connectionPageInfo: connection.pageInfo)
-                    self.stateRelay.accept(.completed(edges, pageInfo))
+                    self.stateRelay.accept(.complete(edges, pageInfo))
                 },
                 onError: { [weak self] error in
                     let wrappedError = ErrorWrapper(error: error)
