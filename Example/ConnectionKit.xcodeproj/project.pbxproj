@@ -10,8 +10,10 @@
 		02114E60224883B1003BDBC1 /* TestTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02114E5E224883AE003BDBC1 /* TestTypes.swift */; };
 		02114E6322488623003BDBC1 /* CreateTestEdges.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02114E5C22488368003BDBC1 /* CreateTestEdges.swift */; };
 		02114E6622488944003BDBC1 /* TestFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02114E6422488782003BDBC1 /* TestFetcher.swift */; };
-		02114E6822489592003BDBC1 /* TestFetcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02114E6722489592003BDBC1 /* TestFetcherTests.swift */; };
+		02114E6822489592003BDBC1 /* TestFetcherInitialPageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02114E6722489592003BDBC1 /* TestFetcherInitialPageTests.swift */; };
 		02114E6A22489DCB003BDBC1 /* Range+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02114E6922489DCB003BDBC1 /* Range+Extensions.swift */; };
+		022A5695225760270037E280 /* TestFetcherSubsequentPageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022A5694225760260037E280 /* TestFetcherSubsequentPageTests.swift */; };
+		022A5698225760620037E280 /* TestFetcherTestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022A5697225760620037E280 /* TestFetcherTestUtils.swift */; };
 		0267D80122504D6700A05B00 /* TestPageGenerators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0267D80022504D6700A05B00 /* TestPageGenerators.swift */; };
 		0267D80B22517F4E00A05B00 /* TestParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0267D80A22517F4E00A05B00 /* TestParser.swift */; };
 		0267D80D2251826000A05B00 /* ConnectionTestConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0267D80C2251826000A05B00 /* ConnectionTestConfig.swift */; };
@@ -47,8 +49,10 @@
 		02114E5C22488368003BDBC1 /* CreateTestEdges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTestEdges.swift; sourceTree = "<group>"; };
 		02114E5E224883AE003BDBC1 /* TestTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestTypes.swift; sourceTree = "<group>"; };
 		02114E6422488782003BDBC1 /* TestFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestFetcher.swift; sourceTree = "<group>"; };
-		02114E6722489592003BDBC1 /* TestFetcherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestFetcherTests.swift; sourceTree = "<group>"; };
+		02114E6722489592003BDBC1 /* TestFetcherInitialPageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestFetcherInitialPageTests.swift; sourceTree = "<group>"; };
 		02114E6922489DCB003BDBC1 /* Range+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Range+Extensions.swift"; sourceTree = "<group>"; };
+		022A5694225760260037E280 /* TestFetcherSubsequentPageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestFetcherSubsequentPageTests.swift; sourceTree = "<group>"; };
+		022A5697225760620037E280 /* TestFetcherTestUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestFetcherTestUtils.swift; sourceTree = "<group>"; };
 		0267D80022504D6700A05B00 /* TestPageGenerators.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestPageGenerators.swift; sourceTree = "<group>"; };
 		0267D80A22517F4E00A05B00 /* TestParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestParser.swift; sourceTree = "<group>"; };
 		0267D80C2251826000A05B00 /* ConnectionTestConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionTestConfig.swift; sourceTree = "<group>"; };
@@ -110,6 +114,16 @@
 				0267D80A22517F4E00A05B00 /* TestParser.swift */,
 			);
 			name = Utils;
+			sourceTree = "<group>";
+		};
+		022A5696225760400037E280 /* TestFetcherTests */ = {
+			isa = PBXGroup;
+			children = (
+				022A5694225760260037E280 /* TestFetcherSubsequentPageTests.swift */,
+				02114E6722489592003BDBC1 /* TestFetcherInitialPageTests.swift */,
+				022A5697225760620037E280 /* TestFetcherTestUtils.swift */,
+			);
+			name = TestFetcherTests;
 			sourceTree = "<group>";
 		};
 		0267D7FF22504D4600A05B00 /* Common */ = {
@@ -216,11 +230,11 @@
 			children = (
 				0267D7FF22504D4600A05B00 /* Common */,
 				02114E6222488592003BDBC1 /* Utils */,
+				022A5696225760400037E280 /* TestFetcherTests */,
 				0267D81022518D4400A05B00 /* Page Fetcher */,
 				0287E574224CBD1F00021FAD /* Connection Controller */,
 				02A1EBB7224B66AC00C1668E /* PaginationStateTrackerTests.swift */,
 				02A1EBB5224A142900C1668E /* PageStorerTests.swift */,
-				02114E6722489592003BDBC1 /* TestFetcherTests.swift */,
 				607FACE91AFB9204008FA782 /* Supporting Files */,
 			);
 			path = Tests;
@@ -480,14 +494,16 @@
 				0267D81222518D5C00A05B00 /* PageFetcherTestHelpers.swift in Sources */,
 				607FACEC1AFB9204008FA782 /* PageFetcherTests.swift in Sources */,
 				02A1EBB6224A142900C1668E /* PageStorerTests.swift in Sources */,
+				022A5695225760270037E280 /* TestFetcherSubsequentPageTests.swift in Sources */,
 				0267D80122504D6700A05B00 /* TestPageGenerators.swift in Sources */,
 				0267D80F22518BCB00A05B00 /* FetcherTestConfig.swift in Sources */,
 				02114E60224883B1003BDBC1 /* TestTypes.swift in Sources */,
 				02A1EBB8224B66AC00C1668E /* PaginationStateTrackerTests.swift in Sources */,
 				0287E578224CBDB600021FAD /* ConnectionControllerSubsequentPageTestHelpers.swift in Sources */,
+				022A5698225760620037E280 /* TestFetcherTestUtils.swift in Sources */,
 				0287E571224CB45D00021FAD /* ConnectionControllerInitialLoadTests.swift in Sources */,
 				0267D80D2251826000A05B00 /* ConnectionTestConfig.swift in Sources */,
-				02114E6822489592003BDBC1 /* TestFetcherTests.swift in Sources */,
+				02114E6822489592003BDBC1 /* TestFetcherInitialPageTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -18,7 +18,7 @@ class PageFetcherTests: XCTestCase {
 
     func testEmptyConnection() throws {
         // Create test data:
-        let config = FetcherTestConfig(defaultIndex: 0, edgeCount: 0)
+        let config = FetcherTestConfig(edgeCount: 0)
         let fetchConfig = FetchConfig(first: 10)
         let expectedPageInfo = PageInfo(hasNextPage: false, hasPreviousPage: false)
         let expectedEdges: [Edge<TestModel>] = []
@@ -35,7 +35,7 @@ class PageFetcherTests: XCTestCase {
 
     func testIncompletePageForward() throws {
         // Create test data:
-        let config = FetcherTestConfig(defaultIndex: 2, edgeCount: 5)
+        let config = FetcherTestConfig(edgeCount: 5)
         let fetchConfig = FetchConfig(first: 10)
         let expectedPageInfo = PageInfo(hasNextPage: false, hasPreviousPage: true)
         let expectedEdges = Array(config.connectionEdges[2...])
@@ -52,7 +52,7 @@ class PageFetcherTests: XCTestCase {
 
     func testIncompletePageBackward() throws {
         // Create test data:
-        let config = FetcherTestConfig(defaultIndex: 2, edgeCount: 5)
+        let config = FetcherTestConfig(edgeCount: 5)
         let fetchConfig = FetchConfig(last: 10)
         let expectedPageInfo = PageInfo(hasNextPage: false, hasPreviousPage: true)
         let expectedEdges = Array(config.connectionEdges[0..<2])
@@ -69,7 +69,7 @@ class PageFetcherTests: XCTestCase {
 
     func testCompletePageForward() throws {
         // Create test data:
-        let config = FetcherTestConfig(defaultIndex: 50, edgeCount: 100)
+        let config = FetcherTestConfig(edgeCount: 100)
         let fetchConfig = FetchConfig(first: 10)
         let expectedPageInfo = PageInfo(hasNextPage: true, hasPreviousPage: true)
         let expectedEdges = Array(config.connectionEdges[50..<60])
@@ -86,7 +86,7 @@ class PageFetcherTests: XCTestCase {
 
     func testCompletePageBackward() throws {
         // Create test data:
-        let config = FetcherTestConfig(defaultIndex: 50, edgeCount: 100)
+        let config = FetcherTestConfig(edgeCount: 100)
         let fetchConfig = FetchConfig(last: 10)
         let expectedPageInfo = PageInfo(hasNextPage: true, hasPreviousPage: true)
         let expectedEdges = Array(config.connectionEdges[40..<50])

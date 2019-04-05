@@ -16,7 +16,7 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
 
     func testSubsequentIncompletePageHead() throws {
         // Create test config:
-        let config = ConnectionTestConfig(initialPageSize: 5, paginationPageSize: 10, edgeCount: 20, defaultIndex: 10)
+        let config = ConnectionTestConfig(initialPageSize: 5, paginationPageSize: 10, edgeCount: 20)
 
         // Calculate pages:
         let initialHeadPage = config.initialPage(for: .head)
@@ -52,7 +52,7 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
 
     func testSubsequentIncompletePageTail() throws {
         // Create test config:
-        let config = ConnectionTestConfig(initialPageSize: 5, paginationPageSize: 10, edgeCount: 20, defaultIndex: 10)
+        let config = ConnectionTestConfig(initialPageSize: 5, paginationPageSize: 10, edgeCount: 20)
 
         // Calculate pages:
         let initialTailPage = config.initialPage(for: .tail)
@@ -88,7 +88,7 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
 
     func testSubsequentIncompletePageBoth() throws {
         // Create test config:
-        let config = ConnectionTestConfig(initialPageSize: 5, paginationPageSize: 10, edgeCount: 15, defaultIndex: 10)
+        let config = ConnectionTestConfig(initialPageSize: 5, paginationPageSize: 10, edgeCount: 15)
 
         // Calculate pages:
         let initialHeadPage = config.initialPage(for: .head)
@@ -141,7 +141,7 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
 
     func testSubsequentCompletePageHead() throws {
         // Create test config:
-        let config = ConnectionTestConfig(initialPageSize: 5, paginationPageSize: 10, edgeCount: 100, defaultIndex: 50)
+        let config = ConnectionTestConfig(initialPageSize: 5, paginationPageSize: 10, edgeCount: 100)
 
         // Calculate pages:
         let initialHeadPage = config.initialPage(for: .head)
@@ -177,7 +177,7 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
 
     func testSubsequentCompletePageTail() throws {
         // Create test config:
-        let config = ConnectionTestConfig(initialPageSize: 5, paginationPageSize: 10, edgeCount: 100, defaultIndex: 50)
+        let config = ConnectionTestConfig(initialPageSize: 5, paginationPageSize: 10, edgeCount: 100)
 
         // Calculate pages:
         let initialTailPage = config.initialPage(for: .tail)
@@ -213,7 +213,7 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
 
     func testSubsequentResetHead() throws {
         // Create test config:
-        let config = ConnectionTestConfig(initialPageSize: 5, paginationPageSize: 10, edgeCount: 100, defaultIndex: 50)
+        let config = ConnectionTestConfig(initialPageSize: 5, paginationPageSize: 10, edgeCount: 100)
 
         // Calculate pages:
         let initialHeadPage = config.initialPage(for: .head)
@@ -276,7 +276,7 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
 
     func testSubsequentResetTail() throws {
         // Create test config:
-        let config = ConnectionTestConfig(initialPageSize: 5, paginationPageSize: 10, edgeCount: 100, defaultIndex: 50)
+        let config = ConnectionTestConfig(initialPageSize: 5, paginationPageSize: 10, edgeCount: 100)
 
         // Calculate pages:
         let initialTailPage = config.initialPage(for: .tail)

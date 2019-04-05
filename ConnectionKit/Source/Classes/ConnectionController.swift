@@ -15,6 +15,10 @@ public final class ConnectionController<Fetcher, Parser>
     private let pageFetcherCoordinator: PageFetcherCoordinator<Fetcher, Parser>
     private let disposeBag = DisposeBag()
 
+    // MARK: State
+
+    private var hasCompletedInitialLoad = false
+
     // MARK: Initialization
 
     public init(fetcher: Fetcher, parser: Parser.Type, initialPageSize: Int, paginationPageSize: Int) {
@@ -54,6 +58,7 @@ extension ConnectionController {
                 }
 
                 // Reset to the refreshed state:
+                self.hasCompletedInitialLoad = true
                 self.pageStorer.reset(to: edges, from: end)
                 self.paginationStateTracker.reset(to: pageInfo, from: end)
 
@@ -132,7 +137,7 @@ extension ConnectionController {
     public func loadNextPage(from end: End) {
         let pageFetcherState = self.pageFetcherCoordinator.state(for: end, isInitial: false)
         let hasFetchedLastPage = self.paginationStateTracker.hasFetchedLastPage(from: end)
-        if !pageFetcherState.canLoadPage || hasFetchedLastPage {
+        if !self.hasEverCompletedInitialLoad || !pageFetcherState.canLoadPage || hasFetchedLastPage {
             return assertionFailure("Can't load next page from this state")
         }
 
@@ -145,6 +150,13 @@ extension ConnectionController {
 // MARK: Getters
 
 extension ConnectionController {
+    /**
+     Flag indicating whether the connection has *ever* completed its initial load.
+     */
+    public var hasEverCompletedInitialLoad: Bool {
+        return self.hasCompletedInitialLoad
+    }
+
     /**
      The initial page size for the connection.
      */

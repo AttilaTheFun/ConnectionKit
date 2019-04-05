@@ -5,9 +5,8 @@ import RxSwift
  A test fetcher which vends a set of test data starting from the given index.
  */
 struct TestFetcher {
-    /// The default start index to use when after or before is nil.
-    let defaultIndex: Int
-    let edges: [TestEdge]
+    // The edges backing the connection, assumed to be in chronologically ascending order.
+    let allEdges: [TestEdge]
 }
 
 extension TestFetcher: ConnectionFetcher {
@@ -19,12 +18,31 @@ extension TestFetcher: ConnectionFetcher {
         case unimplemented
     }
 
-    func fetch(first: Int?, after: String?, last: Int?, before: String?)
-        -> Maybe<TestConnection>
-    {
+    func fetch(first: Int?, after: String?, last: Int?, before: String?) -> Maybe<TestConnection> {
+
+        // Parse the indices:
+        let afterIndex: Int?
+        let beforeIndex: Int?
+        switch self.parseIndices(after: after, before: before) {
+        case .failure(let error):
+            return .error(error)
+        case .success(let after, let before):
+            afterIndex = after
+            beforeIndex = before
+        }
+
+        // Validate the indices:
+        if let error = self.validateIndices(afterIndex: afterIndex, beforeIndex: beforeIndex) {
+            return .error(error)
+        }
+
+        // Slice the edges:
+        let slicedEdges = self.applyCursorsToEdges(afterIndex: afterIndex, beforeIndex: beforeIndex)
+
+        // Call the appropriate fetcher:
         guard let first = first else {
             if let last = last {
-                return self.fetch(last: last, before: before)
+                return self.fetch(last: last, beforeIndex: beforeIndex, slicedEdges: slicedEdges)
             }
 
             return .error(TestFetcherError.neitherParameter)
@@ -34,89 +52,90 @@ extension TestFetcher: ConnectionFetcher {
             return .error(TestFetcherError.forwardAndBackwardParameters)
         }
 
-        return self.fetch(first: first, after: after)
+        return self.fetch(first: first, afterIndex: afterIndex, slicedEdges: slicedEdges)
     }
 
-    private func fetch(first: Int, after: String?) -> Maybe<TestConnection> {
-        let startIndex: Int
+    private func parseIndices(after: String?, before: String?) -> Result<(Int?, Int?), TestFetcherError> {
+        var afterIndex: Int?
+        var beforeIndex: Int?
+
         if let after = after {
             if let index = Int(after) {
-                // Because we're looking *after* this value, we need to add one.
-                startIndex = index + 1
+                afterIndex = index
             } else {
-                return .error(TestFetcherError.invalidCursor)
+                return .failure(TestFetcherError.invalidCursor)
             }
-        } else {
-            startIndex = self.defaultIndex
         }
 
-        if self.edges.count == 0 {
-            let pageInfo = TestPageInfo(hasNextPage: false, hasPreviousPage: false)
-            let connection = TestConnection(pageInfo: pageInfo, edges: [])
-            return .just(connection)
+        if let before = before {
+            if let index = Int(before) {
+                beforeIndex = index
+            } else {
+                return .failure(TestFetcherError.invalidCursor)
+            }
         }
 
-        if startIndex >= self.edges.count || startIndex < 0 {
-            return .error(TestFetcherError.invalidCursor)
+        return .success((afterIndex, beforeIndex))
+    }
+
+    private func validateIndices(afterIndex: Int?, beforeIndex: Int?) -> TestFetcherError? {
+
+        if afterIndex != nil && beforeIndex != nil {
+            return TestFetcherError.forwardAndBackwardParameters
         }
 
-        let endIndex = startIndex + first
+        if let afterIndex = afterIndex {
+            if afterIndex >= self.allEdges.count || afterIndex < 0 {
+                return TestFetcherError.invalidCursor
+            }
+        }
+
+        if let beforeIndex = beforeIndex {
+            if beforeIndex >= self.allEdges.count || beforeIndex < 0 {
+                return TestFetcherError.invalidCursor
+            }
+        }
+
+        return nil
+    }
+
+    private func applyCursorsToEdges(afterIndex: Int?, beforeIndex: Int?) -> [TestEdge] {
+        if let afterIndex = afterIndex {
+            return Array(self.allEdges[(afterIndex + 1)...])
+        }
+
+        if let beforeIndex = beforeIndex {
+            return Array(self.allEdges[..<beforeIndex])
+        }
+
+        return self.allEdges
+    }
+
+    /**
+     Head (forwards) pagination with first / after.
+     */
+    private func fetch(first: Int, afterIndex: Int?, slicedEdges: [TestEdge]) -> Maybe<TestConnection> {
+        let firstEdges = slicedEdges.count > first ? Array(slicedEdges[..<first]) : slicedEdges
         let pageInfo = TestPageInfo(
-            hasNextPage: endIndex < self.edges.count - 1,
-            hasPreviousPage: startIndex > 0
+            hasNextPage: firstEdges.count < slicedEdges.count,
+            hasPreviousPage: afterIndex ?? 0 > 0
         )
 
-        let range = Range.bounded(
-            low: startIndex,
-            high: endIndex,
-            lowest: 0,
-            highest: self.edges.count
-        )
-
-        let edges = Array(self.edges[range])
-        let connection = TestConnection(pageInfo: pageInfo, edges: edges)
-
+        let connection = TestConnection(pageInfo: pageInfo, edges: firstEdges)
         return .just(connection)
     }
 
-    private func fetch(last: Int, before: String?) -> Maybe<TestConnection> {
-        let endIndex: Int
-        if let before = before {
-            if let index = Int(before) {
-                endIndex = index
-            } else {
-                return .error(TestFetcherError.invalidCursor)
-            }
-        } else {
-            endIndex = self.defaultIndex
-        }
-
-        if self.edges.count == 0 {
-            let pageInfo = TestPageInfo(hasNextPage: false, hasPreviousPage: false)
-            let connection = TestConnection(pageInfo: pageInfo, edges: [])
-            return .just(connection)
-        }
-
-        if endIndex >= self.edges.count || endIndex < 0 {
-            return .error(TestFetcherError.invalidCursor)
-        }
-
-        let startIndex = endIndex - last
+    /**
+     Tail (backwards) pagination with last / before.
+     */
+    private func fetch(last: Int, beforeIndex: Int?, slicedEdges: [TestEdge]) -> Maybe<TestConnection> {
+        let lastEdges = slicedEdges.count > last ? Array(slicedEdges[(slicedEdges.count - last)...]) : slicedEdges
         let pageInfo = TestPageInfo(
-            hasNextPage: startIndex > 0,
-            hasPreviousPage: endIndex < self.edges.count - 1
+            hasNextPage: beforeIndex ?? self.allEdges.count < self.allEdges.count - 1,
+            hasPreviousPage: lastEdges.count < slicedEdges.count
         )
 
-        let range = Range.bounded(
-            low: startIndex,
-            high: endIndex,
-            lowest: 0,
-            highest: self.edges.count
-        )
-
-        let edges = Array(self.edges[range])
-        let connection = TestConnection(pageInfo: pageInfo, edges: edges)
-
+        let connection = TestConnection(pageInfo: pageInfo, edges: lastEdges)
         return .just(connection)
     }
 }

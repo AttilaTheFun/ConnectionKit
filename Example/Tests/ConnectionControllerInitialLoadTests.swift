@@ -16,7 +16,7 @@ class ConnectionControllerInitialLoadTests: XCTestCase {
 
     func testInitialLoadEmptyConnectionHead() throws {
         // Create test data:
-        let config = ConnectionTestConfig(initialPageSize: 2, paginationPageSize: 5, edgeCount: 0, defaultIndex: 0)
+        let config = ConnectionTestConfig(initialPageSize: 2, paginationPageSize: 5, edgeCount: 0)
 
         // Run test:
         try self.runInitialLoadTest(
@@ -33,7 +33,7 @@ class ConnectionControllerInitialLoadTests: XCTestCase {
 
     func testInitialLoadEmptyConnectionTail() throws {
         // Create test data:
-        let config = ConnectionTestConfig(initialPageSize: 2, paginationPageSize: 5, edgeCount: 0, defaultIndex: 0)
+        let config = ConnectionTestConfig(initialPageSize: 2, paginationPageSize: 5, edgeCount: 0)
 
         // Run test:
         try self.runInitialLoadTest(
@@ -50,7 +50,7 @@ class ConnectionControllerInitialLoadTests: XCTestCase {
 
     func testInitialLoadIncompletePageHead() throws {
         // Create test data:
-        let config = ConnectionTestConfig(initialPageSize: 10, paginationPageSize: 10, edgeCount: 7, defaultIndex: 3)
+        let config = ConnectionTestConfig(initialPageSize: 10, paginationPageSize: 10, edgeCount: 7)
 
         // Calculate pages:
         let initialHeadPage = config.initialPage(for: .head)
@@ -70,7 +70,7 @@ class ConnectionControllerInitialLoadTests: XCTestCase {
 
     func testInitialLoadIncompletePageTail() throws {
         // Create test data:
-        let config = ConnectionTestConfig(initialPageSize: 10, paginationPageSize: 10, edgeCount: 7, defaultIndex: 3)
+        let config = ConnectionTestConfig(initialPageSize: 10, paginationPageSize: 10, edgeCount: 7)
 
         // Calculate pages:
         let initialTailPage = config.initialPage(for: .tail)
@@ -90,7 +90,7 @@ class ConnectionControllerInitialLoadTests: XCTestCase {
 
     func testInitialLoadCompletePageHead() throws {
         // Create test data:
-        let config = ConnectionTestConfig(initialPageSize: 10, paginationPageSize: 10, edgeCount: 100, defaultIndex: 50)
+        let config = ConnectionTestConfig(initialPageSize: 10, paginationPageSize: 10, edgeCount: 100)
 
         // Calculate pages:
         let initialHeadPage = config.initialPage(for: .head)
@@ -110,7 +110,7 @@ class ConnectionControllerInitialLoadTests: XCTestCase {
 
     func testInitialLoadCompletePageTail() throws {
         // Create test data:
-        let config = ConnectionTestConfig(initialPageSize: 10, paginationPageSize: 10, edgeCount: 100, defaultIndex: 50)
+        let config = ConnectionTestConfig(initialPageSize: 10, paginationPageSize: 10, edgeCount: 100)
 
         // Calculate pages:
         let initialTailPage = config.initialPage(for: .tail)
@@ -130,7 +130,7 @@ class ConnectionControllerInitialLoadTests: XCTestCase {
 
     func testInitialLoadResetHead() throws {
         // Create test data:
-        let config = ConnectionTestConfig(initialPageSize: 10, paginationPageSize: 10, edgeCount: 100, defaultIndex: 50)
+        let config = ConnectionTestConfig(initialPageSize: 10, paginationPageSize: 10, edgeCount: 100)
 
         // Calculate pages:
         let initialHeadPage = config.initialPage(for: .head)
@@ -162,7 +162,7 @@ class ConnectionControllerInitialLoadTests: XCTestCase {
 
     func testInitialLoadResetTail() throws {
         // Create test data:
-        let config = ConnectionTestConfig(initialPageSize: 10, paginationPageSize: 10, edgeCount: 100, defaultIndex: 50)
+        let config = ConnectionTestConfig(initialPageSize: 10, paginationPageSize: 10, edgeCount: 100)
 
         // Calculate pages:
         let initialTailPage = config.initialPage(for: .tail)

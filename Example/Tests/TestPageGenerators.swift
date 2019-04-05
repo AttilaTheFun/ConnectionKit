@@ -5,15 +5,12 @@ extension ConnectionTestConfig {
     func initialEdges(for end: End) -> [Edge<TestModel>] {
         let initialPageEdges: [Edge<TestModel>]
 
+        let allEdges = self.fetcherTestConfig.connectionEdges
         switch end {
         case .head:
-            let initialHeadPageStartIndex = max(self.fetcherTestConfig.defaultIndex - self.initialPageSize, 0)
-            let initialHeadPageEndIndex = self.fetcherTestConfig.defaultIndex
-            initialPageEdges = Array(self.fetcherTestConfig.connectionEdges[initialHeadPageStartIndex..<initialHeadPageEndIndex])
+            initialPageEdges = Array(allEdges[0..<self.initialPageSize])
         case .tail:
-            let initialPageStartIndex = self.fetcherTestConfig.defaultIndex
-            let initialPageEndIndex = min(self.fetcherTestConfig.defaultIndex + self.initialPageSize, self.fetcherTestConfig.connectionEdges.count)
-            initialPageEdges = Array(self.fetcherTestConfig.connectionEdges[initialPageStartIndex..<initialPageEndIndex])
+            initialPageEdges = Array(allEdges[allEdges.count - self.initialPageSize ..< allEdges.count])
         }
 
         return initialPageEdges

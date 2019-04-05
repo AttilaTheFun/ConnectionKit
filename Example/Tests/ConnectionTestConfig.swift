@@ -10,13 +10,12 @@ final class ConnectionTestConfig {
     init(
         initialPageSize: Int,
         paginationPageSize: Int,
-        edgeCount: Int,
-        defaultIndex: Int)
+        edgeCount: Int)
     {
 
         self.initialPageSize = initialPageSize
         self.paginationPageSize = paginationPageSize
-        self.fetcherTestConfig = FetcherTestConfig(defaultIndex: defaultIndex, edgeCount: edgeCount)
+        self.fetcherTestConfig = FetcherTestConfig(edgeCount: edgeCount)
         self.controller = ConnectionController(
             fetcher: self.fetcherTestConfig.fetcher,
             parser: TestParser.self,

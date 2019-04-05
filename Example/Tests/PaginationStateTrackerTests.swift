@@ -65,10 +65,10 @@ class PaginationStateTrackerTests: XCTestCase {
         XCTAssertEqual(tracker.hasFetchedLastPage(from: .tail), false)
     }
 
-    func testTailIgnoresPreviousPage() throws {
+    func testTailIgnoresNextPage() throws {
 
         // Create test data:
-        let pageInfo = PageInfo(hasNextPage: true, hasPreviousPage: false)
+        let pageInfo = PageInfo(hasNextPage: false, hasPreviousPage: true)
         let tracker = PaginationStateTracker()
 
         // Run test:
@@ -85,7 +85,7 @@ class PaginationStateTrackerTests: XCTestCase {
         // Run test:
         let first = PageInfo(hasNextPage: true, hasPreviousPage: true)
         tracker.ingest(pageInfo: first, from: .tail)
-        let second = PageInfo(hasNextPage: false, hasPreviousPage: true)
+        let second = PageInfo(hasNextPage: true, hasPreviousPage: false)
         tracker.ingest(pageInfo: second, from: .tail)
         XCTAssertEqual(tracker.hasFetchedLastPage(from: .head), false)
         XCTAssertEqual(tracker.hasFetchedLastPage(from: .tail), true)
@@ -107,12 +107,13 @@ class PaginationStateTrackerTests: XCTestCase {
     func testBothReachEnd() throws {
 
         // Create test data:
-        let pageInfo = PageInfo(hasNextPage: false, hasPreviousPage: true)
         let tracker = PaginationStateTracker()
 
         // Run test:
-        tracker.ingest(pageInfo: pageInfo, from: .head)
-        tracker.ingest(pageInfo: pageInfo, from: .tail)
+        let first = PageInfo(hasNextPage: false, hasPreviousPage: true)
+        tracker.ingest(pageInfo: first, from: .head)
+        let second = PageInfo(hasNextPage: true, hasPreviousPage: false)
+        tracker.ingest(pageInfo: second, from: .tail)
         XCTAssertEqual(tracker.hasFetchedLastPage(from: .head), true)
         XCTAssertEqual(tracker.hasFetchedLastPage(from: .tail), true)
     }

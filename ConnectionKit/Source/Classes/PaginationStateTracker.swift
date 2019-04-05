@@ -43,7 +43,7 @@ extension PaginationStateTracker {
             // If ingesting from the tail, only update canFetchNextPageFromHead.
             newState = PaginationState(
                 hasFetchedLastPageFromHead: previousState.hasFetchedLastPageFromHead,
-                hasFetchedLastPageFromTail: !pageInfo.hasNextPage
+                hasFetchedLastPageFromTail: !pageInfo.hasPreviousPage
             )
         }
         self.stateRelay.accept(newState)
