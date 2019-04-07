@@ -11,9 +11,12 @@ extension XCTestCase {
         disposedBy disposeBag: DisposeBag) throws
     {
         // Create fetcher:
-        let pageFetcher = PageFetcher<TestFetcher, TestParser>(fetchablePage: {
-            return config.fetcher.fetch(config: fetchConfig)
-        }, parser: TestParser.self)
+        let pageFetcher = PageFetcher<TestFetcher, TestParser>(
+            fetchablePage: {
+                return config.fetcher.fetch(config: fetchConfig)
+            },
+            parser: TestParser.self
+        )
         let observable = pageFetcher.stateObservable
 
         // Create expectations:

@@ -3,9 +3,7 @@ import RxBlocking
 import RxSwift
 import XCTest
 
-// TODO: Write more page fetcher tests.
-
-class PageFetcherTests: XCTestCase {
+class PageFetcherInitialPageTests: XCTestCase {
 
     private var disposeBag = DisposeBag()
 
@@ -16,7 +14,7 @@ class PageFetcherTests: XCTestCase {
         self.disposeBag = DisposeBag()
     }
 
-    func testEmptyConnection() throws {
+    func testInitialEmptyConnectionHead() throws {
         // Create test data:
         let config = FetcherTestConfig(edgeCount: 0)
         let fetchConfig = FetchConfig(first: 10)
@@ -33,12 +31,29 @@ class PageFetcherTests: XCTestCase {
         )
     }
 
-    func testIncompletePageForward() throws {
+    func testInitialEmptyConnectionTail() throws {
+        // Create test data:
+        let config = FetcherTestConfig(edgeCount: 0)
+        let fetchConfig = FetchConfig(last: 10)
+        let expectedPageInfo = PageInfo(hasNextPage: false, hasPreviousPage: false)
+        let expectedEdges: [Edge<TestModel>] = []
+
+        // Run test:
+        try self.runTest(
+            config: config,
+            fetchConfig: fetchConfig,
+            expectedPageInfo: expectedPageInfo,
+            expectedEdges: expectedEdges,
+            disposedBy: self.disposeBag
+        )
+    }
+
+    func testInitialIncompletePageHead() throws {
         // Create test data:
         let config = FetcherTestConfig(edgeCount: 5)
         let fetchConfig = FetchConfig(first: 10)
-        let expectedPageInfo = PageInfo(hasNextPage: false, hasPreviousPage: true)
-        let expectedEdges = Array(config.connectionEdges[2...])
+        let expectedPageInfo = PageInfo(hasNextPage: false, hasPreviousPage: false)
+        let expectedEdges = Array(config.connectionEdges)
 
         // Run test:
         try self.runTest(
@@ -50,12 +65,12 @@ class PageFetcherTests: XCTestCase {
         )
     }
 
-    func testIncompletePageBackward() throws {
+    func testInitialIncompletePageTail() throws {
         // Create test data:
         let config = FetcherTestConfig(edgeCount: 5)
         let fetchConfig = FetchConfig(last: 10)
-        let expectedPageInfo = PageInfo(hasNextPage: false, hasPreviousPage: true)
-        let expectedEdges = Array(config.connectionEdges[0..<2])
+        let expectedPageInfo = PageInfo(hasNextPage: false, hasPreviousPage: false)
+        let expectedEdges = Array(config.connectionEdges)
 
         // Run test:
         try self.runTest(
@@ -67,12 +82,12 @@ class PageFetcherTests: XCTestCase {
         )
     }
 
-    func testCompletePageForward() throws {
+    func testInitialCompletePageHead() throws {
         // Create test data:
-        let config = FetcherTestConfig(edgeCount: 100)
+        let config = FetcherTestConfig(edgeCount: 20)
         let fetchConfig = FetchConfig(first: 10)
-        let expectedPageInfo = PageInfo(hasNextPage: true, hasPreviousPage: true)
-        let expectedEdges = Array(config.connectionEdges[50..<60])
+        let expectedPageInfo = PageInfo(hasNextPage: true, hasPreviousPage: false)
+        let expectedEdges = Array(config.connectionEdges[0..<10])
 
         // Run test:
         try self.runTest(
@@ -84,12 +99,12 @@ class PageFetcherTests: XCTestCase {
         )
     }
 
-    func testCompletePageBackward() throws {
+    func testInitialCompletePageTail() throws {
         // Create test data:
-        let config = FetcherTestConfig(edgeCount: 100)
+        let config = FetcherTestConfig(edgeCount: 20)
         let fetchConfig = FetchConfig(last: 10)
-        let expectedPageInfo = PageInfo(hasNextPage: true, hasPreviousPage: true)
-        let expectedEdges = Array(config.connectionEdges[40..<50])
+        let expectedPageInfo = PageInfo(hasNextPage: false, hasPreviousPage: true)
+        let expectedEdges = Array(config.connectionEdges[10..<20])
 
         // Run test:
         try self.runTest(

@@ -16,7 +16,7 @@ class ConnectionControllerSubsequentPageTests: XCTestCase {
 
     func testSubsequentIncompletePageHead() throws {
         // Create test config:
-        let config = ConnectionTestConfig(initialPageSize: 5, paginationPageSize: 10, edgeCount: 20)
+        let config = ConnectionTestConfig(initialPageSize: 10, paginationPageSize: 10, edgeCount: 15)
 
         // Calculate pages:
         let initialHeadPage = config.initialPage(for: .head)

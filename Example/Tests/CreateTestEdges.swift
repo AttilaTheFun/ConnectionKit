@@ -34,5 +34,3 @@ extension Array where Element == Edge<TestModel> {
         return Array<TestEdge>.create(count: count).map { Edge<TestModel>(node: TestParser.parse(node: $0.node), cursor: $0.cursor) }
     }
 }
-
-
