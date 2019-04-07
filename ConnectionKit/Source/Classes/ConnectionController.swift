@@ -10,7 +10,7 @@ public final class ConnectionController<Fetcher, Parser>
     // MARK: Dependencies
 
     private let paginationStateTracker = PaginationStateTracker()
-    private let pageStorer = PageStorer<Parser.Model>()
+    private let pageStorer: PageStorer<Parser.Model>
     private let pageFetcherFactory: PageFetcherFactory<Fetcher, Parser, PageStorer<Parser.Model>>
     private let pageFetcherCoordinator: PageFetcherCoordinator<Fetcher, Parser>
     private let disposeBag = DisposeBag()
@@ -21,7 +21,8 @@ public final class ConnectionController<Fetcher, Parser>
 
     // MARK: Initialization
 
-    public init(fetcher: Fetcher, parser: Parser.Type, initialPageSize: Int, paginationPageSize: Int) {
+    public init(fetcher: Fetcher, parser: Parser.Type, initialPageSize: Int, paginationPageSize: Int, initialEdges: [Edge<Parser.Model>] = []) {
+        self.pageStorer = PageStorer(initialEdges: initialEdges)
         self.pageFetcherFactory = PageFetcherFactory(
             fetcher: fetcher,
             parser: parser,

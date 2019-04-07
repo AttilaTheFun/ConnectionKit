@@ -16,6 +16,11 @@ import RxSwift
  */
 final class PageStorer<Model> where Model: Hashable {
     private let pagesRelay = BehaviorRelay<[Page<Model>]>(value: [])
+
+    init(initialEdges: [Edge<Model>] = []) {
+        // Initial end doesn't matter so just use head.
+        self.applyUpdate(from: [], edges: initialEdges, from: .head)
+    }
 }
 
 // MARK: Private

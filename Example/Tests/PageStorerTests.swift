@@ -27,6 +27,17 @@ class PageStorerTests: XCTestCase {
         XCTAssertEqual(storer.pages, [])
     }
 
+    func testInitialEdges() throws {
+
+        // Create test data:
+        let edges: [Edge<TestModel>] = .create(count: 5)
+        let storer = PageStorer<TestModel>(initialEdges: edges)
+
+        // Run test:
+        XCTAssertEqual(storer.pages.count, 1)
+        XCTAssertEqual(storer.pages, [Page<TestModel>(index: 0, edges: edges)])
+    }
+
     func testHasEmptyPagesAfterReset() throws {
 
         // Create test data:
