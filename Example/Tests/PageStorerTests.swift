@@ -59,7 +59,7 @@ class PageStorerTests: XCTestCase {
         XCTAssertEqual(storer.pages, [Page<TestModel>(index: 0, edges: edges)])
     }
 
-    func testHeadPageIndicesGoDown() throws {
+    func testHeadPageIndicesGoUp() throws {
 
         // Create test data:
         let edges: [Edge<TestModel>] = .create(count: 5)
@@ -71,14 +71,14 @@ class PageStorerTests: XCTestCase {
             XCTAssertEqual(storer.pages.count, i + 1)
 
             let managerPages = storer.pages
-            let ingestedPage = managerPages[managerPages.count - i - 1]
-            let testPage = Page<TestModel>(index: -1 * i, edges: edges)
+            let ingestedPage = managerPages[i]
+            let testPage = Page<TestModel>(index: i, edges: edges)
 
             XCTAssertEqual(ingestedPage, testPage)
         }
     }
 
-    func testTailPageIndicesGoUp() throws {
+    func testTailPageIndicesGoDown() throws {
 
         // Create test data:
         let edges: [Edge<TestModel>] = .create(count: 5)
@@ -90,8 +90,8 @@ class PageStorerTests: XCTestCase {
             XCTAssertEqual(storer.pages.count, i + 1)
 
             let managerPages = storer.pages
-            let ingestedPage = managerPages[i]
-            let testPage = Page<TestModel>(index: i, edges: edges)
+            let ingestedPage = managerPages[managerPages.count - i - 1]
+            let testPage = Page<TestModel>(index: -1 * i, edges: edges)
 
             XCTAssertEqual(ingestedPage, testPage)
         }
@@ -121,13 +121,13 @@ class PageStorerTests: XCTestCase {
             let insertedPage: Page<TestModel>
             switch end {
             case .head:
-                headPagesInserted += 1
-                pageIndex = -1 * headPagesInserted
-                insertedPage = storer.pages.first!
-            case .tail:
                 tailPagesInserted += 1
                 pageIndex = tailPagesInserted
                 insertedPage = storer.pages.last!
+            case .tail:
+                headPagesInserted += 1
+                pageIndex = -1 * headPagesInserted
+                insertedPage = storer.pages.first!
             }
 
             let testPage = Page<TestModel>(index: pageIndex, edges: edges)

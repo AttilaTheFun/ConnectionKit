@@ -29,11 +29,11 @@ final class PageFetcherFactory<Fetcher, Parser, Provider>
 extension PageFetcherFactory {
     private func cursor(for end: End) -> String? {
         let pages = self.provider.pages
-        guard let page = end == .head ? pages.first : pages.last else {
+        guard let page = end == .head ? pages.last : pages.first else {
             return nil
         }
 
-        guard let edge = end == .head ? page.edges.first : page.edges.last else {
+        guard let edge = end == .head ? page.edges.last : page.edges.first else {
             return nil
         }
 

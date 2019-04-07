@@ -22,11 +22,11 @@ final class PageStorer<Model> where Model: Hashable {
 
 extension PageStorer {
     private func headPageIndex(for pages: [Page<Model>]) -> Int {
-        return pages.first?.index ?? 0
+        return pages.last?.index ?? 0
     }
 
     private func tailPageIndex(for pages: [Page<Model>]) -> Int {
-        return pages.last?.index ?? 0
+        return pages.first?.index ?? 0
     }
 
     /**
@@ -49,11 +49,11 @@ extension PageStorer {
         // Append the page to the beginning or end if ingesting from the head or tail respectively.
         switch end {
         case .head:
-            let headPage = Page<Model>(index: self.headPageIndex(for: previousPages) - 1, edges: edges)
-            self.pagesRelay.accept([headPage] + previousPages)
+            let headPage = Page<Model>(index: self.headPageIndex(for: previousPages) + 1, edges: edges)
+            self.pagesRelay.accept(previousPages + [headPage])
         case .tail:
-            let tailPage = Page<Model>(index: self.tailPageIndex(for: previousPages) + 1, edges: edges)
-            self.pagesRelay.accept(previousPages + [tailPage])
+            let tailPage = Page<Model>(index: self.tailPageIndex(for: previousPages) - 1, edges: edges)
+            self.pagesRelay.accept([tailPage] + previousPages)
         }
     }
 }
