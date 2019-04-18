@@ -185,7 +185,6 @@ extension ConnectionController {
     public func initialLoadStateObservable(for end: End) -> Observable<InitialLoadState> {
         return self.pageFetcherCoordinator.stateObservable(for: end, isInitial: true)
             .map(InitialLoadState.init)
-            .distinctUntilChanged()
     }
 
     /**

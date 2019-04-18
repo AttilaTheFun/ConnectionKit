@@ -5,7 +5,6 @@ final class PageFetcherCoordinator<Fetcher, Parser>
     where Fetcher: ConnectionFetcher, Parser: ModelParser,
     Fetcher.FetchedConnection.ConnectedEdge.Node == Parser.Node
 {
-
     private var initialHeadPageFetcher: PageFetcher<Fetcher, Parser>
     private var initialTailPageFetcher: PageFetcher<Fetcher, Parser>
     private var headPageFetcher: PageFetcher<Fetcher, Parser>
@@ -132,7 +131,8 @@ extension PageFetcherCoordinator {
             return assertionFailure("Attempted to fetch page from invalid state")
         }
 
-        self.fetcher(for: end, isInitial: isInitial).fetchPage()
+        let fetcher = self.fetcher(for: end, isInitial: isInitial)
+        fetcher.fetchPage()
     }
 
     /**
