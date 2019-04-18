@@ -9,7 +9,7 @@ struct TestFetcher {
     let allEdges: [TestEdge]
 }
 
-extension TestFetcher: ConnectionFetcher {
+extension TestFetcher: ConnectionFetcherProtocol {
     private enum TestFetcherError: Error {
         case forwardAndBackwardParameters
         case neitherParameter

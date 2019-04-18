@@ -2,7 +2,7 @@ import RxCocoa
 import RxSwift
 
 final class PageFetcherFactory<Fetcher, Parser, Provider>
-    where Fetcher: ConnectionFetcher, Parser: ModelParser, Provider: PageProvider,
+    where Fetcher: ConnectionFetcherProtocol, Parser: ModelParser, Provider: PageProvider,
     Fetcher.FetchedConnection.ConnectedEdge.Node == Parser.Node, Parser.Model == Provider.Model
 {
     let initialPageSize: Int

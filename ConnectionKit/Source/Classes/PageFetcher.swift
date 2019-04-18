@@ -2,7 +2,7 @@ import RxCocoa
 import RxSwift
 
 final class PageFetcher<Fetcher, Parser>
-    where Fetcher: ConnectionFetcher, Parser: ModelParser,
+    where Fetcher: ConnectionFetcherProtocol, Parser: ModelParser,
     Fetcher.FetchedConnection.ConnectedEdge.Node == Parser.Node
 {
     private let parser: Parser.Type

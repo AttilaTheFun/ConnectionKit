@@ -12,6 +12,9 @@
 		01D08E44A6309BAC80B08EBDAB7514FF /* Concat.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5AD77F0118694BD9246C1F59BBF8758 /* Concat.swift */; };
 		021339B30A82D89E8FA4DAEE6155ED26 /* _RXObjCRuntime.h in Headers */ = {isa = PBXBuildFile; fileRef = F0C50C0E6F2B2F1AFFC75C6D6D75A557 /* _RXObjCRuntime.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0215DD5E321A7D27A8D0B6DC76DEF025 /* RxCollectionViewDataSourcePrefetchingProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5C04344EB9AA76CD810F9EB6A103C5 /* RxCollectionViewDataSourcePrefetchingProxy.swift */; };
+		0236F2E022686AF900BA142A /* NodeFetcherProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0236F2DF22686AF900BA142A /* NodeFetcherProtocol.swift */; };
+		0236F2E222686BB800BA142A /* NestedConnectionNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0236F2E122686BB800BA142A /* NestedConnectionNode.swift */; };
+		0236F2E422686C5500BA142A /* NestedConnectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0236F2E322686C5500BA142A /* NestedConnectionController.swift */; };
 		025E7DCA04E08DEB2B88C53512D6B1BB /* RecursiveLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3526C612FF50757A3D60FD311DF9E37 /* RecursiveLock.swift */; };
 		0267D80522516B2E00A05B00 /* ModelParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0267D80422516B2E00A05B00 /* ModelParser.swift */; };
 		0267D80722516D5400A05B00 /* PageInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0267D80622516D5400A05B00 /* PageInfo.swift */; };
@@ -454,6 +457,9 @@
 		0046E79DBD9ECA82C761B18B3459DD6A /* Completable+AndThen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Completable+AndThen.swift"; path = "RxSwift/Traits/Completable+AndThen.swift"; sourceTree = "<group>"; };
 		01742E21D3F3CCA4E42CA5DAC095BF5B /* URLSession+Rx.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "URLSession+Rx.swift"; path = "RxCocoa/Foundation/URLSession+Rx.swift"; sourceTree = "<group>"; };
 		01CD4CE0325BBE8505E628FAF06E19EB /* Empty.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Empty.swift; path = RxSwift/Observables/Empty.swift; sourceTree = "<group>"; };
+		0236F2DF22686AF900BA142A /* NodeFetcherProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeFetcherProtocol.swift; sourceTree = "<group>"; };
+		0236F2E122686BB800BA142A /* NestedConnectionNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NestedConnectionNode.swift; sourceTree = "<group>"; };
+		0236F2E322686C5500BA142A /* NestedConnectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NestedConnectionController.swift; sourceTree = "<group>"; };
 		023B10CA4C97F7E5A5C73D232953F543 /* RxWebViewDelegateProxy.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RxWebViewDelegateProxy.swift; path = RxCocoa/iOS/Proxies/RxWebViewDelegateProxy.swift; sourceTree = "<group>"; };
 		0267D80422516B2E00A05B00 /* ModelParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelParser.swift; sourceTree = "<group>"; };
 		0267D80622516D5400A05B00 /* PageInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageInfo.swift; sourceTree = "<group>"; };
@@ -926,6 +932,7 @@
 		17B8BBC948A2B2DFC9392A79D80220C3 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				0236F2E322686C5500BA142A /* NestedConnectionController.swift */,
 				BC550AFDF8C2F2747D80122E8E0EB466 /* ConnectionController.swift */,
 				9529F5B3754DED683E69F650B7CE9DD5 /* PageFetcher.swift */,
 				41842EBEB4EA92A41270F725F10D965A /* PageFetcherCoordinator.swift */,
@@ -1202,9 +1209,11 @@
 			isa = PBXGroup;
 			children = (
 				C463806417369D7467EF6342741CF115 /* ConnectionEdge.swift */,
-				99B3915A275BD77A277846BB283B8ACF /* ConnectionFetcher.swift */,
 				4D54119AE0F6593D2CA287DFB3D1EB98 /* ConnectionPageInfo.swift */,
 				366D81A0927843C7F85A8EE04B7F0613 /* ConnectionProtocol.swift */,
+				99B3915A275BD77A277846BB283B8ACF /* ConnectionFetcher.swift */,
+				0236F2E122686BB800BA142A /* NestedConnectionNode.swift */,
+				0236F2DF22686AF900BA142A /* NodeFetcherProtocol.swift */,
 				0267D80422516B2E00A05B00 /* ModelParser.swift */,
 				6E305993D993F6C4BA38257C213E1446 /* PageProvider.swift */,
 			);
@@ -1772,6 +1781,7 @@
 				0267D80922516E7000A05B00 /* Edge.swift in Sources */,
 				863EC99DA2E3FBF6234CD172F7D2E255 /* ConnectionController.swift in Sources */,
 				4D6C39889E786EDC7BC21BBD8C152447 /* ConnectionEdge.swift in Sources */,
+				0236F2E422686C5500BA142A /* NestedConnectionController.swift in Sources */,
 				F97FE3F5D0D37D4F387A2797B2F0602B /* ConnectionFetcher.swift in Sources */,
 				58C0AA12362038A88DE7EEB9A1C38535 /* ConnectionKit-dummy.m in Sources */,
 				0953E6934709F42E53E944069339910A /* ConnectionPageInfo.swift in Sources */,
@@ -1780,8 +1790,10 @@
 				F929DAD4B370960E95429D299523D662 /* EndState.swift in Sources */,
 				42DC34E1A6C743B3F76CFAA572E949DB /* ErrorWrapper.swift in Sources */,
 				B04F2CD53DAB956DB73404643E7CBF5D /* InitialLoadState.swift in Sources */,
+				0236F2E022686AF900BA142A /* NodeFetcherProtocol.swift in Sources */,
 				17925A0D5CBD6FB42DFA9E6722CE6F18 /* Page.swift in Sources */,
 				A70C2E950D7FED1EC1AE3054D814C344 /* PageFetcher.swift in Sources */,
+				0236F2E222686BB800BA142A /* NestedConnectionNode.swift in Sources */,
 				F6E9E1856354D5A38C796467778182DE /* PageFetcherCoordinator.swift in Sources */,
 				9A29AA20136E373EA6CB53A1DFB17C6C /* PageFetcherFactory.swift in Sources */,
 				0267D80722516D5400A05B00 /* PageInfo.swift in Sources */,

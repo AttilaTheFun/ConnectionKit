@@ -1,10 +1,8 @@
 import RxCocoa
 import RxSwift
 
-// TODO: For initial page, should it be okay to fetch next / prev page while fetching initial page?
-
 public final class ConnectionController<Fetcher, Parser>
-    where Fetcher: ConnectionFetcher, Parser: ModelParser,
+    where Fetcher: ConnectionFetcherProtocol, Parser: ModelParser,
     Fetcher.FetchedConnection.ConnectedEdge.Node == Parser.Node
 {
     // MARK: Dependencies
@@ -97,7 +95,7 @@ extension ConnectionController {
      */
     public static func passthrough<Fetcher>(fetcher: Fetcher, initialPageSize: Int, paginationPageSize: Int)
         -> ConnectionController<Fetcher, DefaultParser<Fetcher.FetchedConnection.ConnectedEdge.Node>>
-        where Fetcher: ConnectionFetcher, Fetcher.FetchedConnection.ConnectedEdge.Node: Hashable
+        where Fetcher: ConnectionFetcherProtocol, Fetcher.FetchedConnection.ConnectedEdge.Node: Hashable
     {
         return ConnectionController<Fetcher, DefaultParser<Fetcher.FetchedConnection.ConnectedEdge.Node>>(
             fetcher: fetcher,
