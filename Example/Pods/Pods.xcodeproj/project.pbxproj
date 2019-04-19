@@ -8,8 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		01C1C581461E15F763F8CE51E3137374 /* DeprecationWarner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2B5AF938631F61E84B1C90C484F8D49 /* DeprecationWarner.swift */; };
-		0236F2E92269A37900BA142A /* NestedConnectionCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0236F2E82269A37900BA142A /* NestedConnectionCoordinator.swift */; };
 		0236F2EB2269A78800BA142A /* InitialConnectionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0236F2EA2269A78800BA142A /* InitialConnectionState.swift */; };
+		02AD83F42269B39700D839A5 /* ConnectionControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AD83F32269B39700D839A5 /* ConnectionControllerFactory.swift */; };
+		02AD83F62269BCC600D839A5 /* Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AD83F52269BCC600D839A5 /* Identifiable.swift */; };
+		02AD83F82269C4DA00D839A5 /* NestedConnectionControllerCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AD83F72269C4D900D839A5 /* NestedConnectionControllerCoordinator.swift */; };
 		0309DEAE1BE2B6864501875D06003B39 /* Single.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A5455899E016BBCDA732959E6383A29 /* Single.swift */; };
 		03AC300D0BFA07390DA9E336B1E82152 /* ObservableConvertibleType+SharedSequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07EE1B044282D8BB81B49CE5754EEF12 /* ObservableConvertibleType+SharedSequence.swift */; };
 		03D290A93FFF9F5CE7CD99AA08C4D913 /* NSObject+Rx+RawRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0457CE8E069C78936FAF4ABB17C76C /* NSObject+Rx+RawRepresentable.swift */; };
@@ -421,8 +423,10 @@
 /* Begin PBXFileReference section */
 		01124E0176CC0B82A24409D473700BF1 /* Observable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Observable.swift; path = RxSwift/Observable.swift; sourceTree = "<group>"; };
 		01C0E7EA7AAF844D61468FF56F5A603B /* ObserverBase.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ObserverBase.swift; path = RxSwift/Observers/ObserverBase.swift; sourceTree = "<group>"; };
-		0236F2E82269A37900BA142A /* NestedConnectionCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NestedConnectionCoordinator.swift; sourceTree = "<group>"; };
 		0236F2EA2269A78800BA142A /* InitialConnectionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialConnectionState.swift; sourceTree = "<group>"; };
+		02AD83F32269B39700D839A5 /* ConnectionControllerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionControllerFactory.swift; sourceTree = "<group>"; };
+		02AD83F52269BCC600D839A5 /* Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Identifiable.swift; sourceTree = "<group>"; };
+		02AD83F72269C4D900D839A5 /* NestedConnectionControllerCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NestedConnectionControllerCoordinator.swift; sourceTree = "<group>"; };
 		02B8C1F3BC29F23DB16EF5EEF1F7A926 /* Using.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Using.swift; path = RxSwift/Observables/Using.swift; sourceTree = "<group>"; };
 		035ED43CB114F0EAF66D5E0AD9A28C9C /* RetryWhen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RetryWhen.swift; path = RxSwift/Observables/RetryWhen.swift; sourceTree = "<group>"; };
 		03CEA9B2A6BD3B461B00CE954DF74A23 /* RxCocoa-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "RxCocoa-prefix.pch"; sourceTree = "<group>"; };
@@ -871,6 +875,7 @@
 			isa = PBXGroup;
 			children = (
 				41865EAC25AD966B74EA9D9F96A04391 /* NodeFetcherProtocol.swift */,
+				02AD83F52269BCC600D839A5 /* Identifiable.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -879,7 +884,8 @@
 			isa = PBXGroup;
 			children = (
 				21E5CE9F90A4E39C7CE102845A0B9B5D /* NestedConnectionController.swift */,
-				0236F2E82269A37900BA142A /* NestedConnectionCoordinator.swift */,
+				02AD83F72269C4D900D839A5 /* NestedConnectionControllerCoordinator.swift */,
+				02AD83F32269B39700D839A5 /* ConnectionControllerFactory.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -1877,7 +1883,9 @@
 				0236F2EB2269A78800BA142A /* InitialConnectionState.swift in Sources */,
 				444E805526075DF2071EBA7728D314C3 /* ConnectionFetcher.swift in Sources */,
 				84CA65429937B390BA3F4116FF0C51EC /* ConnectionKit-dummy.m in Sources */,
+				02AD83F82269C4DA00D839A5 /* NestedConnectionControllerCoordinator.swift in Sources */,
 				D16A512CF7AB2BA8518A4F5CE4D931AB /* ConnectionPageInfo.swift in Sources */,
+				02AD83F42269B39700D839A5 /* ConnectionControllerFactory.swift in Sources */,
 				FAC490DA2E8DE0B14729DB2835D91817 /* ConnectionProtocol.swift in Sources */,
 				5A4950E670CAF96A2CCFEC27661D676A /* Edge.swift in Sources */,
 				829F16F464E60147040E1E60F1F2F6BB /* End.swift in Sources */,
@@ -1885,7 +1893,6 @@
 				AFE49AB658D3DE7D9B60B93D2C087BEE /* ErrorWrapper.swift in Sources */,
 				06653E68FDBFBBE5855127976379D089 /* InitialLoadState.swift in Sources */,
 				250A7F04BD63DC48F3437727D2ACE750 /* ModelParser.swift in Sources */,
-				0236F2E92269A37900BA142A /* NestedConnectionCoordinator.swift in Sources */,
 				CD595BE7606BBC85A603EE36EC684801 /* NestedConnectionController.swift in Sources */,
 				E4AD52C246A44E50B4B07D10E45963BF /* NodeFetcherProtocol.swift in Sources */,
 				658BAE7AF6A1569D5D36264F0F2A691F /* Page.swift in Sources */,
@@ -1896,6 +1903,7 @@
 				673967CAA380183E58C82C76D5946796 /* PageInfo.swift in Sources */,
 				328B8835F6E59702E54DFA97CB185854 /* PageProvider.swift in Sources */,
 				1DF0795BE91F6B880446CB1F0E8AE9EB /* PageStorer.swift in Sources */,
+				02AD83F62269BCC600D839A5 /* Identifiable.swift in Sources */,
 				4C7809B004D371A3A9AB45C691BCEE78 /* PaginationStateTracker.swift in Sources */,
 				0602AFB494024DA7E5E6F2F5430760E2 /* Typealiases.swift in Sources */,
 			);
