@@ -24,29 +24,32 @@ private struct PaginationState {
  pages from the relevant end.
  */
 final class PaginationStateTracker {
-    private let stateRelay = BehaviorRelay<PaginationState>(value: .initial)
+    private let stateRelay: BehaviorRelay<PaginationState>
+
+    init(initialPageInfo: PageInfo = PageInfo(hasNextPage: true, hasPreviousPage: true), from end: End = .head) {
+        let initialState = PaginationStateTracker.nextState(from: .initial, pageInfo: initialPageInfo, from: end)
+        self.stateRelay = BehaviorRelay<PaginationState>(value: initialState)
+    }
 }
 
 // MARK: Private
 
 extension PaginationStateTracker {
-    private func applyUpdate(from previousState: PaginationState, pageInfo: PageInfo, from end: End) {
-        let newState: PaginationState
+    private static func nextState(from previousState: PaginationState, pageInfo: PageInfo, from end: End) -> PaginationState {
         switch end {
         case .head:
             // If ingesting from the head, only update canFetchNextPageFromHead.
-            newState = PaginationState(
+            return PaginationState(
                 hasFetchedLastPageFromHead: !pageInfo.hasNextPage,
                 hasFetchedLastPageFromTail: previousState.hasFetchedLastPageFromTail
             )
         case .tail:
             // If ingesting from the tail, only update canFetchNextPageFromHead.
-            newState = PaginationState(
+            return PaginationState(
                 hasFetchedLastPageFromHead: previousState.hasFetchedLastPageFromHead,
                 hasFetchedLastPageFromTail: !pageInfo.hasPreviousPage
             )
         }
-        self.stateRelay.accept(newState)
     }
 }
 
@@ -75,7 +78,8 @@ extension PaginationStateTracker {
      Ingest a new page info object into the manager.
      */
     func ingest(pageInfo: PageInfo, from end: End) {
-        self.applyUpdate(from: self.stateRelay.value, pageInfo: pageInfo, from: end)
+        let initialState = PaginationStateTracker.nextState(from: self.stateRelay.value, pageInfo: pageInfo, from: end)
+        self.stateRelay.accept(initialState)
     }
 
     /**
@@ -83,6 +87,7 @@ extension PaginationStateTracker {
      canFetchNextPageFromHead and canFetchNextPageFromTail are both true
      */
     func reset(to pageInfo: PageInfo, from end: End) {
-        self.applyUpdate(from: .initial, pageInfo: pageInfo, from: end)
+        let initialState = PaginationStateTracker.nextState(from: .initial, pageInfo: pageInfo, from: end)
+        self.stateRelay.accept(initialState)
     }
 }

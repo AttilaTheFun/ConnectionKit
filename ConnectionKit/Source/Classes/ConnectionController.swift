@@ -7,7 +7,7 @@ public final class ConnectionController<Fetcher, Parser>
 {
     // MARK: Dependencies
 
-    private let paginationStateTracker = PaginationStateTracker()
+    private let paginationStateTracker: PaginationStateTracker
     private let pageStorer: PageStorer<Parser.Model>
     private let pageFetcherFactory: PageFetcherFactory<Fetcher, Parser, PageStorer<Parser.Model>>
     private let pageFetcherCoordinator: PageFetcherCoordinator<Fetcher, Parser>
@@ -19,8 +19,26 @@ public final class ConnectionController<Fetcher, Parser>
 
     // MARK: Initialization
 
-    public init(fetcher: Fetcher, parser: Parser.Type, initialPageSize: Int, paginationPageSize: Int, initialEdges: [Edge<Parser.Model>] = []) {
+    public init(
+        fetcher: Fetcher,
+        parser: Parser.Type,
+        initialPageSize: Int,
+        paginationPageSize: Int,
+        initialState: InitialConnectionState<Fetcher.FetchedConnection>? = nil)
+    {
+        // Setup Pagination State Tracker
+        let initialPageInfo = initialState.flatMap { PageInfo(connectionPageInfo: $0.connection.pageInfo) } ??
+            PageInfo(hasNextPage: true, hasPreviousPage: true)
+        self.paginationStateTracker = PaginationStateTracker(initialPageInfo: initialPageInfo, from: initialState?.end ?? .head)
+
+        // Setup Page Storer
+        let initialEdges = (initialState?.connection.edges ?? []).map { edge -> Edge<Parser.Model> in
+            let node = parser.parse(node: edge.node)
+            return Edge(node: node, cursor: edge.cursor)
+        }
         self.pageStorer = PageStorer(initialEdges: initialEdges)
+
+        // Setup Page Fetcher Factory
         self.pageFetcherFactory = PageFetcherFactory(
             fetcher: fetcher,
             parser: parser,
@@ -29,6 +47,7 @@ public final class ConnectionController<Fetcher, Parser>
             paginationPageSize: paginationPageSize
         )
 
+        // Setup Page Fetcher Coordinator
         self.pageFetcherCoordinator = PageFetcherCoordinator(
             initialHeadPageFetcher: self.pageFetcherFactory.fetcher(for: .head, isInitial: true),
             initialTailPageFetcher: self.pageFetcherFactory.fetcher(for: .tail, isInitial: true),
@@ -36,7 +55,7 @@ public final class ConnectionController<Fetcher, Parser>
             tailPageFetcher: self.pageFetcherFactory.fetcher(for: .tail, isInitial: false)
         )
 
-        // Observe page loads:
+        // Observe Page Loads
         self.observeInitialLoad(fetcher: self.pageFetcherCoordinator.stateObservable(for: .head, isInitial: true), end: .head)
         self.observeNextPageLoad(fetcher: self.pageFetcherCoordinator.stateObservable(for: .head, isInitial: false), end: .head)
         self.observeInitialLoad(fetcher: self.pageFetcherCoordinator.stateObservable(for: .tail, isInitial: true), end: .tail)
