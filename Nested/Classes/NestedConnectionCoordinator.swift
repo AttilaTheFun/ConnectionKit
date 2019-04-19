@@ -17,5 +17,10 @@ final class NestedConnectionCoordinator<Identifier, Fetcher, Parser>
 }
 
 extension NestedConnectionCoordinator {
-//    func ingest(
+    func ingest(states: [(Identifier, InitialConnectionState<Fetcher.FetchedConnection>)]) {
+        var controllers = self.connectionControllers
+        for (identifier, state) in states {
+//            controllers
+        }
+    }
 }

@@ -27,16 +27,11 @@ public final class ConnectionController<Fetcher, Parser>
         initialState: InitialConnectionState<Fetcher.FetchedConnection>? = nil)
     {
         // Setup Pagination State Tracker
-        let initialPageInfo = initialState.flatMap { PageInfo(connectionPageInfo: $0.connection.pageInfo) } ??
-            PageInfo(hasNextPage: true, hasPreviousPage: true)
-        self.paginationStateTracker = PaginationStateTracker(initialPageInfo: initialPageInfo, from: initialState?.end ?? .head)
+        self.paginationStateTracker = PaginationStateTracker(initialPageInfo: ConnectionController.initialPageInfo(for: initialState),
+                                                             from: initialState?.end ?? .head)
 
         // Setup Page Storer
-        let initialEdges = (initialState?.connection.edges ?? []).map { edge -> Edge<Parser.Model> in
-            let node = parser.parse(node: edge.node)
-            return Edge(node: node, cursor: edge.cursor)
-        }
-        self.pageStorer = PageStorer(initialEdges: initialEdges)
+        self.pageStorer = PageStorer(initialEdges: ConnectionController.initialEdges(for: initialState, parser: parser))
 
         // Setup Page Fetcher Factory
         self.pageFetcherFactory = PageFetcherFactory(
@@ -66,25 +61,46 @@ public final class ConnectionController<Fetcher, Parser>
 // MARK: Private
 
 extension ConnectionController {
+    private static func initialPageInfo(for initialState: InitialConnectionState<Fetcher.FetchedConnection>?) -> PageInfo {
+        guard let initialState = initialState else {
+            return PageInfo(hasNextPage: true, hasPreviousPage: true)
+        }
+
+        return PageInfo(connectionPageInfo: initialState.connection.pageInfo)
+    }
+
+    private static func initialEdges(for initialState: InitialConnectionState<Fetcher.FetchedConnection>?,
+                                     parser: Parser.Type) -> [Edge<Parser.Model>]
+    {
+        guard let initialState = initialState else {
+            return []
+        }
+
+        return initialState.connection.edges.map { edge -> Edge<Parser.Model> in
+            let node = parser.parse(node: edge.node)
+            return Edge(node: node, cursor: edge.cursor)
+        }
+    }
+
+    private func reset(to edges: [Edge<Parser.Model>], pageInfo: PageInfo, from end: End) {
+        // Reset to the refreshed state:
+        self.hasCompletedInitialLoad = true
+        self.pageStorer.reset(to: edges, from: end)
+        self.paginationStateTracker.reset(to: pageInfo, from: end)
+
+        // Replace next page fetchers to wipe out in-flight requests:
+        let newHeadPageFetcher = self.pageFetcherFactory.fetcher(for: .head, isInitial: false)
+        self.pageFetcherCoordinator.replaceNextPageFetcher(at: .head, with: newHeadPageFetcher)
+        let newTailPageFetcher = self.pageFetcherFactory.fetcher(for: .tail, isInitial: false)
+        self.pageFetcherCoordinator.replaceNextPageFetcher(at: .tail, with: newTailPageFetcher)
+    }
+
     private func observeInitialLoad(fetcher: Observable<PageFetcherState<Parser.Model>>, end: End) {
         fetcher
             .subscribe(onNext: { [weak self] state in
-                guard let `self` = self,
-                    case .complete(let edges, let pageInfo) = state else
-                {
-                    return
+                if case .complete(let edges, let pageInfo) = state {
+                    self?.reset(to: edges, pageInfo: pageInfo, from: end)
                 }
-
-                // Reset to the refreshed state:
-                self.hasCompletedInitialLoad = true
-                self.pageStorer.reset(to: edges, from: end)
-                self.paginationStateTracker.reset(to: pageInfo, from: end)
-
-                // Replace next page fetchers to wipe out in-flight requests:
-                let newHeadPageFetcher = self.pageFetcherFactory.fetcher(for: .head, isInitial: false)
-                self.pageFetcherCoordinator.replaceNextPageFetcher(at: .head, with: newHeadPageFetcher)
-                let newTailPageFetcher = self.pageFetcherFactory.fetcher(for: .tail, isInitial: false)
-                self.pageFetcherCoordinator.replaceNextPageFetcher(at: .tail, with: newTailPageFetcher)
             })
             .disposed(by: self.disposeBag)
     }
@@ -128,6 +144,15 @@ extension ConnectionController {
 // MARK: Mutations
 
 extension ConnectionController {
+    /**
+     Resets the connection back to a given initial state, stopping all inflight requests.
+     */
+    public func reset(to state: InitialConnectionState<Fetcher.FetchedConnection>) {
+        let initialEdges = ConnectionController.initialEdges(for: state, parser: Parser.self)
+        let initialPageInfo = ConnectionController.initialPageInfo(for: state)
+        self.reset(to: initialEdges, pageInfo: initialPageInfo, from: state.end)
+    }
+
     /**
      Fetch the initial page of data from the given end.
      The request will use the initial page size.
