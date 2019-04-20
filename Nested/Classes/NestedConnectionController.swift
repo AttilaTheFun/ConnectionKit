@@ -1,3 +1,4 @@
+import RxSwift
 
 public final class NestedConnectionController<Node, Fetcher, Parser, NestedNode, NestedFetcher, NestedParser>
     where
@@ -22,6 +23,8 @@ public final class NestedConnectionController<Node, Fetcher, Parser, NestedNode,
 
     // Coordinator for inner controllers:
     private let coordinator: NestedConnectionControllerCoordinator<Node.Identity, NestedFetcher, NestedParser>
+
+    private let disposeBag = DisposeBag()
 
     init(fetcher: Fetcher,
          parser: Parser.Type,
@@ -52,7 +55,20 @@ public final class NestedConnectionController<Node, Fetcher, Parser, NestedNode,
             paginationPageSize: innerPaginationPageSize
         )
         self.coordinator = NestedConnectionControllerCoordinator(factory: factory)
+
+        // Observe Outer Connection
+        self.observeOuterConnection()
     }
 }
 
+extension NestedConnectionController {
+    private func observeOuterConnection() {
+        self.outerController
+            .pagesObservable
+            .subscribe(onNext: { pages in
 
+            })
+            .disposed(by: self.disposeBag)
+
+    }
+}
