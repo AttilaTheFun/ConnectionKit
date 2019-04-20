@@ -554,7 +554,7 @@
 		570F5AD9003D7128BFCCA15AFAEBCB6F /* RxSwift-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "RxSwift-Info.plist"; sourceTree = "<group>"; };
 		58176BE2A168C8006FBE41258CD8E927 /* UIViewController+Rx.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "UIViewController+Rx.swift"; path = "RxCocoa/iOS/UIViewController+Rx.swift"; sourceTree = "<group>"; };
 		591C0B9A34A80757AF2F9370527F3341 /* UIPickerView+Rx.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "UIPickerView+Rx.swift"; path = "RxCocoa/iOS/UIPickerView+Rx.swift"; sourceTree = "<group>"; };
-		593050FE8A208FB6B990932C8957E0FE /* Typealiases.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Typealiases.swift; path = ConnectionKit/Source/Typealiases.swift; sourceTree = "<group>"; };
+		593050FE8A208FB6B990932C8957E0FE /* Typealiases.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Typealiases.swift; sourceTree = "<group>"; };
 		595EA6F655BC6CE9451D40282DC93BEC /* StartWith.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = StartWith.swift; path = RxSwift/Observables/StartWith.swift; sourceTree = "<group>"; };
 		5A7F71B4260EF1527EEFCF76C12B3C98 /* ConnectionEdge.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ConnectionEdge.swift; sourceTree = "<group>"; };
 		5BD29CBB32F449B9D46FA137A2A21FCF /* RxPickerViewDataSourceType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RxPickerViewDataSourceType.swift; path = RxCocoa/iOS/Protocols/RxPickerViewDataSourceType.swift; sourceTree = "<group>"; };
@@ -862,13 +862,13 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		0236F2E52269A2E500BA142A /* Nested */ = {
+		0236F2E52269A2E500BA142A /* Nested Connections */ = {
 			isa = PBXGroup;
 			children = (
 				0236F2E72269A2F100BA142A /* Classes */,
 				0236F2E62269A2EB00BA142A /* Protocols */,
 			);
-			path = Nested;
+			path = "Nested Connections";
 			sourceTree = "<group>";
 		};
 		0236F2E62269A2EB00BA142A /* Protocols */ = {
@@ -888,6 +888,16 @@
 				02AD83F32269B39700D839A5 /* ConnectionControllerFactory.swift */,
 			);
 			path = Classes;
+			sourceTree = "<group>";
+		};
+		02AD83F9226B0D9D00D839A5 /* Connections */ = {
+			isa = PBXGroup;
+			children = (
+				D61860843776CC14F1FB6D9A2F4AB26D /* Structs & Enums */,
+				C70DD527C730279C427AC5B5AAC07496 /* Protocols */,
+				ED2D1F84F58899D006AF5A3EEB4DB782 /* Classes */,
+			);
+			path = Connections;
 			sourceTree = "<group>";
 		};
 		0C3893FE5F2C8B6C5CAA07BF972E8015 /* Support Files */ = {
@@ -1162,12 +1172,9 @@
 		B54220FF2B7ABDC2D417719F6A3CA495 /* ConnectionKit */ = {
 			isa = PBXGroup;
 			children = (
-				0236F2E52269A2E500BA142A /* Nested */,
-				593050FE8A208FB6B990932C8957E0FE /* Typealiases.swift */,
-				ED2D1F84F58899D006AF5A3EEB4DB782 /* Classes */,
+				02AD83F9226B0D9D00D839A5 /* Connections */,
+				0236F2E52269A2E500BA142A /* Nested Connections */,
 				EAA8672198E794B5C55688475800F407 /* Pod */,
-				C70DD527C730279C427AC5B5AAC07496 /* Protocols */,
-				D61860843776CC14F1FB6D9A2F4AB26D /* Structs & Enums */,
 				F6E675CEDDFB44E2648BEC0A3BA44B24 /* Support Files */,
 			);
 			name = ConnectionKit;
@@ -1177,6 +1184,7 @@
 		C70DD527C730279C427AC5B5AAC07496 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
+				593050FE8A208FB6B990932C8957E0FE /* Typealiases.swift */,
 				5A7F71B4260EF1527EEFCF76C12B3C98 /* ConnectionEdge.swift */,
 				ED178DC78A0C432BDBE53C306838175F /* ConnectionFetcher.swift */,
 				9839FBD3E5758C3138FA80E6A80852D2 /* ConnectionPageInfo.swift */,
@@ -1184,8 +1192,7 @@
 				3392C6A4D69C62C9573780AFB5510515 /* ModelParser.swift */,
 				F78E6736EDC489AC9E3AE383368AE13A /* PageProvider.swift */,
 			);
-			name = Protocols;
-			path = ConnectionKit/Source/Protocols;
+			path = Protocols;
 			sourceTree = "<group>";
 		};
 		CF1408CF629C7361332E53B88F7BD30C = {
@@ -1371,8 +1378,7 @@
 				E8868A4726DD1FD0A2C2F593D5A9C16B /* PageFetcherState.swift */,
 				473C51A70E41325077C60C25F65838D4 /* PageInfo.swift */,
 			);
-			name = "Structs & Enums";
-			path = "ConnectionKit/Source/Structs & Enums";
+			path = "Structs & Enums";
 			sourceTree = "<group>";
 		};
 		EAA8672198E794B5C55688475800F407 /* Pod */ = {
@@ -1395,8 +1401,7 @@
 				C79FA9BF07EB48DDD8D137BA2A0D6D4C /* PageStorer.swift */,
 				7C4FDB5BAF721787A2FA96E155CBBFE4 /* PaginationStateTracker.swift */,
 			);
-			name = Classes;
-			path = ConnectionKit/Source/Classes;
+			path = Classes;
 			sourceTree = "<group>";
 		};
 		EF72BF5DEBA272C083E1C6366A72E1B0 /* Development Pods */ = {
