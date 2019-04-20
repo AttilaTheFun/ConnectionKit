@@ -14,6 +14,7 @@ final class PageFetcherCoordinator<Fetcher, Parser>
     private let initialTailPageFetcherStateRelay: BehaviorRelay<PageFetcherState<Parser.Model>>
     private let headPageFetcherStateRelay: BehaviorRelay<PageFetcherState<Parser.Model>>
     private let tailPageFetcherStateRelay: BehaviorRelay<PageFetcherState<Parser.Model>>
+    private let coordinatorStateRelay: BehaviorRelay<PageFetcherCoordinatorState<Parser.Model>>
 
     private var initialHeadPageDisposable = Disposables.create()
     private var initialTailPageDisposable = Disposables.create()
@@ -29,15 +30,42 @@ final class PageFetcherCoordinator<Fetcher, Parser>
         headPageFetcher: PageFetcher<Fetcher, Parser>,
         tailPageFetcher: PageFetcher<Fetcher, Parser>)
     {
+        // Save fetchers:
         self.initialHeadPageFetcher = initialHeadPageFetcher
         self.initialTailPageFetcher = initialTailPageFetcher
         self.headPageFetcher = headPageFetcher
         self.tailPageFetcher = tailPageFetcher
 
+        // Create individual state relays:
         self.initialHeadPageFetcherStateRelay = BehaviorRelay(value: initialHeadPageFetcher.state)
         self.initialTailPageFetcherStateRelay = BehaviorRelay(value: initialTailPageFetcher.state)
         self.headPageFetcherStateRelay = BehaviorRelay(value: headPageFetcher.state)
         self.tailPageFetcherStateRelay = BehaviorRelay(value: tailPageFetcher.state)
+
+        // Create combined state relay:
+        let combinedState = PageFetcherCoordinatorState(
+            initialHeadPageFetcherState: self.initialHeadPageFetcherStateRelay.value,
+            initialTailPageFetcherState: self.initialTailPageFetcherStateRelay.value,
+            headPageFetcherState: self.headPageFetcherStateRelay.value,
+            tailPageFetcherState: self.tailPageFetcherStateRelay.value
+        )
+        self.coordinatorStateRelay = BehaviorRelay(value: combinedState)
+
+        // Bind combined state observable:
+        let combinedStateObservable = Observable.combineLatest(
+            self.initialHeadPageFetcherStateRelay,
+            self.initialTailPageFetcherStateRelay,
+            self.headPageFetcherStateRelay,
+            self.tailPageFetcherStateRelay
+        ) { initialHeadPageFetcherState, initialTailPageFetcherState, headPageFetcherState, tailPageFetcherState in
+            return PageFetcherCoordinatorState(
+                initialHeadPageFetcherState: self.initialHeadPageFetcherStateRelay.value,
+                initialTailPageFetcherState: self.initialTailPageFetcherStateRelay.value,
+                headPageFetcherState: self.headPageFetcherStateRelay.value,
+                tailPageFetcherState: self.tailPageFetcherStateRelay.value
+            )
+        }
+        combinedStateObservable.bind(to: self.coordinatorStateRelay).disposed(by: self.disposeBag)
 
         // Bind observables to their respective relays:
         self.bind(fetcher: initialHeadPageFetcher, for: .head, isInitial: true)
@@ -106,10 +134,14 @@ extension PageFetcherCoordinator {
 
 extension PageFetcherCoordinator {
     /**
-     Retrieve the state for the fetcher matching the given parameters.
+     The current combined state of all of the coordinators.
      */
-    func state(for end: End, isInitial: Bool) -> PageFetcherState<Parser.Model> {
-        return self.relay(for: end, isInitial: isInitial).value
+    var state: PageFetcherCoordinatorState<Parser.Model> {
+        return self.coordinatorStateRelay.value
+    }
+
+    var stateObservable: Observable<PageFetcherCoordinatorState<Parser.Model>> {
+        return self.coordinatorStateRelay.asObservable()
     }
 
     /**
@@ -127,7 +159,7 @@ extension PageFetcherCoordinator {
      Load a page from the fetcher matching the given parameters.
      */
     func loadPage(from end: End, isInitial: Bool) {
-        if !self.state(for: end, isInitial: isInitial).canLoadPage {
+        if !self.relay(for: end, isInitial: isInitial).value.canLoadPage {
             return assertionFailure("Attempted to fetch page from invalid state")
         }
 

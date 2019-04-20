@@ -12,6 +12,8 @@
 		02AD83F42269B39700D839A5 /* ConnectionControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AD83F32269B39700D839A5 /* ConnectionControllerFactory.swift */; };
 		02AD83F62269BCC600D839A5 /* Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AD83F52269BCC600D839A5 /* Identifiable.swift */; };
 		02AD83F82269C4DA00D839A5 /* NestedConnectionControllerCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AD83F72269C4D900D839A5 /* NestedConnectionControllerCoordinator.swift */; };
+		02AD83FB226B0E1600D839A5 /* ConnectionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AD83FA226B0E1600D839A5 /* ConnectionState.swift */; };
+		02AD8401226B102600D839A5 /* PageFetcherCoordinatorState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AD8400226B102600D839A5 /* PageFetcherCoordinatorState.swift */; };
 		0309DEAE1BE2B6864501875D06003B39 /* Single.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A5455899E016BBCDA732959E6383A29 /* Single.swift */; };
 		03AC300D0BFA07390DA9E336B1E82152 /* ObservableConvertibleType+SharedSequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07EE1B044282D8BB81B49CE5754EEF12 /* ObservableConvertibleType+SharedSequence.swift */; };
 		03D290A93FFF9F5CE7CD99AA08C4D913 /* NSObject+Rx+RawRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0457CE8E069C78936FAF4ABB17C76C /* NSObject+Rx+RawRepresentable.swift */; };
@@ -427,6 +429,8 @@
 		02AD83F32269B39700D839A5 /* ConnectionControllerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionControllerFactory.swift; sourceTree = "<group>"; };
 		02AD83F52269BCC600D839A5 /* Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Identifiable.swift; sourceTree = "<group>"; };
 		02AD83F72269C4D900D839A5 /* NestedConnectionControllerCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NestedConnectionControllerCoordinator.swift; sourceTree = "<group>"; };
+		02AD83FA226B0E1600D839A5 /* ConnectionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionState.swift; sourceTree = "<group>"; };
+		02AD8400226B102600D839A5 /* PageFetcherCoordinatorState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageFetcherCoordinatorState.swift; sourceTree = "<group>"; };
 		02B8C1F3BC29F23DB16EF5EEF1F7A926 /* Using.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Using.swift; path = RxSwift/Observables/Using.swift; sourceTree = "<group>"; };
 		035ED43CB114F0EAF66D5E0AD9A28C9C /* RetryWhen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RetryWhen.swift; path = RxSwift/Observables/RetryWhen.swift; sourceTree = "<group>"; };
 		03CEA9B2A6BD3B461B00CE954DF74A23 /* RxCocoa-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "RxCocoa-prefix.pch"; sourceTree = "<group>"; };
@@ -900,6 +904,46 @@
 			path = Connections;
 			sourceTree = "<group>";
 		};
+		02AD83FC226B0E1F00D839A5 /* Internal */ = {
+			isa = PBXGroup;
+			children = (
+				02AD8400226B102600D839A5 /* PageFetcherCoordinatorState.swift */,
+				E8868A4726DD1FD0A2C2F593D5A9C16B /* PageFetcherState.swift */,
+				473C51A70E41325077C60C25F65838D4 /* PageInfo.swift */,
+			);
+			path = Internal;
+			sourceTree = "<group>";
+		};
+		02AD83FD226B0E2500D839A5 /* Public */ = {
+			isa = PBXGroup;
+			children = (
+				0236F2EA2269A78800BA142A /* InitialConnectionState.swift */,
+				02AD83FA226B0E1600D839A5 /* ConnectionState.swift */,
+				DC46AA0F9B72995697704BCF3A034846 /* InitialLoadState.swift */,
+				13D7C13DC74D0F2B280EA229EDAFCF47 /* EndState.swift */,
+				ACAF4E6D3A2188C73B9AC341F265A958 /* Page.swift */,
+				66AB484A4EE5C089CEC323FEC8F32740 /* Edge.swift */,
+			);
+			path = Public;
+			sourceTree = "<group>";
+		};
+		02AD83FE226B0E4600D839A5 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				02AD83FF226B0E4B00D839A5 /* Structs & Enums */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		02AD83FF226B0E4B00D839A5 /* Structs & Enums */ = {
+			isa = PBXGroup;
+			children = (
+				85967F0418569B3CA3F1AD8975E4DEA9 /* End.swift */,
+				F9D8165ACE97B8C7CD70FD30EB256959 /* ErrorWrapper.swift */,
+			);
+			path = "Structs & Enums";
+			sourceTree = "<group>";
+		};
 		0C3893FE5F2C8B6C5CAA07BF972E8015 /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -1172,6 +1216,7 @@
 		B54220FF2B7ABDC2D417719F6A3CA495 /* ConnectionKit */ = {
 			isa = PBXGroup;
 			children = (
+				02AD83FE226B0E4600D839A5 /* Common */,
 				02AD83F9226B0D9D00D839A5 /* Connections */,
 				0236F2E52269A2E500BA142A /* Nested Connections */,
 				EAA8672198E794B5C55688475800F407 /* Pod */,
@@ -1368,15 +1413,8 @@
 		D61860843776CC14F1FB6D9A2F4AB26D /* Structs & Enums */ = {
 			isa = PBXGroup;
 			children = (
-				0236F2EA2269A78800BA142A /* InitialConnectionState.swift */,
-				66AB484A4EE5C089CEC323FEC8F32740 /* Edge.swift */,
-				85967F0418569B3CA3F1AD8975E4DEA9 /* End.swift */,
-				13D7C13DC74D0F2B280EA229EDAFCF47 /* EndState.swift */,
-				F9D8165ACE97B8C7CD70FD30EB256959 /* ErrorWrapper.swift */,
-				DC46AA0F9B72995697704BCF3A034846 /* InitialLoadState.swift */,
-				ACAF4E6D3A2188C73B9AC341F265A958 /* Page.swift */,
-				E8868A4726DD1FD0A2C2F593D5A9C16B /* PageFetcherState.swift */,
-				473C51A70E41325077C60C25F65838D4 /* PageInfo.swift */,
+				02AD83FD226B0E2500D839A5 /* Public */,
+				02AD83FC226B0E1F00D839A5 /* Internal */,
 			);
 			path = "Structs & Enums";
 			sourceTree = "<group>";
@@ -1900,6 +1938,7 @@
 				250A7F04BD63DC48F3437727D2ACE750 /* ModelParser.swift in Sources */,
 				CD595BE7606BBC85A603EE36EC684801 /* NestedConnectionController.swift in Sources */,
 				E4AD52C246A44E50B4B07D10E45963BF /* NodeFetcherProtocol.swift in Sources */,
+				02AD83FB226B0E1600D839A5 /* ConnectionState.swift in Sources */,
 				658BAE7AF6A1569D5D36264F0F2A691F /* Page.swift in Sources */,
 				A2DD00CDBF5C45DEC4A0A550E5859C8B /* PageFetcher.swift in Sources */,
 				212D7D331BBAE1ADBC89A443F457CC36 /* PageFetcherCoordinator.swift in Sources */,
@@ -1907,6 +1946,7 @@
 				3F1723DD5369EFDC13A4C85BFE2C7D33 /* PageFetcherState.swift in Sources */,
 				673967CAA380183E58C82C76D5946796 /* PageInfo.swift in Sources */,
 				328B8835F6E59702E54DFA97CB185854 /* PageProvider.swift in Sources */,
+				02AD8401226B102600D839A5 /* PageFetcherCoordinatorState.swift in Sources */,
 				1DF0795BE91F6B880446CB1F0E8AE9EB /* PageStorer.swift in Sources */,
 				02AD83F62269BCC600D839A5 /* Identifiable.swift in Sources */,
 				4C7809B004D371A3A9AB45C691BCEE78 /* PaginationStateTracker.swift in Sources */,

@@ -161,7 +161,7 @@ extension ConnectionController {
      It could be used initially and then again for refreshing the connection.
      */
     public func loadInitialPage(from end: End) {
-        let pageFetcherState = self.pageFetcherCoordinator.state(for: end, isInitial: true)
+        let pageFetcherState = self.pageFetcherCoordinator.state.fetcherState(for: end, isInitial: true)
         if !pageFetcherState.canLoadPage {
             return assertionFailure("Can't load initial page from this state")
         }
@@ -178,7 +178,7 @@ extension ConnectionController {
      - parameter end: The end from which to trigger a fetch.
      */
     public func loadNextPage(from end: End) {
-        let pageFetcherState = self.pageFetcherCoordinator.state(for: end, isInitial: false)
+        let pageFetcherState = self.pageFetcherCoordinator.state.fetcherState(for: end, isInitial: false)
         let hasFetchedLastPage = self.paginationStateTracker.hasFetchedLastPage(from: end)
         if !self.hasEverCompletedInitialLoad || !pageFetcherState.canLoadPage || hasFetchedLastPage {
             return assertionFailure("Can't load next page from this state")
@@ -218,7 +218,7 @@ extension ConnectionController {
      The state the initial load or refresh for the given end.
      */
     public func initialLoadState(for end: End) -> InitialLoadState {
-        return InitialLoadState(pageFetcherState: self.pageFetcherCoordinator.state(for: end, isInitial: true))
+        return InitialLoadState(pageFetcherState: self.pageFetcherCoordinator.state.fetcherState(for: end, isInitial: true))
     }
 
     /**
@@ -233,7 +233,7 @@ extension ConnectionController {
      The state of the given end of the connection.
      */
     public func state(for end: End) -> EndState {
-        let fetcherState = self.pageFetcherCoordinator.state(for: end, isInitial: false)
+        let fetcherState = self.pageFetcherCoordinator.state.fetcherState(for: end, isInitial: false)
         let hasFetchedLastPage = self.paginationStateTracker.hasFetchedLastPage(from: end)
         return EndState(pageFetcherState: fetcherState, hasFetchedLastPage: hasFetchedLastPage)
     }

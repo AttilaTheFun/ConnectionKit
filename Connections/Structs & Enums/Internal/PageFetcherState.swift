@@ -8,7 +8,7 @@
  - fetching -> error
  - error -> fetching
  */
-enum PageFetcherState<M>: Hashable where M: Hashable {
+enum PageFetcherState<Model>: Hashable where Model: Hashable {
     // The fetcher has not started fetching a page.
     case idle
 
@@ -16,7 +16,7 @@ enum PageFetcherState<M>: Hashable where M: Hashable {
     case fetching
 
     // The fetcher completed fetching a page.
-    case complete([Edge<M>], PageInfo)
+    case complete([Edge<Model>], PageInfo)
 
     // The fetcher failed to fetch a page.
     case error(ErrorWrapper)
