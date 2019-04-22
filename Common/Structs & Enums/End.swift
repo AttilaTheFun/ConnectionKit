@@ -14,3 +14,14 @@ public enum End: Hashable {
      */
     case tail
 }
+
+extension End {
+    var opposite: End {
+        switch self {
+        case .head:
+            return .tail
+        case .tail:
+            return .head
+        }
+    }
+}

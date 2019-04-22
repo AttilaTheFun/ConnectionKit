@@ -15,63 +15,24 @@ import RxSwift
  - If the fourth page is ingested from the tail it will have index 2.
  */
 final class PageStorer<Model> where Model: Hashable {
-    private let pagesRelay = BehaviorRelay<[Page<Model>]>(value: [])
+    private let pagesRelay: BehaviorRelay<[Page<Model>]>
 
     init(initialEdges: [Edge<Model>] = []) {
-        // Initial end doesn't matter so just use head.
-        self.applyUpdate(from: [], edges: initialEdges, from: .head)
+        // Initial end does not matter.
+        let initialPages = Page<Model>.nextPages(from: [], ingesting: initialEdges, from: .head)
+        self.pagesRelay = BehaviorRelay(value: initialPages)
     }
 }
 
-// MARK: Private
+// MARK: Getters
 
 extension PageStorer {
-    private func headPageIndex(for pages: [Page<Model>]) -> Int {
-        return pages.last?.index ?? 0
-    }
-
-    private func tailPageIndex(for pages: [Page<Model>]) -> Int {
-        return pages.first?.index ?? 0
-    }
 
     /**
-     Ingest a page of data into the manager.
+     The pages currently stored by the storer.
      */
-    private func applyUpdate(from previousPages: [Page<Model>], edges: [Edge<Model>], from end: End) {
-        // Drop empty pages:
-        if edges.count == 0 {
-            self.pagesRelay.accept(previousPages)
-            return
-        }
-
-        // If initial page, always index 0:
-        if previousPages.count == 0 {
-            let initialPage = Page<Model>(index: 0, edges: edges)
-            self.pagesRelay.accept([initialPage])
-            return
-        }
-
-        // Append the page to the beginning or end if ingesting from the head or tail respectively.
-        switch end {
-        case .head:
-            let headPage = Page<Model>(index: self.headPageIndex(for: previousPages) + 1, edges: edges)
-            self.pagesRelay.accept(previousPages + [headPage])
-        case .tail:
-            let tailPage = Page<Model>(index: self.tailPageIndex(for: previousPages) - 1, edges: edges)
-            self.pagesRelay.accept([tailPage] + previousPages)
-        }
-    }
-}
-
-// MARK: PageProvider
-
-extension PageStorer: PageProvider {
     var pages: [Page<Model>] {
         return self.pagesRelay.value
-    }
-
-    var pagesObservable: Observable<[Page<Model>]> {
-        return self.pagesRelay.asObservable()
     }
 }
 
@@ -83,14 +44,17 @@ extension PageStorer {
      Ingest a page of data into the manager.
      */
     func ingest(edges: [Edge<Model>], from end: End) {
-        self.applyUpdate(from: self.pages, edges: edges, from: end)
+        let nextPages = Page<Model>.nextPages(from: self.pages, ingesting: edges, from: end)
+        self.pagesRelay.accept(nextPages)
     }
 
     /**
-     Reset the pages back to an empty array.
-     The next ingested page will have index 0 again.
+     Reset the pages back to a known set of edges.
+
      */
-    func reset(to edges: [Edge<Model>], from end: End) {
-        self.applyUpdate(from: [], edges: edges, from: end)
+    func reset(to initialEdges: [Edge<Model>]) {
+        // Initial end does not matter.
+        let initialPages = Page<Model>.nextPages(from: [], ingesting: initialEdges, from: .head)
+        self.pagesRelay.accept(initialPages)
     }
 }

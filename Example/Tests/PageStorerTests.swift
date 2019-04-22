@@ -47,7 +47,7 @@ class PageStorerTests: XCTestCase {
         // Run test:
         storer.ingest(edges: edges, from: .head)
         XCTAssertEqual(storer.pages.count, 1)
-        storer.reset(to: [], from: .tail)
+        storer.reset(to: [])
         XCTAssertEqual(storer.pages.count, 0)
     }
 
@@ -62,7 +62,7 @@ class PageStorerTests: XCTestCase {
         XCTAssertEqual(storer.pages.count, 1)
         XCTAssertEqual(storer.pages, [Page<TestModel>(index: 0, edges: edges)])
 
-        storer.reset(to: [], from: .tail)
+        storer.reset(to: [])
         XCTAssertEqual(storer.pages.count, 0)
 
         storer.ingest(edges: edges, from: .tail)

@@ -26,49 +26,21 @@ public final class NestedConnectionController<Node, Fetcher, Parser, NestedNode,
 
     private let disposeBag = DisposeBag()
 
-    init(fetcher: Fetcher,
-         parser: Parser.Type,
-         outerInitialPageSize: Int,
-         outerPaginationPageSize: Int,
+    init(outerConfiguration: ConnectionControllerConfiguration<Fetcher, Parser>,
          extractor: @escaping NestedConnectionExtractor,
-         nestedFetcher: NestedFetcher,
-         nestedParser: NestedParser.Type,
-         innerInitialPageSize: Int,
-         innerPaginationPageSize: Int)
+         innerConfiguration: ConnectionControllerConfiguration<NestedFetcher, NestedParser>)
     {
         // Create Outer Controller
-        self.outerController = ConnectionController<Fetcher, Parser>(
-            fetcher: fetcher,
-            parser: parser,
-            initialPageSize: outerInitialPageSize,
-            paginationPageSize: outerPaginationPageSize
-        )
+        self.outerController = ConnectionController<Fetcher, Parser>(configuration: outerConfiguration)
 
         // Save a reference to the extractor:
         self.extractor = extractor
 
         // Create Coordinator
-        let factory = ConnectionControllerFactory(
-            fetcher: nestedFetcher,
-            parser: nestedParser,
-            initialPageSize: innerInitialPageSize,
-            paginationPageSize: innerPaginationPageSize
-        )
+        let factory = ConnectionControllerFactory(configuration: innerConfiguration)
         self.coordinator = NestedConnectionControllerCoordinator(factory: factory)
 
         // Observe Outer Connection
-        self.observeOuterConnection()
-    }
-}
-
-extension NestedConnectionController {
-    private func observeOuterConnection() {
-        self.outerController
-            .pagesObservable
-            .subscribe(onNext: { pages in
-
-            })
-            .disposed(by: self.disposeBag)
-
+//        self.observeOuterConnection()
     }
 }

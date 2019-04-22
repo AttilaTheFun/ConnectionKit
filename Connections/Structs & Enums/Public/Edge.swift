@@ -1,5 +1,5 @@
 
-public struct Edge<M>: Hashable where M: Hashable {
-    public let node: M
+public struct Edge<Model>: Hashable where Model: Hashable {
+    public let node: Model
     public let cursor: String
 }
