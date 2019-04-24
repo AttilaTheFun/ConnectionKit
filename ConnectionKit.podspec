@@ -25,7 +25,7 @@ It also provides reactive (RxSwift) bindings for observing that connection's sta
   s.swift_version = '5.0'
   s.static_framework = true
 
-  s.source_files = 'ConnectionKit/Source/**/*'
+  s.source_files = 'ConnectionKit/**/*'
   s.dependency 'RxCocoa'
   s.dependency 'RxSwift'
 end

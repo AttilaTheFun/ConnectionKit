@@ -23,7 +23,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  ConnectionKit: 9dcc1401e008ceb3cb8cb43f687c90b93b8877b1
+  ConnectionKit: a4ed0bd382fd71fdacb14052100bf7ff09149dd1
   RxBlocking: 79413e4d916f44bb3e113c5b2cc059e36fe58910
   RxCocoa: cbf70265dc65a981d4ac982e513c10cf23df24a0
   RxSwift: f172070dfd1a93d70a9ab97a5a01166206e1c575

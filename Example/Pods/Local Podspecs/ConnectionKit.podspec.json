@@ -20,7 +20,7 @@
   },
   "swift_version": "5.0",
   "static_framework": true,
-  "source_files": "ConnectionKit/Source/**/*",
+  "source_files": "ConnectionKit/**/*",
   "dependencies": {
     "RxCocoa": [
 
