@@ -27,6 +27,18 @@ final class PageFetcherContainer<Fetcher, Parser>
 extension PageFetcherContainer {
 
     /**
+     The combined state of all the fetchers.
+     */
+    var combinedState: CombinedPageFetcherState<Parser.Model> {
+        return CombinedPageFetcherState<Parser.Model>(
+            initialHeadPageFetcherState: self.fetcher(for: .head, isInitial: true).state,
+            initialTailPageFetcherState: self.fetcher(for: .tail, isInitial: true).state,
+            headPageFetcherState: self.fetcher(for: .head, isInitial: false).state,
+            tailPageFetcherState: self.fetcher(for: .tail, isInitial: false).state
+        )
+    }
+
+    /**
      Get the fetcher for the given parameters.
      */
     func fetcher(for end: End, isInitial: Bool) -> PageFetcher<Fetcher, Parser> {

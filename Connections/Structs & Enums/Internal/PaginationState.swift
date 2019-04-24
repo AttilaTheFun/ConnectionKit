@@ -1,5 +1,5 @@
 
-struct PaginationState {
+struct PaginationState: Hashable {
     let hasFetchedLastPageFromHead: Bool
     let hasFetchedLastPageFromTail: Bool
 }

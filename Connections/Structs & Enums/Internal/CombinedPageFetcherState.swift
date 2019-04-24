@@ -1,14 +1,14 @@
 
-struct PageFetcherCoordinatorState<Model>: Hashable where Model: Hashable {
+struct CombinedPageFetcherState<Model>: Hashable where Model: Hashable {
     let initialHeadPageFetcherState: PageFetcherState<Model>
     let initialTailPageFetcherState: PageFetcherState<Model>
     let headPageFetcherState: PageFetcherState<Model>
     let tailPageFetcherState: PageFetcherState<Model>
 }
 
-extension PageFetcherCoordinatorState {
-    static var idle: PageFetcherCoordinatorState<Model> {
-        return PageFetcherCoordinatorState(
+extension CombinedPageFetcherState {
+    static var idle: CombinedPageFetcherState<Model> {
+        return CombinedPageFetcherState(
             initialHeadPageFetcherState: .idle,
             initialTailPageFetcherState: .idle,
             headPageFetcherState: .idle,
@@ -16,8 +16,8 @@ extension PageFetcherCoordinatorState {
         )
     }
 
-    func updated(with pageFetcherState: PageFetcherState<Model>, for end: End, isInitial: Bool) -> PageFetcherCoordinatorState<Model> {
-        return PageFetcherCoordinatorState(
+    func updated(with pageFetcherState: PageFetcherState<Model>, for end: End, isInitial: Bool) -> CombinedPageFetcherState<Model> {
+        return CombinedPageFetcherState(
             initialHeadPageFetcherState: (end == .head && isInitial) ? pageFetcherState : self.initialHeadPageFetcherState,
             initialTailPageFetcherState: (end == .tail && isInitial) ? pageFetcherState : self.initialTailPageFetcherState,
             headPageFetcherState: (end == .head && !isInitial) ? pageFetcherState : self.headPageFetcherState,

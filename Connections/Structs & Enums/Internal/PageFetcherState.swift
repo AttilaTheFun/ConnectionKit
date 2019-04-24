@@ -23,7 +23,7 @@ enum PageFetcherState<Model>: Hashable where Model: Hashable {
 }
 
 extension PageFetcherState {
-    var isLoadingNextPage: Bool {
+    var isLoadingPage: Bool {
         switch self {
         case .idle, .complete, .error:
             return false
@@ -33,6 +33,6 @@ extension PageFetcherState {
     }
 
     var canLoadPage: Bool {
-        return !self.isLoadingNextPage
+        return !self.isLoadingPage
     }
 }

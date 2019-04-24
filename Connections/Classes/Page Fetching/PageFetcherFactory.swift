@@ -48,13 +48,12 @@ extension PageFetcherFactory {
      Create a new fetcher with the appropriate page size which will fetch with the associated cursor for the end.
      */
     func fetcher(for end: End, isInitial: Bool) -> PageFetcher<Fetcher, Parser> {
-        let pageSize = isInitial ? self.initialPageSize : self.paginationPageSize
         return PageFetcher(
             for: self.fetcher,
             parser: self.parser,
             end: end,
-            pageSize: pageSize,
-            cursor: self.cursor(for: end)
+            pageSize: isInitial ? self.initialPageSize : self.paginationPageSize,
+            cursor: isInitial ? nil : self.cursor(for: end)
         )
     }
 }

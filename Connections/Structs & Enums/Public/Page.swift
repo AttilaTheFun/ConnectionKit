@@ -1,4 +1,17 @@
 
+/**
+ Structs combining the page index and the array of edges that was fetched with that page.
+
+ The initial page index is always 0.
+ Pages fetched from the head have index [previous head index] - 1.
+ Pages fetched from the tail have index [previous tail index] + 1.
+
+ Examples:
+ - The first page will have index 0 regardless of whether it is ingested from the head or the tail.
+ - If the second page is fetched from the head, it will have index -1.
+ - If the third page is fetched from the tail it will have index 1.
+ - If the fourth page is fetched from the tail it will have index 2.
+ */
 public struct Page<Model>: Hashable where Model: Hashable {
     public let index: Int
     public let edges: [Edge<Model>]
