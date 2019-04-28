@@ -12,10 +12,13 @@
  - If the third page is fetched from the tail it will have index 1.
  - If the fourth page is fetched from the tail it will have index 2.
  */
-public struct Page<Model>: Hashable where Model: Hashable {
+public struct Page<Model> {
     public let index: Int
     public let edges: [Edge<Model>]
 }
+
+extension Page: Equatable where Model: Equatable {}
+extension Page: Hashable where Model: Hashable {}
 
 extension Page {
     /**

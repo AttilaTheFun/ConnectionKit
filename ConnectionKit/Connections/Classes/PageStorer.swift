@@ -14,7 +14,7 @@ import RxSwift
  - If the third page is ingested from the tail it will have index 1.
  - If the fourth page is ingested from the tail it will have index 2.
  */
-final class PageStorer<Model> where Model: Hashable {
+final class PageStorer<Model> {
     private let pagesRelay: BehaviorRelay<[Page<Model>]>
 
     init(initialEdges: [Edge<Model>] = []) {
