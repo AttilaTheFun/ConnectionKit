@@ -1,18 +1,15 @@
 import RxCocoa
 import RxSwift
 
-final class PageFetcher<Fetcher, Parser>
-    where Fetcher: ConnectionFetcherProtocol, Parser: ModelParser,
-    Fetcher.FetchedConnection.ConnectedEdge.Node == Parser.Node
-{
-    private let parser: Parser.Type
-    private let stateRelay = BehaviorRelay<PageFetcherState<Parser.Model>>(value: .idle)
+final class PageFetcher<Fetcher> where Fetcher: ConnectionFetcherProtocol {
+    typealias Node = Fetcher.FetchedConnection.ConnectedEdge.Node
+
+    private let stateRelay = BehaviorRelay<PageFetcherState<Node>>(value: .idle)
     private let fetchablePage: FetchablePage<Fetcher>
     private let disposeBag = DisposeBag()
 
-    init(fetchablePage: @escaping FetchablePage<Fetcher>, parser: Parser.Type) {
+    init(fetchablePage: @escaping FetchablePage<Fetcher>) {
         self.fetchablePage = fetchablePage
-        self.parser = parser
     }
 }
 
@@ -29,12 +26,12 @@ extension PageFetcher {
 extension PageFetcher {
 
     // The current state of the fetcher.
-    var state: PageFetcherState<Parser.Model> {
+    var state: PageFetcherState<Node> {
         return self.stateRelay.value
     }
 
     // Observe the state of the fetch page.
-    var stateObservable: Observable<PageFetcherState<Parser.Model>> {
+    var stateObservable: Observable<PageFetcherState<Node>> {
         return self.stateRelay.asObservable()
     }
 
@@ -63,9 +60,8 @@ extension PageFetcher {
                         return
                     }
 
-                    let edges = connection.edges.map { edge -> Edge<Parser.Model> in
-                        let node = self.parser.parse(node: edge.node)
-                        return Edge(node: node, cursor: edge.cursor)
+                    let edges = connection.edges.map { edge -> Edge<Node> in
+                        return Edge(node: edge.node, cursor: edge.cursor)
                     }
 
                     let pageInfo = PageInfo(connectionPageInfo: connection.pageInfo)
@@ -86,25 +82,16 @@ extension PageFetcher {
 // MARK: Internal
 
 extension PageFetcher {
-    convenience init(
-        for fetcher: Fetcher,
-        parser: Parser.Type,
-        end: End,
-        pageSize: Int,
-        cursor: String?)
-    {
-        self.init(
-            fetchablePage: {
-                switch end {
-                case .head:
-                    // Paginating forward: `pageSize and `cursor` will be passed as the `first` and `after` arguments.
-                    return fetcher.fetch(first: pageSize, after: cursor, last: nil, before: nil)
-                case .tail:
-                    // Paginating backward: `pageSize and `cursor` will be passed as the `last` and `before` arguments.
-                    return fetcher.fetch(first: nil, after: nil, last: pageSize, before: cursor)
-                }
-            },
-            parser: parser
-        )
+    convenience init(for fetcher: Fetcher, end: End, pageSize: Int, cursor: String?) {
+        self.init(fetchablePage: {
+            switch end {
+            case .head:
+                // Paginating forward: `pageSize and `cursor` will be passed as the `first` and `after` arguments.
+                return fetcher.fetch(first: pageSize, after: cursor, last: nil, before: nil)
+            case .tail:
+                // Paginating backward: `pageSize and `cursor` will be passed as the `last` and `before` arguments.
+                return fetcher.fetch(first: nil, after: nil, last: pageSize, before: cursor)
+            }
+        })
     }
 }

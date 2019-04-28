@@ -8,7 +8,7 @@
  - fetching -> error
  - error -> fetching
  */
-enum PageFetcherState<Model>: Hashable where Model: Hashable {
+enum PageFetcherState<Model> {
     // The fetcher has not started fetching a page.
     case idle
 
@@ -21,6 +21,9 @@ enum PageFetcherState<Model>: Hashable where Model: Hashable {
     // The fetcher failed to fetch a page.
     case error(ErrorWrapper)
 }
+
+extension PageFetcherState: Equatable where Model: Equatable {}
+extension PageFetcherState: Hashable where Model: Hashable {}
 
 extension PageFetcherState {
     var isLoadingPage: Bool {

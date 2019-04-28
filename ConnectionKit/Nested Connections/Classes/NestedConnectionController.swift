@@ -26,9 +26,9 @@ public final class NestedConnectionController<Node, Fetcher, Parser, NestedNode,
 
     private let disposeBag = DisposeBag()
 
-    init(outerConfiguration: ConnectionControllerConfiguration<Fetcher, Parser>,
+    init(outerConfiguration: ConnectionControllerConfiguration<Fetcher>,
          extractor: @escaping NestedConnectionExtractor,
-         innerConfiguration: ConnectionControllerConfiguration<NestedFetcher, NestedParser>)
+         innerConfiguration: ConnectionControllerConfiguration<NestedFetcher>)
     {
         // Create Outer Controller
         self.outerController = ConnectionController<Fetcher, Parser>(configuration: outerConfiguration)
@@ -37,8 +37,8 @@ public final class NestedConnectionController<Node, Fetcher, Parser, NestedNode,
         self.extractor = extractor
 
         // Create Coordinator
-        let factory = ConnectionControllerFactory(configuration: innerConfiguration)
-        self.coordinator = NestedConnectionControllerCoordinator(factory: factory)
+        let factory = ConnectionControllerFactory<NestedFetcher, NestedParser>(configuration: innerConfiguration)
+        self.coordinator = NestedConnectionControllerCoordinator<Node.Identity, NestedFetcher, NestedParser>(factory: factory)
 
         // Observe Outer Connection
 //        self.observeOuterConnection()

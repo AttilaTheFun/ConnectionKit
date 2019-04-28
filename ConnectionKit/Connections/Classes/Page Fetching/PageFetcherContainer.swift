@@ -1,16 +1,17 @@
 
-final class PageFetcherContainer<Fetcher, Parser>
-    where Fetcher: ConnectionFetcherProtocol, Parser: ModelParser,
-    Fetcher.FetchedConnection.ConnectedEdge.Node == Parser.Node
+final class PageFetcherContainer<Fetcher, Storer>
+    where Fetcher: ConnectionFetcherProtocol, Storer: PageStorable,
+    Fetcher.FetchedConnection.ConnectedEdge.Node == Storer.Model
 {
-    private let factory: PageFetcherFactory<Fetcher, Parser>
+    typealias Node = Fetcher.FetchedConnection.ConnectedEdge.Node
 
-    private var initialHeadPageFetcher: PageFetcher<Fetcher, Parser>
-    private var initialTailPageFetcher: PageFetcher<Fetcher, Parser>
-    private var headPageFetcher: PageFetcher<Fetcher, Parser>
-    private var tailPageFetcher: PageFetcher<Fetcher, Parser>
+    private let factory: PageFetcherFactory<Fetcher, Storer>
+    private var initialHeadPageFetcher: PageFetcher<Fetcher>
+    private var initialTailPageFetcher: PageFetcher<Fetcher>
+    private var headPageFetcher: PageFetcher<Fetcher>
+    private var tailPageFetcher: PageFetcher<Fetcher>
 
-    init(factory: PageFetcherFactory<Fetcher, Parser>) {
+    init(factory: PageFetcherFactory<Fetcher, Storer>) {
         // Save factory:
         self.factory = factory
 
@@ -29,8 +30,8 @@ extension PageFetcherContainer {
     /**
      The combined state of all the fetchers.
      */
-    var combinedState: CombinedPageFetcherState<Parser.Model> {
-        return CombinedPageFetcherState<Parser.Model>(
+    var combinedState: CombinedPageFetcherState<Node> {
+        return CombinedPageFetcherState<Node>(
             initialHeadPageFetcherState: self.fetcher(for: .head, isInitial: true).state,
             initialTailPageFetcherState: self.fetcher(for: .tail, isInitial: true).state,
             headPageFetcherState: self.fetcher(for: .head, isInitial: false).state,
@@ -41,7 +42,7 @@ extension PageFetcherContainer {
     /**
      Get the fetcher for the given parameters.
      */
-    func fetcher(for end: End, isInitial: Bool) -> PageFetcher<Fetcher, Parser> {
+    func fetcher(for end: End, isInitial: Bool) -> PageFetcher<Fetcher> {
         switch (end, isInitial) {
         case (.head, true):
             return self.initialHeadPageFetcher
@@ -63,7 +64,7 @@ extension PageFetcherContainer {
      Reset the fetcher for the given parameters.
      Returns the newly created fetcher.
      */
-    func resetFetcher(for end: End, isInitial: Bool) -> PageFetcher<Fetcher, Parser> {
+    func resetFetcher(for end: End, isInitial: Bool) -> PageFetcher<Fetcher> {
         switch (end, isInitial) {
         case (.head, true):
             self.initialHeadPageFetcher = self.factory.fetcher(for: .head, isInitial: true)

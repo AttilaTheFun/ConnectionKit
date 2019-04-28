@@ -9,6 +9,8 @@ final class NestedConnectionControllerCoordinator<Identifier, Fetcher, Parser>
     // MARK: Conditions
     Fetcher.FetchedConnection.ConnectedEdge.Node == Parser.Node
 {
+    typealias Node = Fetcher.FetchedConnection.ConnectedEdge.Node
+
     // Factory for creating new connection controller instances.
     private let factory: ConnectionControllerFactory<Fetcher, Parser>
 
@@ -27,7 +29,7 @@ extension NestedConnectionControllerCoordinator {
      Missing controllers will be created and existing ones will be ignored.
      This will typically be called after paginating.
      */
-    func ingest(states: [Identifier : ConnectionControllerState<Parser.Model>]) {
+    func ingest(states: [Identifier : ConnectionControllerState<Node>]) {
         var controllers = self.connectionControllersRelay.value
         for (identifier, state) in states {
             if controllers[identifier] == nil {
@@ -44,7 +46,7 @@ extension NestedConnectionControllerCoordinator {
      Extra controllers will be dropped.
      This will typically be called initially and then after a pull-to-refresh.
      */
-    func reset(to states: [Identifier : ConnectionControllerState<Parser.Model>]) {
+    func reset(to states: [Identifier : ConnectionControllerState<Node>]) {
         let previousControllers = self.connectionControllersRelay.value
         var controllers = [Identifier : ConnectionController<Fetcher, Parser>]()
         for (identifier, state) in states {
@@ -69,7 +71,7 @@ extension NestedConnectionControllerCoordinator {
     /**
      Retrieve the pages for the given identifiers from their respective controllers.
      */
-    func pages(for identifiers: [Identifier]) -> [Identifier : [Page<Parser.Model>]] {
+    func pages(for identifiers: [Identifier]) -> [Identifier : [Page<Node>]] {
         let controllers = self.connectionControllersRelay.value
         return Dictionary(uniqueKeysWithValues: identifiers.lazy.map { ($0, controllers[$0]?.state.pages ?? []) })
     }

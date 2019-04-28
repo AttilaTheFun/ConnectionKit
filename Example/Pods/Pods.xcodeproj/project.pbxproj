@@ -13,6 +13,8 @@
 		0211480361FDCEAEB9F016517635B61C /* LockOwnerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F8149CFD8D7ABA83FDACE938966B02 /* LockOwnerType.swift */; };
 		026FBF5619FF2A9493849D0E7FA5190E /* Completable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827789547C618C46AA08762C0B0E3FC9 /* Completable.swift */; };
 		02AD840E22751C3600D839A5 /* NestedIdentifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AD840D22751C3600D839A5 /* NestedIdentifiable.swift */; };
+		02AD841122756FC400D839A5 /* ParsingPageStorer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AD841022756FC400D839A5 /* ParsingPageStorer.swift */; };
+		02AD84132275703500D839A5 /* PageStorable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AD84122275703500D839A5 /* PageStorable.swift */; };
 		02F8DA47EA0C6A4F075079023BF1FFD7 /* UIBarButtonItem+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8F4B537A6FDA40F26060F1248C8DF7 /* UIBarButtonItem+Rx.swift */; };
 		0387EACF191FCDF1B1AEFFDBC0255892 /* RxTextStorageDelegateProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF7D65FB23F18A59AEE2A20439DFC234 /* RxTextStorageDelegateProxy.swift */; };
 		0493D0785F9AC59885658DC574228367 /* SingleAsync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CA2EF409B3BCB883DFDD413587F2452 /* SingleAsync.swift */; };
@@ -427,6 +429,8 @@
 		01124E0176CC0B82A24409D473700BF1 /* Observable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Observable.swift; path = RxSwift/Observable.swift; sourceTree = "<group>"; };
 		01C0E7EA7AAF844D61468FF56F5A603B /* ObserverBase.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ObserverBase.swift; path = RxSwift/Observers/ObserverBase.swift; sourceTree = "<group>"; };
 		02AD840D22751C3600D839A5 /* NestedIdentifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NestedIdentifiable.swift; sourceTree = "<group>"; };
+		02AD841022756FC400D839A5 /* ParsingPageStorer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParsingPageStorer.swift; sourceTree = "<group>"; };
+		02AD84122275703500D839A5 /* PageStorable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageStorable.swift; sourceTree = "<group>"; };
 		02B8C1F3BC29F23DB16EF5EEF1F7A926 /* Using.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Using.swift; path = RxSwift/Observables/Using.swift; sourceTree = "<group>"; };
 		035ED43CB114F0EAF66D5E0AD9A28C9C /* RetryWhen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RetryWhen.swift; path = RxSwift/Observables/RetryWhen.swift; sourceTree = "<group>"; };
 		03CEA9B2A6BD3B461B00CE954DF74A23 /* RxCocoa-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "RxCocoa-prefix.pch"; sourceTree = "<group>"; };
@@ -868,6 +872,33 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		0231C412227577E6003F0D07 /* Connection Controlling */ = {
+			isa = PBXGroup;
+			children = (
+				5EEE2FA2CFEF8FACB22BC5FCDA069D37 /* ConnectionController.swift */,
+				B8E69C98AAA462B19DC1078CE3154E90 /* PaginationStateTracker.swift */,
+			);
+			path = "Connection Controlling";
+			sourceTree = "<group>";
+		};
+		02AD840F22756FAB00D839A5 /* Page Storing */ = {
+			isa = PBXGroup;
+			children = (
+				02AD84122275703500D839A5 /* PageStorable.swift */,
+				DA29B2E555FC9E71C7A39DEDB129E448 /* PageStorer.swift */,
+				02AD841022756FC400D839A5 /* ParsingPageStorer.swift */,
+			);
+			path = "Page Storing";
+			sourceTree = "<group>";
+		};
+		02AD8414227574CE00D839A5 /* Page Parsing */ = {
+			isa = PBXGroup;
+			children = (
+				1733E3368F3BFB73575BE532D3A05843 /* ModelParser.swift */,
+			);
+			path = "Page Parsing";
+			sourceTree = "<group>";
+		};
 		0C3893FE5F2C8B6C5CAA07BF972E8015 /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -928,9 +959,9 @@
 		2646938E9472054247804378CDC0D188 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				5EEE2FA2CFEF8FACB22BC5FCDA069D37 /* ConnectionController.swift */,
-				DA29B2E555FC9E71C7A39DEDB129E448 /* PageStorer.swift */,
-				B8E69C98AAA462B19DC1078CE3154E90 /* PaginationStateTracker.swift */,
+				0231C412227577E6003F0D07 /* Connection Controlling */,
+				02AD8414227574CE00D839A5 /* Page Parsing */,
+				02AD840F22756FAB00D839A5 /* Page Storing */,
 				AAE6B364A6C3A52925736857FA95EFD5 /* Page Fetching */,
 			);
 			path = Classes;
@@ -985,7 +1016,6 @@
 				64E8D484E5C57564600C8F17D3FA199B /* ConnectionFetcher.swift */,
 				5AECED0CD0CAA5DD2F190E7FFF619152 /* ConnectionPageInfo.swift */,
 				D7DE39ECA1760BC78DE041A937190FEE /* ConnectionProtocol.swift */,
-				1733E3368F3BFB73575BE532D3A05843 /* ModelParser.swift */,
 				3B5669D8BEA3D98BD25D064BDB9DD56C /* Typealiases.swift */,
 			);
 			path = Protocols;
@@ -2048,6 +2078,7 @@
 			files = (
 				80CA0D680A596D9F6D8977D371BC2D42 /* CombinedPageFetcherState.swift in Sources */,
 				2DDDDD2998C25E1DA65B725FC3B9B866 /* ConnectionController.swift in Sources */,
+				02AD841122756FC400D839A5 /* ParsingPageStorer.swift in Sources */,
 				AD69462867EE8E98CE8CA2236AA9F01D /* ConnectionControllerConfiguration.swift in Sources */,
 				9C737BD8B784A073148EEF49AF3E32B6 /* ConnectionControllerFactory.swift in Sources */,
 				71B4D727263D7F23E7033E78A447EE8E /* ConnectionControllerState.swift in Sources */,
@@ -2058,6 +2089,7 @@
 				2F1EDC360F85C74505F737A4A2DE9C6C /* ConnectionProtocol.swift in Sources */,
 				1EF9241E46A8CD938FCF5683046C7C1A /* Edge.swift in Sources */,
 				B3C5F04706B0DD6B82E0D898DCAC35A8 /* End.swift in Sources */,
+				02AD84132275703500D839A5 /* PageStorable.swift in Sources */,
 				02AD840E22751C3600D839A5 /* NestedIdentifiable.swift in Sources */,
 				CD0F4ECAE843B58291A40F0CEFDC4023 /* EndState.swift in Sources */,
 				BAADA9BCBA55D92E41F9D51396CAD62A /* ErrorWrapper.swift in Sources */,

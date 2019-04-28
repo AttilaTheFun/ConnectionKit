@@ -1,10 +1,13 @@
 
-struct CombinedPageFetcherState<Model>: Hashable where Model: Hashable {
+struct CombinedPageFetcherState<Model> {
     let initialHeadPageFetcherState: PageFetcherState<Model>
     let initialTailPageFetcherState: PageFetcherState<Model>
     let headPageFetcherState: PageFetcherState<Model>
     let tailPageFetcherState: PageFetcherState<Model>
 }
+
+extension CombinedPageFetcherState: Equatable where Model: Equatable {}
+extension CombinedPageFetcherState: Hashable where Model: Hashable {}
 
 extension CombinedPageFetcherState {
     static var idle: CombinedPageFetcherState<Model> {

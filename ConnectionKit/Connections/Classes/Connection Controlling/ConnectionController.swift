@@ -5,27 +5,30 @@ public final class ConnectionController<Fetcher, Parser>
     where Fetcher: ConnectionFetcherProtocol, Parser: ModelParser,
     Fetcher.FetchedConnection.ConnectedEdge.Node == Parser.Node
 {
+    public typealias Node = Fetcher.FetchedConnection.ConnectedEdge.Node
+    private typealias Storer = ParsingPageStorer<Fetcher, Parser>
+
     // MARK: Configuration
 
-    public let configuration: ConnectionControllerConfiguration<Fetcher, Parser>
+    public let configuration: ConnectionControllerConfiguration<Fetcher>
 
     // MARK: Dependencies
 
     private let paginationStateTracker: PaginationStateTracker
-    private let pageStorer: PageStorer<Parser.Model>
-    private let pageFetcherContainer: PageFetcherContainer<Fetcher, Parser>
+    private let pageStorer: Storer
+    private let pageFetcherContainer: PageFetcherContainer<Fetcher, Storer>
 
     // MARK: State
 
     private var hasCompletedInitialLoad: Bool
-    private let stateRelay: BehaviorRelay<ConnectionControllerState<Parser.Model>>
+    private let stateRelay: BehaviorRelay<ConnectionControllerState<Node>>
     private let disposeBag = DisposeBag()
 
     // MARK: Initialization
 
     public init(
-        configuration: ConnectionControllerConfiguration<Fetcher, Parser>,
-        initialState: ConnectionControllerState<Parser.Model> = .init())
+        configuration: ConnectionControllerConfiguration<Fetcher>,
+        initialState: ConnectionControllerState<Node> = .init())
     {
         // Save configuration:
         self.configuration = configuration
@@ -34,12 +37,11 @@ public final class ConnectionController<Fetcher, Parser>
         self.paginationStateTracker = PaginationStateTracker(initialState: initialState.paginationState)
 
         // Create page storer:
-        self.pageStorer = PageStorer(initialEdges: initialState.initialEdges)
+        self.pageStorer = ParsingPageStorer(initialEdges: initialState.initialEdges)
 
         // Create page fetcher coordinator:
         let factory = PageFetcherFactory(
             fetcher: configuration.fetcher,
-            parser: configuration.parser,
             pageStorer: self.pageStorer,
             initialPageSize: self.configuration.initialPageSize,
             paginationPageSize: self.configuration.paginationPageSize
@@ -58,7 +60,7 @@ public final class ConnectionController<Fetcher, Parser>
 // MARK: Private
 
 extension ConnectionController {
-    private func reset(to edges: [Edge<Parser.Model>], paginationState: PaginationState) {
+    private func reset(to edges: [Edge<Node>], paginationState: PaginationState) {
 
         // Create page storer:
         self.pageStorer.reset(to: edges)
@@ -84,14 +86,12 @@ extension ConnectionController {
             pages: self.pageStorer.pages
         )
 
-        if state != self.stateRelay.value {
-            self.stateRelay.accept(state)
-        }
+        self.stateRelay.accept(state)
     }
 
-    private func completeObservable(for fetcher: Observable<PageFetcherState<Parser.Model>>) -> Observable<([Edge<Parser.Model>], PageInfo)> {
+    private func completeObservable(for fetcher: Observable<PageFetcherState<Node>>) -> Observable<([Edge<Node>], PageInfo)> {
         return fetcher
-            .flatMap { state -> Observable<([Edge<Parser.Model>], PageInfo)> in
+            .flatMap { state -> Observable<([Edge<Node>], PageInfo)> in
                 guard case .complete(let edges, let pageInfo) = state else {
                     return .empty()
                 }
@@ -100,7 +100,7 @@ extension ConnectionController {
             }
     }
 
-    private func observeInitialLoad(fetcher: PageFetcher<Fetcher, Parser>, end: End) {
+    private func observeInitialLoad(fetcher: PageFetcher<Fetcher>, end: End) {
         fetcher.stateObservable
             .subscribe(onNext: { [weak self] state in
                 guard let `self` = self else {
@@ -119,7 +119,7 @@ extension ConnectionController {
             .disposed(by: self.disposeBag)
     }
 
-    private func observeNextPageLoad(fetcher: PageFetcher<Fetcher, Parser>, end: End) {
+    private func observeNextPageLoad(fetcher: PageFetcher<Fetcher>, end: End) {
         fetcher.stateObservable
             .subscribe(onNext: { [weak self] state in
                 guard let `self` = self else {
@@ -145,7 +145,7 @@ extension ConnectionController {
     /**
      Resets the connection back to a given initial state, stopping all inflight requests.
      */
-    public func reset(to state: ConnectionControllerState<Parser.Model>) {
+    public func reset(to state: ConnectionControllerState<Node>) {
         self.hasCompletedInitialLoad = state.initialLoadState.hasCompletedInitialLoad
         self.reset(to: state.initialEdges, paginationState: state.paginationState)
     }
@@ -197,16 +197,23 @@ extension ConnectionController {
 
 extension ConnectionController {
     /**
+     The parsed pages from the connection.
+     */
+    var parsedPages: [Page<Parser.Model>] {
+        return self.pageStorer.parsedPages
+    }
+
+    /**
      The current state of the connection controller.
      */
-    public var state: ConnectionControllerState<Parser.Model> {
+    public var state: ConnectionControllerState<Node> {
         return self.stateRelay.value
     }
 
     /**
      The current state of the connection controller.
      */
-    public var stateObservable: Observable<ConnectionControllerState<Parser.Model>> {
+    public var stateObservable: Observable<ConnectionControllerState<Node>> {
         return self.stateRelay.asObservable()
     }
 }

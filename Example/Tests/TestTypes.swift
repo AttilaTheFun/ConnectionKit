@@ -5,6 +5,13 @@ struct TestModel: Hashable {
     let createdAt: Date
 }
 
+extension TestModel {
+    init(testNode: TestNode) {
+        self.id = testNode.id
+        self.createdAt = testNode.createdAt
+    }
+}
+
 struct TestNode: Hashable {
     let id: String
     let createdAt: Date

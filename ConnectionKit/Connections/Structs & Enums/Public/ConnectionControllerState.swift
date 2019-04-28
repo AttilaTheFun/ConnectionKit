@@ -1,5 +1,5 @@
 
-public struct ConnectionControllerState<Model>: Hashable where Model: Hashable {
+public struct ConnectionControllerState<Model> {
     public let initialLoadState: InitialLoadState
     public let headState: EndState
     public let pages: [Page<Model>]
@@ -7,6 +7,9 @@ public struct ConnectionControllerState<Model>: Hashable where Model: Hashable {
 
     let paginationState: PaginationState
 }
+
+extension ConnectionControllerState: Equatable where Model: Equatable {}
+extension ConnectionControllerState: Hashable where Model: Hashable {}
 
 // MARK: Internal
 
