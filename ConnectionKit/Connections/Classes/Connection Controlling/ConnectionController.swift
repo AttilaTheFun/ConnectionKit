@@ -21,45 +21,62 @@ public final class ConnectionController<Fetcher, Parser>
     // MARK: State
 
     private var hasCompletedInitialLoad: Bool
-    private let stateRelay: BehaviorRelay<ConnectionControllerState<Node>>
+    private let stateRelay: BehaviorRelay<ConnectionControllerState<Parser.Model>>
     private let disposeBag = DisposeBag()
 
     // MARK: Initialization
 
-    public init(
+    private init(
         configuration: ConnectionControllerConfiguration<Fetcher>,
-        initialState: ConnectionControllerState<Node> = .init())
+        initialPaginationState: PaginationState,
+        initialEdges: [Edge<Node>],
+        hasCompletedInitialLoad: Bool)
     {
         // Save configuration:
         self.configuration = configuration
 
         // Create pagination state tracker:
-        self.paginationStateTracker = PaginationStateTracker(initialState: initialState.paginationState)
+        self.paginationStateTracker = PaginationStateTracker(initialState: initialPaginationState)
 
         // Create page storer:
-        self.pageStorer = ParsingPageStorer(initialEdges: initialState.initialEdges)
+        self.pageStorer = ParsingPageStorer(initialEdges: initialEdges)
 
         // Create page fetcher coordinator:
         let factory = PageFetcherFactory(
             fetcher: configuration.fetcher,
             pageStorer: self.pageStorer,
-            initialPageSize: self.configuration.initialPageSize,
-            paginationPageSize: self.configuration.paginationPageSize
+            initialPageSize: configuration.initialPageSize,
+            paginationPageSize: configuration.paginationPageSize
         )
         self.pageFetcherContainer = PageFetcherContainer(factory: factory)
 
         // Setup state relay:
-        self.hasCompletedInitialLoad = initialState.initialLoadState.hasCompletedInitialLoad
+        self.hasCompletedInitialLoad = hasCompletedInitialLoad
+        let initialState = ConnectionControllerState(
+            hasCompletedInitialLoad: self.hasCompletedInitialLoad,
+            pageFetcherCoordinatorState: self.pageFetcherContainer.combinedState,
+            paginationState: self.paginationStateTracker.state,
+            pages: self.pageStorer.parsedPages
+        )
         self.stateRelay = BehaviorRelay(value: initialState)
 
         // Observe everything:
-        self.reset(to: initialState.initialEdges, paginationState: initialState.paginationState)
+        self.resetFetcherObservables()
     }
 }
 
 // MARK: Private
 
 extension ConnectionController {
+
+    private func resetFetcherObservables() {
+        // Reset all the fetchers, wiping out any inflight requests:
+        self.observeInitialLoad(fetcher: self.pageFetcherContainer.resetFetcher(for: .head, isInitial: true), end: .head)
+        self.observeInitialLoad(fetcher: self.pageFetcherContainer.resetFetcher(for: .tail, isInitial: true), end: .tail)
+        self.observeNextPageLoad(fetcher: self.pageFetcherContainer.resetFetcher(for: .head, isInitial: false), end: .head)
+        self.observeNextPageLoad(fetcher: self.pageFetcherContainer.resetFetcher(for: .tail, isInitial: false), end: .tail)
+    }
+
     private func reset(to edges: [Edge<Node>], paginationState: PaginationState) {
 
         // Create page storer:
@@ -68,11 +85,8 @@ extension ConnectionController {
         // Reset the pagination state to the given page info from the given end:
         self.paginationStateTracker.reset(initialState: paginationState)
 
-        // Reset all the fetchers, wiping out any inflight requests:
-        self.observeInitialLoad(fetcher: self.pageFetcherContainer.resetFetcher(for: .head, isInitial: true), end: .head)
-        self.observeInitialLoad(fetcher: self.pageFetcherContainer.resetFetcher(for: .tail, isInitial: true), end: .tail)
-        self.observeNextPageLoad(fetcher: self.pageFetcherContainer.resetFetcher(for: .head, isInitial: false), end: .head)
-        self.observeNextPageLoad(fetcher: self.pageFetcherContainer.resetFetcher(for: .tail, isInitial: false), end: .tail)
+        // Reset the fetcher observables:
+        self.resetFetcherObservables()
 
         // Update the state:
         self.updateStateRelay()
@@ -83,7 +97,7 @@ extension ConnectionController {
             hasCompletedInitialLoad: self.hasCompletedInitialLoad,
             pageFetcherCoordinatorState: self.pageFetcherContainer.combinedState,
             paginationState: self.paginationStateTracker.state,
-            pages: self.pageStorer.pages
+            pages: self.pageStorer.parsedPages
         )
 
         self.stateRelay.accept(state)
@@ -139,16 +153,46 @@ extension ConnectionController {
     }
 }
 
+// MARK: Initialization
+
+extension ConnectionController {
+    public convenience init(configuration: ConnectionControllerConfiguration<Fetcher>) {
+        self.init(
+            configuration: configuration,
+            initialPaginationState: .initial,
+            initialEdges: [],
+            hasCompletedInitialLoad: false
+        )
+    }
+
+    convenience init(
+        configuration: ConnectionControllerConfiguration<Fetcher>,
+        connection: Fetcher.FetchedConnection,
+        fetchedFrom end: End)
+    {
+        let pageInfo = PageInfo(connectionPageInfo: connection.pageInfo)
+        let edges = connection.edges.map { edge -> Edge<Node> in
+            return Edge(node: edge.node, cursor: edge.cursor)
+        }
+        self.init(
+            configuration: configuration,
+            initialPaginationState: PaginationState(initialPageInfo: pageInfo, from: end),
+            initialEdges: edges,
+            hasCompletedInitialLoad: true
+        )
+    }
+}
+
 // MARK: Mutations
 
 extension ConnectionController {
     /**
      Resets the connection back to a given initial state, stopping all inflight requests.
      */
-    public func reset(to state: ConnectionControllerState<Node>) {
-        self.hasCompletedInitialLoad = state.initialLoadState.hasCompletedInitialLoad
-        self.reset(to: state.initialEdges, paginationState: state.paginationState)
-    }
+//    public func reset(to state: ConnectionControllerState<Parser.Model>) {
+//        self.hasCompletedInitialLoad = state.initialLoadState.hasCompletedInitialLoad
+//        self.reset(to: state.initialEdges, paginationState: state.paginationState)
+//    }
 
     /**
      Fetch the initial page of data from the given end.
@@ -196,24 +240,21 @@ extension ConnectionController {
 // MARK: Getters
 
 extension ConnectionController {
-    /**
-     The parsed pages from the connection.
-     */
-    var parsedPages: [Page<Parser.Model>] {
-        return self.pageStorer.parsedPages
+    var pages: [Page<Node>] {
+        return self.pageStorer.pages
     }
 
     /**
      The current state of the connection controller.
      */
-    public var state: ConnectionControllerState<Node> {
+    public var state: ConnectionControllerState<Parser.Model> {
         return self.stateRelay.value
     }
 
     /**
      The current state of the connection controller.
      */
-    public var stateObservable: Observable<ConnectionControllerState<Node>> {
+    public var stateObservable: Observable<ConnectionControllerState<Parser.Model>> {
         return self.stateRelay.asObservable()
     }
 }

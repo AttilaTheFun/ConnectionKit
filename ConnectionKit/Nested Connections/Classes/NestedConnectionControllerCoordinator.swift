@@ -29,11 +29,11 @@ extension NestedConnectionControllerCoordinator {
      Missing controllers will be created and existing ones will be ignored.
      This will typically be called after paginating.
      */
-    func update(to states: [Identifier : ConnectionControllerState<Node>]) {
+    func update(to connections: [Identifier : Fetcher.FetchedConnection]) {
         var controllers = self.connectionControllersRelay.value
-        for (identifier, state) in states {
+        for (identifier, connection) in connections {
             if controllers[identifier] == nil {
-                controllers[identifier] = self.factory.create(with: state)
+                controllers[identifier] = self.factory.create(for: connection, fetchedFrom: .tail)
             }
         }
 
@@ -46,20 +46,20 @@ extension NestedConnectionControllerCoordinator {
      Extra controllers will be dropped.
      This will typically be called initially and then after a pull-to-refresh.
      */
-    func reset(to states: [Identifier : ConnectionControllerState<Node>]) {
-        let previousControllers = self.connectionControllersRelay.value
-        var controllers = [Identifier : ConnectionController<Fetcher, Parser>]()
-        for (identifier, state) in states {
-            if let controller = previousControllers[identifier] {
-                controller.reset(to: state)
-                controllers[identifier] = controller
-            } else {
-                controllers[identifier] = self.factory.create(with: state)
-            }
-        }
-
-        self.connectionControllersRelay.accept(controllers)
-    }
+//    func reset(to states: [Identifier : ConnectionControllerState<Parser.Model>]) {
+//        let previousControllers = self.connectionControllersRelay.value
+//        var controllers = [Identifier : ConnectionController<Fetcher, Parser>]()
+//        for (identifier, state) in states {
+//            if let controller = previousControllers[identifier] {
+//                controller.reset(to: state)
+//                controllers[identifier] = controller
+//            } else {
+//                controllers[identifier] = self.factory.create(with: state)
+//            }
+//        }
+//
+//        self.connectionControllersRelay.accept(controllers)
+//    }
 
     /**
      Retrieve the controller for the given identifier if one exists.
@@ -73,6 +73,6 @@ extension NestedConnectionControllerCoordinator {
      */
     func parsedPages(for identifiers: [Identifier]) -> [Identifier : [Page<Parser.Model>]] {
         let controllers = self.connectionControllersRelay.value
-        return Dictionary(uniqueKeysWithValues: identifiers.lazy.map { ($0, controllers[$0]?.parsedPages ?? []) })
+        return Dictionary(uniqueKeysWithValues: identifiers.lazy.map { ($0, controllers[$0]?.state.pages ?? []) })
     }
 }

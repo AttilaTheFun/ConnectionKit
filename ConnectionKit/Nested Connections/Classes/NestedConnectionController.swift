@@ -43,20 +43,19 @@ public final class NestedConnectionController<Node, Fetcher, Parser, NestedNode,
 }
 
 extension NestedConnectionController {
-    private func observeOuterState(from controller: ConnectionController<Fetcher, Parser>) -> Disposable {
-        return controller.stateObservable
+    private func observeOuterState() -> Disposable {
+        return self.outerController.stateObservable
             .subscribe(onNext: { [weak self] state in
                 guard let `self` = self else {
                     return
                 }
 
-                let edges = state.pages.flatMap { $0.edges }
+                let edges = self.outerController.pages.flatMap { $0.edges }
                 let nodes = edges.map { $0.node }
-                let states = Dictionary(uniqueKeysWithValues: nodes.map { node -> (Node.Identity, ConnectionControllerState<NestedNode>) in
-                    let nestedConnection = self.extractor(node)
-                    return (node.identity, ConnectionControllerState(connection: nestedConnection, fetchedFrom: .tail))
+                let connections = Dictionary(uniqueKeysWithValues: nodes.map { node -> (Node.Identity, NestedFetcher.FetchedConnection) in
+                    return (node.identity, self.extractor(node))
                 })
-                self.coordinator.update(to: states)
+                self.coordinator.update(to: connections)
             })
     }
 }

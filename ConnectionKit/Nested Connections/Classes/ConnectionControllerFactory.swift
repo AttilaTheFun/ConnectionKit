@@ -13,7 +13,11 @@ final class ConnectionControllerFactory<Fetcher, Parser>
 }
 
 extension ConnectionControllerFactory {
-    func create(with initialState: ConnectionControllerState<Node> = .init()) -> ConnectionController<Fetcher, Parser> {
-        return ConnectionController<Fetcher, Parser>(configuration: self.configuration, initialState: initialState)
+    func create(
+        for connection: Fetcher.FetchedConnection,
+        fetchedFrom end: End)
+        -> ConnectionController<Fetcher, Parser>
+    {
+        return ConnectionController<Fetcher, Parser>(configuration: self.configuration, connection: connection, fetchedFrom: end)
     }
 }
