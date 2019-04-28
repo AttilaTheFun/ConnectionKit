@@ -44,3 +44,6 @@ public final class NestedConnectionController<Node, Fetcher, Parser, NestedNode,
 //        self.observeOuterConnection()
     }
 }
+
+extension NestedConnectionController {
+}

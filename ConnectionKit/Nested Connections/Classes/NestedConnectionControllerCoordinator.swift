@@ -22,38 +22,53 @@ final class NestedConnectionControllerCoordinator<Identifier, Fetcher, Parser>
 }
 
 extension NestedConnectionControllerCoordinator {
-//    func ingest(states: [(Identifier, InitialConnectionState<Fetcher.FetchedConnection>)]) {
-//        var controllers = self.connectionControllersRelay.value
-//        for (identifier, state) in states {
-//            if let controller = controllers[identifier] {
-//                controller.reset(to: state)
-//            } else {
-//                controllers[identifier] = self.factory.create(with: state)
-//            }
-//        }
-//
-//        self.connectionControllersRelay.accept(controllers)
-//    }
+    /**
+     Ingest a mapping of identifiers to connection controller states.
+     Missing controllers will be created and existing ones will be ignored.
+     This will typically be called after paginating.
+     */
+    func ingest(states: [Identifier : ConnectionControllerState<Parser.Model>]) {
+        var controllers = self.connectionControllersRelay.value
+        for (identifier, state) in states {
+            if controllers[identifier] == nil {
+                controllers[identifier] = self.factory.create(with: state)
+            }
+        }
 
-//    func reset(to states: [(Identifier, InitialConnectionState<Fetcher.FetchedConnection>)]) {
-//        let previousControllers = self.connectionControllersRelay.value
-//        var controllers = [Identifier : ConnectionController<Fetcher, Parser>]()
-//        for (identifier, state) in states {
-//            if let controller = previousControllers[identifier] {
-//                controller.reset(to: state)
-//                controllers[identifier] = controller
-//            } else {
-//                controllers[identifier] = self.factory.create(with: state)
-//            }
-//        }
-//
-//        self.connectionControllersRelay.accept(controllers)
-//    }
+        self.connectionControllersRelay.accept(controllers)
+    }
 
+    /**
+     Reset to a mapping of identifiers to connection controller states.
+     Missing controllers will be created and existing ones will be reset.
+     Extra controllers will be dropped.
+     This will typically be called initially and then after a pull-to-refresh.
+     */
+    func reset(to states: [Identifier : ConnectionControllerState<Parser.Model>]) {
+        let previousControllers = self.connectionControllersRelay.value
+        var controllers = [Identifier : ConnectionController<Fetcher, Parser>]()
+        for (identifier, state) in states {
+            if let controller = previousControllers[identifier] {
+                controller.reset(to: state)
+                controllers[identifier] = controller
+            } else {
+                controllers[identifier] = self.factory.create(with: state)
+            }
+        }
+
+        self.connectionControllersRelay.accept(controllers)
+    }
+
+    /**
+     Retrieve the controller for the given identifier if one exists.
+     */
     func controller(for identifier: Identifier) -> ConnectionController<Fetcher, Parser>? {
         return self.connectionControllersRelay.value[identifier]
     }
 
+    /**
+     Retrieve the pages for the given identifiers from their respective controllers.
+     */
     func pages(for identifiers: [Identifier]) -> [Identifier : [Page<Parser.Model>]] {
         let controllers = self.connectionControllersRelay.value
         return Dictionary(uniqueKeysWithValues: identifiers.lazy.map { ($0, controllers[$0]?.state.pages ?? []) })

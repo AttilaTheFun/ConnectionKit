@@ -14,7 +14,6 @@ public final class ConnectionController<Fetcher, Parser>
     private let paginationStateTracker: PaginationStateTracker
     private let pageStorer: PageStorer<Parser.Model>
     private let pageFetcherContainer: PageFetcherContainer<Fetcher, Parser>
-//    private let pageFetcherCoordinator: PageFetcherCoordinator<Fetcher, Parser>
 
     // MARK: State
 
@@ -59,19 +58,6 @@ public final class ConnectionController<Fetcher, Parser>
 // MARK: Private
 
 extension ConnectionController {
-    private func updateStateRelay() {
-        let state = ConnectionControllerState(
-            hasCompletedInitialLoad: self.hasCompletedInitialLoad,
-            pageFetcherCoordinatorState: self.pageFetcherContainer.combinedState,
-            paginationState: self.paginationStateTracker.state,
-            pages: self.pageStorer.pages
-        )
-
-        if state != self.stateRelay.value {
-            self.stateRelay.accept(state)
-        }
-    }
-
     private func reset(to edges: [Edge<Parser.Model>], paginationState: PaginationState) {
 
         // Create page storer:
@@ -88,6 +74,19 @@ extension ConnectionController {
 
         // Update the state:
         self.updateStateRelay()
+    }
+
+    private func updateStateRelay() {
+        let state = ConnectionControllerState(
+            hasCompletedInitialLoad: self.hasCompletedInitialLoad,
+            pageFetcherCoordinatorState: self.pageFetcherContainer.combinedState,
+            paginationState: self.paginationStateTracker.state,
+            pages: self.pageStorer.pages
+        )
+
+        if state != self.stateRelay.value {
+            self.stateRelay.accept(state)
+        }
     }
 
     private func completeObservable(for fetcher: Observable<PageFetcherState<Parser.Model>>) -> Observable<([Edge<Parser.Model>], PageInfo)> {
@@ -138,27 +137,6 @@ extension ConnectionController {
             })
             .disposed(by: self.disposeBag)
     }
-
-//    private func observeCombinedFetcherState(observable: Observable<PageFetcherCoordinatorState<Parser.Model>>) {
-//        observable
-//            .subscribe(onNext: { [weak self] state in
-//                guard let `self` = self else {
-//                    return
-//                }
-//
-//                let state = ConnectionControllerState(
-//                    hasCompletedInitialLoad: self.hasCompletedInitialLoad,
-//                    pageFetcherCoordinatorState: state,
-//                    paginationState: self.paginationStateTracker.state,
-//                    pages: self.pageStorer.pages
-//                )
-//
-//                if state != self.stateRelay.value {
-//                    self.stateRelay.accept(state)
-//                }
-//            })
-//            .disposed(by: self.disposeBag)
-//    }
 }
 
 // MARK: Mutations
@@ -221,14 +199,14 @@ extension ConnectionController {
     /**
      The current state of the connection controller.
      */
-    var state: ConnectionControllerState<Parser.Model> {
+    public var state: ConnectionControllerState<Parser.Model> {
         return self.stateRelay.value
     }
 
     /**
      The current state of the connection controller.
      */
-    var stateObservable: Observable<ConnectionControllerState<Parser.Model>> {
+    public var stateObservable: Observable<ConnectionControllerState<Parser.Model>> {
         return self.stateRelay.asObservable()
     }
 }
