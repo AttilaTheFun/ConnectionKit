@@ -129,8 +129,7 @@
                 let errorCode = RXObjCRuntimeError(rawValue: error.code) ?? .unknown
                 
                 switch errorCode {
-                case .unknown:
-                    return .unknown(target: target)
+
                 case .objectMessagesAlreadyBeingIntercepted:
                     let isKVO = (error.userInfo[RXObjCRuntimeErrorIsKVOKey] as? NSNumber)?.boolValue ?? false
                     return .objectMessagesAlreadyBeingIntercepted(target: target, interceptionMechanism: isKVO ? .kvo : .unknown)
@@ -148,6 +147,10 @@
                     return .observingPerformanceSensitiveMessages(target: target)
                 case .observingMessagesWithUnsupportedReturnType:
                     return .observingMessagesWithUnsupportedReturnType(target: target)
+                case .unknown:
+                    fallthrough
+                @unknown default:
+                    return .unknown(target: target)
                 }
             }
             

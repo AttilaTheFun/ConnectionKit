@@ -37,7 +37,7 @@ extension XCTestCase {
         // Run the test:
         controller.loadInitialPage(from: end)
 
-        XCTAssertEqual(controller.parsedPages, expectedPages)
+        XCTAssertEqual(controller.state.pages, expectedPages)
 
         // Wait for expectations:
         wait(for: expectations, timeout: 1)
