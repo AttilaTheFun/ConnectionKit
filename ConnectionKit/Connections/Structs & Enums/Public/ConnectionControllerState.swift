@@ -42,9 +42,8 @@ extension ConnectionControllerState {
     /**
      Used to construct an initial state for the connection controller from a known connection.
      */
-    public init<Connection, Parser>(connection: Connection, parser: Parser.Type, fetchedFrom end: End)
-        where Connection: ConnectionProtocol, Parser: ModelParser,
-        Connection.ConnectedEdge.Node == Parser.Node, Parser.Model == Model
+    public init<Connection>(connection: Connection, fetchedFrom end: End)
+        where Connection: ConnectionProtocol, Connection.ConnectedEdge.Node == Model
     {
         self.initialLoadState = InitialLoadState(hasCompletedInitialLoad: true, status: .complete)
         self.headState = .idle
@@ -52,12 +51,11 @@ extension ConnectionControllerState {
 
         let pageInfo = PageInfo(connectionPageInfo: connection.pageInfo)
         self.paginationState = PaginationState(initialPageInfo: pageInfo, from: end)
-        let initialEdges = connection.edges.map { edge -> Edge<Parser.Model> in
-            let node = parser.parse(node: edge.node)
-            return Edge(node: node, cursor: edge.cursor)
+        let edges = connection.edges.map { edge -> Edge<Model> in
+            return Edge(node: edge.node, cursor: edge.cursor)
         }
 
-        self.pages = [Page<Model>(index: 0, edges: initialEdges)]
+        self.pages = [Page<Model>(index: 0, edges: edges)]
     }
 
     init(hasCompletedInitialLoad: Bool,

@@ -15,7 +15,7 @@ public final class NestedConnectionController<Node, Fetcher, Parser, NestedNode,
     NestedNode == NestedParser.Node
 {
     // Chronological connection over the outer nodes sorted by their most recent inner nodes.
-    private let outerController: ConnectionController<Fetcher, Parser>
+    public let outerController: ConnectionController<Fetcher, Parser>
 
     // Function to extract the nested connections from the nodes.
     typealias NestedConnectionExtractor = (Node) -> NestedFetcher.FetchedConnection
@@ -39,11 +39,40 @@ public final class NestedConnectionController<Node, Fetcher, Parser, NestedNode,
         // Create Coordinator
         let factory = ConnectionControllerFactory<NestedFetcher, NestedParser>(configuration: innerConfiguration)
         self.coordinator = NestedConnectionControllerCoordinator<Node.Identity, NestedFetcher, NestedParser>(factory: factory)
-
-        // Observe Outer Connection
-//        self.observeOuterConnection()
     }
 }
 
 extension NestedConnectionController {
+    private func observeOuterState(from controller: ConnectionController<Fetcher, Parser>) -> Disposable {
+        return controller.stateObservable
+            .subscribe(onNext: { [weak self] state in
+                guard let `self` = self else {
+                    return
+                }
+
+                let edges = state.pages.flatMap { $0.edges }
+                let nodes = edges.map { $0.node }
+                let states = Dictionary(uniqueKeysWithValues: nodes.map { node -> (Node.Identity, ConnectionControllerState<NestedNode>) in
+                    let nestedConnection = self.extractor(node)
+                    return (node.identity, ConnectionControllerState(connection: nestedConnection, fetchedFrom: .tail))
+                })
+                self.coordinator.update(to: states)
+            })
+    }
+}
+
+extension NestedConnectionController {
+    /**
+     Retrieve the controller for the given identifier if one exists.
+     */
+    func controller(for identifier: Node.Identity) -> ConnectionController<NestedFetcher, NestedParser>? {
+        return self.coordinator.controller(for: identifier)
+    }
+
+    /**
+     Retrieve the pages for the given identifiers from their respective controllers.
+     */
+    func parsedPages(for identifiers: [Node.Identity]) -> [Node.Identity : [Page<NestedParser.Model>]] {
+        return self.coordinator.parsedPages(for: identifiers)
+    }
 }

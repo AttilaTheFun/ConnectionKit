@@ -29,7 +29,7 @@ extension NestedConnectionControllerCoordinator {
      Missing controllers will be created and existing ones will be ignored.
      This will typically be called after paginating.
      */
-    func ingest(states: [Identifier : ConnectionControllerState<Node>]) {
+    func update(to states: [Identifier : ConnectionControllerState<Node>]) {
         var controllers = self.connectionControllersRelay.value
         for (identifier, state) in states {
             if controllers[identifier] == nil {
@@ -71,8 +71,8 @@ extension NestedConnectionControllerCoordinator {
     /**
      Retrieve the pages for the given identifiers from their respective controllers.
      */
-    func pages(for identifiers: [Identifier]) -> [Identifier : [Page<Node>]] {
+    func parsedPages(for identifiers: [Identifier]) -> [Identifier : [Page<Parser.Model>]] {
         let controllers = self.connectionControllersRelay.value
-        return Dictionary(uniqueKeysWithValues: identifiers.lazy.map { ($0, controllers[$0]?.state.pages ?? []) })
+        return Dictionary(uniqueKeysWithValues: identifiers.lazy.map { ($0, controllers[$0]?.parsedPages ?? []) })
     }
 }
