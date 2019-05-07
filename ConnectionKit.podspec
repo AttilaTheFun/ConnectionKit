@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'ConnectionKit'
-  s.version          = '0.6.0'
+  s.version          = '0.7.0'
   s.summary          = 'Manages a connection implementing the Relay Cursor Connections Specification'
 
 # This description is used to generate tags and improve search results.
@@ -25,7 +25,7 @@ It also provides reactive (RxSwift) bindings for observing that connection's sta
   s.swift_version = '5.0'
   s.static_framework = true
 
-  s.source_files = 'ConnectionKit/**/*'
+  s.source_files = 'Source/**/*'
   s.dependency 'RxCocoa'
   s.dependency 'RxSwift'
 end
