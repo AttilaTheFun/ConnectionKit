@@ -1,10 +1,8 @@
 
-public struct ConnectionControllerState<Model>: Hashable where Model: Hashable {
+public struct ConnectionControllerState {
     public let initialLoadState: InitialLoadState
     public let headState: EndState
-    public let pages: [Page<Model>]
     public let tailState: EndState
-
     let paginationState: PaginationState
 }
 
@@ -14,8 +12,7 @@ extension ConnectionControllerState {
     init<Node>(
         hasCompletedInitialLoad: Bool,
         pageFetcherCoordinatorState: CombinedPageFetcherState<Node>,
-        paginationState: PaginationState,
-        pages: [Page<Model>])
+        paginationState: PaginationState)
     {
         let initialHeadFetcherState = pageFetcherCoordinatorState.state(for: .head, isInitial: true)
         let initialTailFetcherState = pageFetcherCoordinatorState.state(for: .tail, isInitial: true)
@@ -34,7 +31,6 @@ extension ConnectionControllerState {
         self.tailState = EndState(pageFetcherState: tailFetcherState, hasFetchedLastPage: tailHasFetchedLastPage)
 
         self.paginationState = paginationState
-        self.pages = pages
     }
 }
 

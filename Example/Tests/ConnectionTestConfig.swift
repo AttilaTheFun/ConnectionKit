@@ -5,7 +5,7 @@ final class ConnectionTestConfig {
     let initialPageSize: Int
     let paginationPageSize: Int
     let fetcherTestConfig: FetcherTestConfig
-    let controller: ConnectionController<TestFetcher, TestParser>
+    let controller: ConnectionController<TestFetcher, TestParser, ParsingPageStorer<TestFetcher, TestParser>>
 
     init(
         initialPageSize: Int,
@@ -16,8 +16,9 @@ final class ConnectionTestConfig {
         self.initialPageSize = initialPageSize
         self.paginationPageSize = paginationPageSize
         self.fetcherTestConfig = FetcherTestConfig(edgeCount: edgeCount)
-        let configuration = ConnectionControllerConfiguration<TestFetcher>(
+        let configuration = ConnectionControllerConfiguration(
             fetcher: self.fetcherTestConfig.fetcher,
+            storerType: ParsingPageStorer<TestFetcher, TestParser>.self,
             initialPageSize: self.initialPageSize,
             paginationPageSize: self.paginationPageSize
         )

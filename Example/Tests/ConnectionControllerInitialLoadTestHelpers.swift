@@ -5,7 +5,7 @@ import XCTest
 
 extension XCTestCase {
     func runInitialLoadTest(
-        controller: ConnectionController<TestFetcher, TestParser>,
+        controller: ConnectionController<TestFetcher, TestParser, ParsingPageStorer<TestFetcher, TestParser>>,
         fetchFrom end: End,
         expectedEndState: InitialLoadState.Status,
         expectedPages: [Page<TestModel>],
@@ -37,7 +37,7 @@ extension XCTestCase {
         // Run the test:
         controller.loadInitialPage(from: end)
 
-        XCTAssertEqual(controller.state.pages, expectedPages)
+        XCTAssertEqual(controller.parsedPages, expectedPages)
 
         // Wait for expectations:
         wait(for: expectations, timeout: 1)

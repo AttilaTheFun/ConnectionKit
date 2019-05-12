@@ -11,7 +11,7 @@ public final class EdgeStorer<Model> {
 
 // MARK: Getters
 
-extension EdgeStorer: EdgeStorable {
+extension EdgeStorer: EdgeProvider {
     public func cursor(for end: End) -> String? {
         switch end {
         case .head:

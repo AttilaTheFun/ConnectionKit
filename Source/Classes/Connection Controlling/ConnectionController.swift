@@ -1,16 +1,16 @@
 import RxCocoa
 import RxSwift
 
-public final class ConnectionController<Fetcher, Parser>
-    where Fetcher: ConnectionFetcherProtocol, Parser: ModelParser,
-    Fetcher.FetchedConnection.ConnectedEdge.Node == Parser.Node
+public final class ConnectionController<Fetcher, Parser, Storer>
+    where Fetcher: ConnectionFetcherProtocol, Parser: ModelParser, Storer: EdgeStorable,
+    Fetcher.FetchedConnection.ConnectedEdge.Node == Parser.Node,
+    Parser.Node == Storer.Model
 {
     public typealias Node = Fetcher.FetchedConnection.ConnectedEdge.Node
-    private typealias Storer = ParsingPageStorer<Fetcher, Parser>
 
     // MARK: Configuration
 
-    public let configuration: ConnectionControllerConfiguration<Fetcher>
+    public let configuration: ConnectionControllerConfiguration<Fetcher, Storer>
 
     // MARK: Dependencies
 
@@ -21,13 +21,13 @@ public final class ConnectionController<Fetcher, Parser>
     // MARK: State
 
     private var hasCompletedInitialLoad: Bool
-    private let stateRelay: BehaviorRelay<ConnectionControllerState<Parser.Model>>
+    private let stateRelay: BehaviorRelay<ConnectionControllerState>
     private let disposeBag = DisposeBag()
 
     // MARK: Initialization
 
     private init(
-        configuration: ConnectionControllerConfiguration<Fetcher>,
+        configuration: ConnectionControllerConfiguration<Fetcher, Storer>,
         initialPaginationState: PaginationState,
         initialEdges: [Edge<Node>],
         hasCompletedInitialLoad: Bool)
@@ -39,7 +39,7 @@ public final class ConnectionController<Fetcher, Parser>
         self.paginationStateTracker = PaginationStateTracker(initialState: initialPaginationState)
 
         // Create page storer:
-        self.edgeStorer = ParsingPageStorer(initialEdges: initialEdges)
+        self.edgeStorer = configuration.storerType.init(initialEdges: initialEdges)
 
         // Create page fetcher coordinator:
         let factory = PageFetcherFactory(
@@ -55,8 +55,7 @@ public final class ConnectionController<Fetcher, Parser>
         let initialState = ConnectionControllerState(
             hasCompletedInitialLoad: self.hasCompletedInitialLoad,
             pageFetcherCoordinatorState: self.pageFetcherContainer.combinedState,
-            paginationState: self.paginationStateTracker.state,
-            pages: self.edgeStorer.parsedPages
+            paginationState: self.paginationStateTracker.state
         )
         self.stateRelay = BehaviorRelay(value: initialState)
 
@@ -96,8 +95,7 @@ extension ConnectionController {
         let state = ConnectionControllerState(
             hasCompletedInitialLoad: self.hasCompletedInitialLoad,
             pageFetcherCoordinatorState: self.pageFetcherContainer.combinedState,
-            paginationState: self.paginationStateTracker.state,
-            pages: self.edgeStorer.parsedPages
+            paginationState: self.paginationStateTracker.state
         )
 
         self.stateRelay.accept(state)
@@ -156,7 +154,7 @@ extension ConnectionController {
 // MARK: Initialization
 
 extension ConnectionController {
-    public convenience init(configuration: ConnectionControllerConfiguration<Fetcher>) {
+    public convenience init(configuration: ConnectionControllerConfiguration<Fetcher, Storer>) {
         self.init(
             configuration: configuration,
             initialPaginationState: .initial,
@@ -166,7 +164,7 @@ extension ConnectionController {
     }
 
     convenience init(
-        configuration: ConnectionControllerConfiguration<Fetcher>,
+        configuration: ConnectionControllerConfiguration<Fetcher, Storer>,
         connection: Fetcher.FetchedConnection,
         fetchedFrom end: End)
     {
@@ -240,21 +238,33 @@ extension ConnectionController {
 // MARK: Getters
 
 extension ConnectionController {
-    var pages: [Page<Node>] {
-        return self.edgeStorer.pages
-    }
-
     /**
      The current state of the connection controller.
      */
-    public var state: ConnectionControllerState<Parser.Model> {
+    public var state: ConnectionControllerState {
         return self.stateRelay.value
     }
 
     /**
      The current state of the connection controller.
      */
-    public var stateObservable: Observable<ConnectionControllerState<Parser.Model>> {
+    public var stateObservable: Observable<ConnectionControllerState> {
         return self.stateRelay.asObservable()
+    }
+}
+
+// MARK: PageStorable
+
+extension ConnectionController where Storer: PageStorable {
+    public var pages: [Page<Node>] {
+        return self.edgeStorer.pages
+    }
+}
+
+// MARK: ParsingPageStorer
+
+extension ConnectionController where Storer: ParsedPageProvider, Storer.ParsedModel == Parser.Model {
+    public var parsedPages: [Page<Parser.Model>] {
+        return self.edgeStorer.parsedPages
     }
 }
