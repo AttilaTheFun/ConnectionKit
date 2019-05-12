@@ -6,3 +6,14 @@ public struct Edge<Model> {
 
 extension Edge: Equatable where Model: Equatable {}
 extension Edge: Hashable where Model: Hashable {}
+
+extension Edge {
+    static func nextEdges(from previousEdges: [Edge<Model>], ingesting edges: [Edge<Model>], from end: End) -> [Edge<Model>] {
+        switch end {
+        case .head:
+            return edges + previousEdges
+        case .tail:
+            return previousEdges + edges
+        }
+    }
+}

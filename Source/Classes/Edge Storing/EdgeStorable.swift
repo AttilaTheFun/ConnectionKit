@@ -1,5 +1,5 @@
 
-protocol EdgeStorable {
+public protocol EdgeStorable {
     associatedtype Model
 
     /**

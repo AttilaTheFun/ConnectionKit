@@ -12,12 +12,12 @@
  - If the third page is ingested from the tail it will have index 1.
  - If the fourth page is ingested from the tail it will have index 2.
  */
-protocol PageStorable: EdgeStorable {
+public protocol PageStorable: EdgeStorable {
     var pages: [Page<Model>] { get }
 }
 
 extension PageStorable {
-    func cursor(for end: End) -> String? {
+    public func cursor(for end: End) -> String? {
         guard let page = end == .head ? self.pages.last : self.pages.first else {
             return nil
         }
