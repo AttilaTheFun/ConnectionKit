@@ -12,27 +12,20 @@
  - If the third page is ingested from the tail it will have index 1.
  - If the fourth page is ingested from the tail it will have index 2.
  */
-protocol PageStorable {
-    associatedtype Model
-
-    /**
-     Initializes the storer 
-     */
-    init(initialEdges: [Edge<Model>])
-
-    /**
-     The pages currently stored by the storer.
-     */
+protocol PageStorable: EdgeStorable {
     var pages: [Page<Model>] { get }
+}
 
+extension PageStorable {
+    func cursor(for end: End) -> String? {
+        guard let page = end == .head ? self.pages.last : self.pages.first else {
+            return nil
+        }
 
-    /**
-     Ingest a page of data into the manager.
-     */
-    func ingest(edges: [Edge<Model>], from end: End)
+        guard let edge = end == .head ? page.edges.last : page.edges.first else {
+            return nil
+        }
 
-    /**
-     Reset the pages back to a known set of edges.
-     */
-    func reset(to initialEdges: [Edge<Model>])
+        return edge.cursor
+    }
 }

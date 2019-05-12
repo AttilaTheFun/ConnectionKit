@@ -1,6 +1,6 @@
 
 final class PageFetcherContainer<Fetcher, Storer>
-    where Fetcher: ConnectionFetcherProtocol, Storer: PageStorable,
+    where Fetcher: ConnectionFetcherProtocol, Storer: EdgeStorable,
     Fetcher.FetchedConnection.ConnectedEdge.Node == Storer.Model
 {
     typealias Node = Fetcher.FetchedConnection.ConnectedEdge.Node

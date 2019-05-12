@@ -2,41 +2,24 @@ import RxCocoa
 import RxSwift
 
 final class PageFetcherFactory<Fetcher, Storer>
-    where Fetcher: ConnectionFetcherProtocol, Storer: PageStorable,
+    where Fetcher: ConnectionFetcherProtocol, Storer: EdgeStorable,
     Fetcher.FetchedConnection.ConnectedEdge.Node == Storer.Model
 {
     typealias Node = Fetcher.FetchedConnection.ConnectedEdge.Node
 
     private let fetcher: Fetcher
-    private let pageStorer: Storer
+    private let edgeStorer: Storer
     private let initialPageSize: Int
     private let paginationPageSize: Int
 
     // MARK: Initialization
 
-    init(fetcher: Fetcher, pageStorer: Storer, initialPageSize: Int, paginationPageSize: Int) {
+    init(fetcher: Fetcher, edgeStorer: Storer, initialPageSize: Int, paginationPageSize: Int) {
         self.fetcher = fetcher
-        self.pageStorer = pageStorer
+        self.edgeStorer = edgeStorer
 
         self.initialPageSize = initialPageSize
         self.paginationPageSize = paginationPageSize
-    }
-}
-
-// MARK: Private
-
-extension PageFetcherFactory {
-    private func cursor(for end: End) -> String? {
-        let pages = self.pageStorer.pages
-        guard let page = end == .head ? pages.last : pages.first else {
-            return nil
-        }
-
-        guard let edge = end == .head ? page.edges.last : page.edges.first else {
-            return nil
-        }
-
-        return edge.cursor
     }
 }
 
@@ -52,7 +35,7 @@ extension PageFetcherFactory {
             for: self.fetcher,
             end: end,
             pageSize: isInitial ? self.initialPageSize : self.paginationPageSize,
-            cursor: isInitial ? nil : self.cursor(for: end)
+            cursor: isInitial ? nil : self.edgeStorer.cursor(for: end)
         )
     }
 }

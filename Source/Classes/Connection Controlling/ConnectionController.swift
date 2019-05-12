@@ -15,7 +15,7 @@ public final class ConnectionController<Fetcher, Parser>
     // MARK: Dependencies
 
     private let paginationStateTracker: PaginationStateTracker
-    private let pageStorer: Storer
+    private let edgeStorer: Storer
     private let pageFetcherContainer: PageFetcherContainer<Fetcher, Storer>
 
     // MARK: State
@@ -39,12 +39,12 @@ public final class ConnectionController<Fetcher, Parser>
         self.paginationStateTracker = PaginationStateTracker(initialState: initialPaginationState)
 
         // Create page storer:
-        self.pageStorer = ParsingPageStorer(initialEdges: initialEdges)
+        self.edgeStorer = ParsingPageStorer(initialEdges: initialEdges)
 
         // Create page fetcher coordinator:
         let factory = PageFetcherFactory(
             fetcher: configuration.fetcher,
-            pageStorer: self.pageStorer,
+            edgeStorer: self.edgeStorer,
             initialPageSize: configuration.initialPageSize,
             paginationPageSize: configuration.paginationPageSize
         )
@@ -56,7 +56,7 @@ public final class ConnectionController<Fetcher, Parser>
             hasCompletedInitialLoad: self.hasCompletedInitialLoad,
             pageFetcherCoordinatorState: self.pageFetcherContainer.combinedState,
             paginationState: self.paginationStateTracker.state,
-            pages: self.pageStorer.parsedPages
+            pages: self.edgeStorer.parsedPages
         )
         self.stateRelay = BehaviorRelay(value: initialState)
 
@@ -80,7 +80,7 @@ extension ConnectionController {
     private func reset(to edges: [Edge<Node>], paginationState: PaginationState) {
 
         // Create page storer:
-        self.pageStorer.reset(to: edges)
+        self.edgeStorer.reset(to: edges)
 
         // Reset the pagination state to the given page info from the given end:
         self.paginationStateTracker.reset(initialState: paginationState)
@@ -97,7 +97,7 @@ extension ConnectionController {
             hasCompletedInitialLoad: self.hasCompletedInitialLoad,
             pageFetcherCoordinatorState: self.pageFetcherContainer.combinedState,
             paginationState: self.paginationStateTracker.state,
-            pages: self.pageStorer.parsedPages
+            pages: self.edgeStorer.parsedPages
         )
 
         self.stateRelay.accept(state)
@@ -144,7 +144,7 @@ extension ConnectionController {
                 case .idle, .fetching, .error:
                     self.updateStateRelay()
                 case .complete(let edges, let pageInfo):
-                    self.pageStorer.ingest(edges: edges, from: end)
+                    self.edgeStorer.ingest(edges: edges, from: end)
                     self.paginationStateTracker.ingest(pageInfo: pageInfo, from: end)
                     self.observeNextPageLoad(fetcher: self.pageFetcherContainer.resetFetcher(for: end, isInitial: false), end: end)
                 }
@@ -241,7 +241,7 @@ extension ConnectionController {
 
 extension ConnectionController {
     var pages: [Page<Node>] {
-        return self.pageStorer.pages
+        return self.edgeStorer.pages
     }
 
     /**
