@@ -8,18 +8,15 @@ final class PageFetcherFactory<Fetcher, Storer>
     typealias Node = Fetcher.FetchedConnection.ConnectedEdge.Node
 
     private let fetcher: Fetcher
-    private let edgeStorer: Storer
-    private let initialPageSize: Int
-    private let paginationPageSize: Int
+    private let storer: Storer
+    private let configuration: PaginationConfiguration
 
     // MARK: Initialization
 
-    init(fetcher: Fetcher, edgeStorer: Storer, initialPageSize: Int, paginationPageSize: Int) {
+    init(fetcher: Fetcher, storer: Storer, configuration: PaginationConfiguration) {
         self.fetcher = fetcher
-        self.edgeStorer = edgeStorer
-
-        self.initialPageSize = initialPageSize
-        self.paginationPageSize = paginationPageSize
+        self.storer = storer
+        self.configuration = configuration
     }
 }
 
@@ -34,8 +31,8 @@ extension PageFetcherFactory {
         return PageFetcher(
             for: self.fetcher,
             end: end,
-            pageSize: isInitial ? self.initialPageSize : self.paginationPageSize,
-            cursor: isInitial ? nil : self.edgeStorer.cursor(for: end)
+            pageSize: isInitial ? self.configuration.initialPageSize : self.configuration.paginationPageSize,
+            cursor: isInitial ? nil : self.storer.cursor(for: end)
         )
     }
 }

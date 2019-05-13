@@ -10,7 +10,6 @@ public struct ConnectionControllerState {
 
 extension ConnectionControllerState {
     init<Node>(
-        hasCompletedInitialLoad: Bool,
         pageFetcherCoordinatorState: CombinedPageFetcherState<Node>,
         paginationState: PaginationState)
     {
@@ -19,7 +18,7 @@ extension ConnectionControllerState {
         self.initialLoadState = InitialLoadState(
             headPageFetcherState: initialHeadFetcherState,
             tailPageFetcherState: initialTailFetcherState,
-            hasCompletedInitialLoad: hasCompletedInitialLoad
+            hasCompletedInitialLoad: paginationState.hasFetchedInitialPage
         )
 
         let headFetcherState = pageFetcherCoordinatorState.state(for: .head, isInitial: false)

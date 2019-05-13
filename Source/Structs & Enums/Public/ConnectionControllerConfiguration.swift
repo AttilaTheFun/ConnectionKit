@@ -1,4 +1,14 @@
 
+public struct PaginationConfiguration {
+    public let initialPageSize: Int
+    public let paginationPageSize: Int
+
+    public init(initialPageSize: Int, paginationPageSize: Int) {
+        self.initialPageSize = initialPageSize
+        self.paginationPageSize = paginationPageSize
+    }
+}
+
 public struct ConnectionControllerConfiguration<Fetcher, Storer>
     where Fetcher: ConnectionFetcherProtocol, Storer: EdgeStorable,
     Fetcher.FetchedConnection.ConnectedEdge.Node == Storer.Model
@@ -7,42 +17,36 @@ public struct ConnectionControllerConfiguration<Fetcher, Storer>
 
     public let fetcher: Fetcher
     public let storer: Storer
-    public let initialPageSize: Int
-    public let paginationPageSize: Int
+    public let paginationConfiguration: PaginationConfiguration
     let initialPaginationState: PaginationState
-    let hasCompletedInitialLoad: Bool
 }
 
 extension ConnectionControllerConfiguration {
     public init(
         fetcher: Fetcher,
         storer: Storer,
-        initialPageSize: Int,
-        paginationPageSize: Int)
+        paginationConfiguration: PaginationConfiguration)
     {
         self.fetcher = fetcher
         self.storer = storer
-        self.initialPageSize = initialPageSize
-        self.paginationPageSize = paginationPageSize
+        self.paginationConfiguration = paginationConfiguration
         self.initialPaginationState = .initial
-        self.hasCompletedInitialLoad = false
     }
 
     public init(
         fetcher: Fetcher,
         storerType: Storer.Type,
+        paginationConfiguration: PaginationConfiguration,
         connection: Fetcher.FetchedConnection,
-        fetchedFrom end: End,
-        initialPageSize: Int,
-        paginationPageSize: Int)
+        fetchedFrom end: End)
     {
-        let pageInfo = PageInfo(connectionPageInfo: connection.pageInfo)
+        self.fetcher = fetcher
+        self.paginationConfiguration = paginationConfiguration
+
         let initialEdges = connection.edges.map { Edge(node: $0.node, cursor: $0.cursor) }
         self.storer = storerType.init(initialEdges: initialEdges)
-        self.fetcher = fetcher
-        self.initialPageSize = initialPageSize
-        self.paginationPageSize = paginationPageSize
+
+        let pageInfo = PageInfo(connectionPageInfo: connection.pageInfo)
         self.initialPaginationState = PaginationState(initialPageInfo: pageInfo, from: end)
-        self.hasCompletedInitialLoad = true
     }
 }

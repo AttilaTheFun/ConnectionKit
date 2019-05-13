@@ -14,12 +14,12 @@ public final class ConnectionController<Fetcher, Storer>
     // MARK: Dependencies
 
     private let paginationStateTracker: PaginationStateTracker
-    private let edgeStorer: Storer
+    private let storer: Storer
     private let pageFetcherContainer: PageFetcherContainer<Fetcher, Storer>
 
     // MARK: State
 
-    private var hasCompletedInitialLoad: Bool
+//    private var hasCompletedInitialLoad: Bool
     private let stateRelay: BehaviorRelay<ConnectionControllerState>
     private let disposeBag = DisposeBag()
 
@@ -33,21 +33,18 @@ public final class ConnectionController<Fetcher, Storer>
         self.paginationStateTracker = PaginationStateTracker(initialState: configuration.initialPaginationState)
 
         // Create page storer:
-        self.edgeStorer = configuration.storer
+        self.storer = configuration.storer
 
         // Create page fetcher coordinator:
         let factory = PageFetcherFactory(
             fetcher: configuration.fetcher,
-            edgeStorer: self.edgeStorer,
-            initialPageSize: configuration.initialPageSize,
-            paginationPageSize: configuration.paginationPageSize
+            storer: configuration.storer,
+            configuration: configuration.paginationConfiguration
         )
         self.pageFetcherContainer = PageFetcherContainer(factory: factory)
 
         // Setup state relay:
-        self.hasCompletedInitialLoad = configuration.hasCompletedInitialLoad
         let initialState = ConnectionControllerState(
-            hasCompletedInitialLoad: self.hasCompletedInitialLoad,
             pageFetcherCoordinatorState: self.pageFetcherContainer.combinedState,
             paginationState: self.paginationStateTracker.state
         )
@@ -73,7 +70,7 @@ extension ConnectionController {
     private func reset(to edges: [Edge<Node>], paginationState: PaginationState) {
 
         // Create page storer:
-        self.edgeStorer.reset(to: edges)
+        self.storer.reset(to: edges)
 
         // Reset the pagination state to the given page info from the given end:
         self.paginationStateTracker.reset(initialState: paginationState)
@@ -87,7 +84,6 @@ extension ConnectionController {
 
     private func updateStateRelay() {
         let state = ConnectionControllerState(
-            hasCompletedInitialLoad: self.hasCompletedInitialLoad,
             pageFetcherCoordinatorState: self.pageFetcherContainer.combinedState,
             paginationState: self.paginationStateTracker.state
         )
@@ -117,7 +113,6 @@ extension ConnectionController {
                 case .idle, .fetching, .error:
                     self.updateStateRelay()
                 case .complete(let edges, let pageInfo):
-                    self.hasCompletedInitialLoad = true
                     let paginationState = PaginationState.initial.nextState(pageInfo: pageInfo, from: end)
                     self.reset(to: edges, paginationState: paginationState)
                 }
@@ -136,7 +131,7 @@ extension ConnectionController {
                 case .idle, .fetching, .error:
                     self.updateStateRelay()
                 case .complete(let edges, let pageInfo):
-                    self.edgeStorer.ingest(edges: edges, from: end)
+                    self.storer.ingest(edges: edges, from: end)
                     self.paginationStateTracker.ingest(pageInfo: pageInfo, from: end)
                     self.observeNextPageLoad(fetcher: self.pageFetcherContainer.resetFetcher(for: end, isInitial: false), end: end)
                 }
@@ -221,7 +216,7 @@ extension ConnectionController {
 
 extension ConnectionController where Storer: PageStorable {
     public var pages: [Page<Node>] {
-        return self.edgeStorer.pages
+        return self.storer.pages
     }
 }
 
@@ -229,6 +224,6 @@ extension ConnectionController where Storer: PageStorable {
 
 extension ConnectionController where Storer: ParsedPageProvider {
     public var parsedPages: [Page<Storer.ParsedModel>] {
-        return self.edgeStorer.parsedPages
+        return self.storer.parsedPages
     }
 }

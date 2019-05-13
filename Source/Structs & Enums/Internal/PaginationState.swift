@@ -1,5 +1,6 @@
 
-struct PaginationState: Hashable {
+public struct PaginationState: Hashable {
+    let hasFetchedInitialPage: Bool
     let hasFetchedLastPageFromHead: Bool
     let hasFetchedLastPageFromTail: Bool
 }
@@ -8,7 +9,7 @@ extension PaginationState {
     /**
      The initial pagination state for an empty connection.
      */
-    static let initial = PaginationState(hasFetchedLastPageFromHead: false, hasFetchedLastPageFromTail: false)
+    static let initial = PaginationState(hasFetchedInitialPage: false, hasFetchedLastPageFromHead: false, hasFetchedLastPageFromTail: false)
 
     /**
      Instantiates a pagination state instance with the given page info fetched from the given end.
@@ -25,12 +26,14 @@ extension PaginationState {
         case .head:
             // If ingesting from the head, only update canFetchNextPageFromHead.
             return PaginationState(
+                hasFetchedInitialPage: true,
                 hasFetchedLastPageFromHead: !pageInfo.hasNextPage,
                 hasFetchedLastPageFromTail: self.hasFetchedLastPageFromTail
             )
         case .tail:
             // If ingesting from the tail, only update canFetchNextPageFromHead.
             return PaginationState(
+                hasFetchedInitialPage: true,
                 hasFetchedLastPageFromHead: self.hasFetchedLastPageFromHead,
                 hasFetchedLastPageFromTail: !pageInfo.hasPreviousPage
             )
