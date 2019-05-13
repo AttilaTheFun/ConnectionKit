@@ -5,7 +5,7 @@ import XCTest
 
 extension XCTestCase {
     func runSubsequentPageTest(
-        controller: ConnectionController<TestFetcher, TestParser, ParsingPageStorer<TestFetcher, TestParser>>,
+        controller: ConnectionController<TestFetcher, ParsingPageStorer<TestFetcher, TestParser>>,
         fetchFrom end: End,
         expectedEndState: EndState,
         expectedPages: [Page<TestModel>],

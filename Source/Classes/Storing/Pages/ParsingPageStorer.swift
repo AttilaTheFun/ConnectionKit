@@ -12,19 +12,8 @@ public final class ParsingPageStorer<Fetcher, Parser>
 
     public init(initialEdges: [Edge<Node>] = []) {
         self.rawStorer = PageStorer(initialEdges: initialEdges)
-        let parsedEdges = ParsingPageStorer<Fetcher, Parser>.parsedEdges(from: initialEdges)
+        let parsedEdges = Parser.parsedEdges(from: initialEdges)
         self.parsedStorer = PageStorer(initialEdges: parsedEdges)
-    }
-}
-
-// MARK: Private
-
-extension ParsingPageStorer {
-    private static func parsedEdges(from edges: [Edge<Node>]) -> [Edge<Parser.Model>] {
-        return edges.map { edge -> Edge<Parser.Model> in
-            let node = Parser.parse(node: edge.node)
-            return Edge(node: node, cursor: edge.cursor)
-        }
     }
 }
 
@@ -45,13 +34,13 @@ extension ParsingPageStorer: PageStorable {
 
     public func ingest(edges: [Edge<Node>], from end: End) {
         self.rawStorer.ingest(edges: edges, from: end)
-        let parsedEdges = ParsingPageStorer<Fetcher, Parser>.parsedEdges(from: edges)
+        let parsedEdges = Parser.parsedEdges(from: edges)
         self.parsedStorer.ingest(edges: parsedEdges, from: end)
     }
 
     public func reset(to initialEdges: [Edge<Node>]) {
         self.rawStorer.reset(to: initialEdges)
-        let parsedEdges = ParsingPageStorer<Fetcher, Parser>.parsedEdges(from: initialEdges)
+        let parsedEdges = Parser.parsedEdges(from: initialEdges)
         self.parsedStorer.reset(to: parsedEdges)
     }
 }

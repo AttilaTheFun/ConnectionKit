@@ -13,6 +13,8 @@
 		0231C4712287CD9B003F0D07 /* EdgeStorer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0231C4702287CD9B003F0D07 /* EdgeStorer.swift */; };
 		0231C4732287D261003F0D07 /* EdgeProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0231C4722287D261003F0D07 /* EdgeProvider.swift */; };
 		0231C4772287D588003F0D07 /* ParsedPageProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0231C4762287D588003F0D07 /* ParsedPageProvider.swift */; };
+		0231C4792288EAFF003F0D07 /* ParsingEdgeStorer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0231C4782288EAFF003F0D07 /* ParsingEdgeStorer.swift */; };
+		0231C47B2288EB99003F0D07 /* ParsedEdgeProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0231C47A2288EB98003F0D07 /* ParsedEdgeProvider.swift */; };
 		0336002AA038C64836E12976D9B1E23A /* NSSlider+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8ABB38443A79D3D0F6FC6AAE417F92 /* NSSlider+Rx.swift */; };
 		0355196624E88F39AAC8C3053AAA3B3D /* CombineLatest+arity.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDA7C02639A36E7AAAE38E16EC83A859 /* CombineLatest+arity.swift */; };
 		04180378D88E3BA7E7940595CC42F1F8 /* Skip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D8C8F727B97ED5B136A62CB97541467 /* Skip.swift */; };
@@ -431,6 +433,8 @@
 		0231C4702287CD9B003F0D07 /* EdgeStorer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EdgeStorer.swift; sourceTree = "<group>"; };
 		0231C4722287D261003F0D07 /* EdgeProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EdgeProvider.swift; sourceTree = "<group>"; };
 		0231C4762287D588003F0D07 /* ParsedPageProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParsedPageProvider.swift; sourceTree = "<group>"; };
+		0231C4782288EAFF003F0D07 /* ParsingEdgeStorer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParsingEdgeStorer.swift; sourceTree = "<group>"; };
+		0231C47A2288EB98003F0D07 /* ParsedEdgeProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParsedEdgeProvider.swift; sourceTree = "<group>"; };
 		02B8C1F3BC29F23DB16EF5EEF1F7A926 /* Using.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Using.swift; path = RxSwift/Observables/Using.swift; sourceTree = "<group>"; };
 		035ED43CB114F0EAF66D5E0AD9A28C9C /* RetryWhen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RetryWhen.swift; path = RxSwift/Observables/RetryWhen.swift; sourceTree = "<group>"; };
 		03CEA9B2A6BD3B461B00CE954DF74A23 /* RxCocoa-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "RxCocoa-prefix.pch"; sourceTree = "<group>"; };
@@ -883,6 +887,29 @@
 			path = Public;
 			sourceTree = "<group>";
 		};
+		0231C47C2288EBC2003F0D07 /* Edges */ = {
+			isa = PBXGroup;
+			children = (
+				0231C4722287D261003F0D07 /* EdgeProvider.swift */,
+				EAF87EA667B69E574B0D79236A2A4A0F /* EdgeStorable.swift */,
+				0231C4702287CD9B003F0D07 /* EdgeStorer.swift */,
+				0231C47A2288EB98003F0D07 /* ParsedEdgeProvider.swift */,
+				0231C4782288EAFF003F0D07 /* ParsingEdgeStorer.swift */,
+			);
+			path = Edges;
+			sourceTree = "<group>";
+		};
+		0231C47D2288EBCD003F0D07 /* Pages */ = {
+			isa = PBXGroup;
+			children = (
+				0231C46E2287C93B003F0D07 /* PageStorable.swift */,
+				2B10DC94E37AA9416287398BD14389B3 /* PageStorer.swift */,
+				0231C4762287D588003F0D07 /* ParsedPageProvider.swift */,
+				99168A6A3F6654D2C1E2C62FC9ED9585 /* ParsingPageStorer.swift */,
+			);
+			path = Pages;
+			sourceTree = "<group>";
+		};
 		0C3893FE5F2C8B6C5CAA07BF972E8015 /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -922,13 +949,13 @@
 			path = "Target Support Files/Pods-ConnectionKit_Example";
 			sourceTree = "<group>";
 		};
-		1B9BA1A43D05F7B94B2D127AFAB60E30 /* Connection Controlling */ = {
+		1B9BA1A43D05F7B94B2D127AFAB60E30 /* Controlling */ = {
 			isa = PBXGroup;
 			children = (
 				A3341AF57103B8C62B3F73901AE974A6 /* ConnectionController.swift */,
 				866405E9CABB9DE3C87B2DE1591F2595 /* PaginationStateTracker.swift */,
 			);
-			path = "Connection Controlling";
+			path = Controlling;
 			sourceTree = "<group>";
 		};
 		1F240C7374E1BB31D8A4F319463679A6 /* Targets Support Files */ = {
@@ -952,10 +979,10 @@
 		248E5ECD1CF24DF6F2BDF7809FE523BC /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				1B9BA1A43D05F7B94B2D127AFAB60E30 /* Connection Controlling */,
-				C763522B7E49BACCD7D2D5D3D03473E6 /* Page Fetching */,
-				A0475B59E31002CE25AEDE18560CEBD0 /* Page Parsing */,
-				8854F7B758A5F76897626F8158A21E7E /* Edge Storing */,
+				1B9BA1A43D05F7B94B2D127AFAB60E30 /* Controlling */,
+				C763522B7E49BACCD7D2D5D3D03473E6 /* Fetching */,
+				A0475B59E31002CE25AEDE18560CEBD0 /* Parsing */,
+				8854F7B758A5F76897626F8158A21E7E /* Storing */,
 			);
 			name = Classes;
 			path = Source/Classes;
@@ -1186,18 +1213,13 @@
 			name = Pod;
 			sourceTree = "<group>";
 		};
-		8854F7B758A5F76897626F8158A21E7E /* Edge Storing */ = {
+		8854F7B758A5F76897626F8158A21E7E /* Storing */ = {
 			isa = PBXGroup;
 			children = (
-				0231C4722287D261003F0D07 /* EdgeProvider.swift */,
-				EAF87EA667B69E574B0D79236A2A4A0F /* EdgeStorable.swift */,
-				0231C4702287CD9B003F0D07 /* EdgeStorer.swift */,
-				0231C46E2287C93B003F0D07 /* PageStorable.swift */,
-				2B10DC94E37AA9416287398BD14389B3 /* PageStorer.swift */,
-				0231C4762287D588003F0D07 /* ParsedPageProvider.swift */,
-				99168A6A3F6654D2C1E2C62FC9ED9585 /* ParsingPageStorer.swift */,
+				0231C47C2288EBC2003F0D07 /* Edges */,
+				0231C47D2288EBCD003F0D07 /* Pages */,
 			);
-			path = "Edge Storing";
+			path = Storing;
 			sourceTree = "<group>";
 		};
 		9F3A0896296658315DC19E4F58042032 /* Pods */ = {
@@ -1210,12 +1232,12 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
-		A0475B59E31002CE25AEDE18560CEBD0 /* Page Parsing */ = {
+		A0475B59E31002CE25AEDE18560CEBD0 /* Parsing */ = {
 			isa = PBXGroup;
 			children = (
 				C43B81AB133ACF7F8C55440BACA6243E /* ModelParser.swift */,
 			);
-			path = "Page Parsing";
+			path = Parsing;
 			sourceTree = "<group>";
 		};
 		AF22F9EF26532308C01247A99A31531E /* Support Files */ = {
@@ -1242,14 +1264,14 @@
 			path = "Source/Structs & Enums";
 			sourceTree = "<group>";
 		};
-		C763522B7E49BACCD7D2D5D3D03473E6 /* Page Fetching */ = {
+		C763522B7E49BACCD7D2D5D3D03473E6 /* Fetching */ = {
 			isa = PBXGroup;
 			children = (
 				B05FB85805733A969CAD25B5925995E6 /* PageFetcher.swift */,
 				93A98F991C266708BFAB8A0F68970AE0 /* PageFetcherContainer.swift */,
 				DB3A96FAD12E541332F4D234465845CB /* PageFetcherFactory.swift */,
 			);
-			path = "Page Fetching";
+			path = Fetching;
 			sourceTree = "<group>";
 		};
 		CF1408CF629C7361332E53B88F7BD30C = {
@@ -1885,6 +1907,7 @@
 				0A8E6C273C0AC3E63CCDC83DBC664B49 /* ConnectionController.swift in Sources */,
 				B071C9682F4E18D5CEF3A5CE26D7211A /* ConnectionControllerConfiguration.swift in Sources */,
 				B434A1F63142B1AA68FC9DDBBCA0D15B /* ConnectionControllerState.swift in Sources */,
+				0231C47B2288EB99003F0D07 /* ParsedEdgeProvider.swift in Sources */,
 				0231C4772287D588003F0D07 /* ParsedPageProvider.swift in Sources */,
 				2ED08FF12AEDA429587F1DC2B756C7AA /* ConnectionEdge.swift in Sources */,
 				0231C4732287D261003F0D07 /* EdgeProvider.swift in Sources */,
@@ -1907,6 +1930,7 @@
 				B7909715080601D9AECB7C57D81CBA13 /* EdgeStorable.swift in Sources */,
 				0231C46F2287C93B003F0D07 /* PageStorable.swift in Sources */,
 				C364EB3B6B114BFCBA3DE9961ECC4F1C /* PageStorer.swift in Sources */,
+				0231C4792288EAFF003F0D07 /* ParsingEdgeStorer.swift in Sources */,
 				EE5AA1CBBD8D779EB6F6BC0995EC2B27 /* PaginationState.swift in Sources */,
 				0231C4712287CD9B003F0D07 /* EdgeStorer.swift in Sources */,
 				EFF1C7576C0ADD44541E8BF11FA02AE0 /* PaginationStateTracker.swift in Sources */,

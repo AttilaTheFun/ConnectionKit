@@ -1,10 +1,9 @@
 import RxCocoa
 import RxSwift
 
-public final class ConnectionController<Fetcher, Parser, Storer>
-    where Fetcher: ConnectionFetcherProtocol, Parser: ModelParser, Storer: EdgeStorable,
-    Fetcher.FetchedConnection.ConnectedEdge.Node == Parser.Node,
-    Parser.Node == Storer.Model
+public final class ConnectionController<Fetcher, Storer>
+    where Fetcher: ConnectionFetcherProtocol, Storer: EdgeStorable,
+    Fetcher.FetchedConnection.ConnectedEdge.Node == Storer.Model
 {
     public typealias Node = Fetcher.FetchedConnection.ConnectedEdge.Node
 
@@ -26,20 +25,15 @@ public final class ConnectionController<Fetcher, Parser, Storer>
 
     // MARK: Initialization
 
-    private init(
-        configuration: ConnectionControllerConfiguration<Fetcher, Storer>,
-        initialPaginationState: PaginationState,
-        initialEdges: [Edge<Node>],
-        hasCompletedInitialLoad: Bool)
-    {
+    public init(configuration: ConnectionControllerConfiguration<Fetcher, Storer>) {
         // Save configuration:
         self.configuration = configuration
 
         // Create pagination state tracker:
-        self.paginationStateTracker = PaginationStateTracker(initialState: initialPaginationState)
+        self.paginationStateTracker = PaginationStateTracker(initialState: configuration.initialPaginationState)
 
         // Create page storer:
-        self.edgeStorer = configuration.storerType.init(initialEdges: initialEdges)
+        self.edgeStorer = configuration.storer
 
         // Create page fetcher coordinator:
         let factory = PageFetcherFactory(
@@ -51,7 +45,7 @@ public final class ConnectionController<Fetcher, Parser, Storer>
         self.pageFetcherContainer = PageFetcherContainer(factory: factory)
 
         // Setup state relay:
-        self.hasCompletedInitialLoad = hasCompletedInitialLoad
+        self.hasCompletedInitialLoad = configuration.hasCompletedInitialLoad
         let initialState = ConnectionControllerState(
             hasCompletedInitialLoad: self.hasCompletedInitialLoad,
             pageFetcherCoordinatorState: self.pageFetcherContainer.combinedState,
@@ -151,36 +145,6 @@ extension ConnectionController {
     }
 }
 
-// MARK: Initialization
-
-extension ConnectionController {
-    public convenience init(configuration: ConnectionControllerConfiguration<Fetcher, Storer>) {
-        self.init(
-            configuration: configuration,
-            initialPaginationState: .initial,
-            initialEdges: [],
-            hasCompletedInitialLoad: false
-        )
-    }
-
-    convenience init(
-        configuration: ConnectionControllerConfiguration<Fetcher, Storer>,
-        connection: Fetcher.FetchedConnection,
-        fetchedFrom end: End)
-    {
-        let pageInfo = PageInfo(connectionPageInfo: connection.pageInfo)
-        let edges = connection.edges.map { edge -> Edge<Node> in
-            return Edge(node: edge.node, cursor: edge.cursor)
-        }
-        self.init(
-            configuration: configuration,
-            initialPaginationState: PaginationState(initialPageInfo: pageInfo, from: end),
-            initialEdges: edges,
-            hasCompletedInitialLoad: true
-        )
-    }
-}
-
 // MARK: Mutations
 
 extension ConnectionController {
@@ -263,8 +227,8 @@ extension ConnectionController where Storer: PageStorable {
 
 // MARK: ParsingPageStorer
 
-extension ConnectionController where Storer: ParsedPageProvider, Storer.ParsedModel == Parser.Model {
-    public var parsedPages: [Page<Parser.Model>] {
+extension ConnectionController where Storer: ParsedPageProvider {
+    public var parsedPages: [Page<Storer.ParsedModel>] {
         return self.edgeStorer.parsedPages
     }
 }

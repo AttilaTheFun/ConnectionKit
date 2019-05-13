@@ -5,7 +5,7 @@ import XCTest
 
 extension XCTestCase {
     func runInitialLoadTest(
-        controller: ConnectionController<TestFetcher, TestParser, ParsingPageStorer<TestFetcher, TestParser>>,
+        controller: ConnectionController<TestFetcher, ParsingPageStorer<TestFetcher, TestParser>>,
         fetchFrom end: End,
         expectedEndState: InitialLoadState.Status,
         expectedPages: [Page<TestModel>],
