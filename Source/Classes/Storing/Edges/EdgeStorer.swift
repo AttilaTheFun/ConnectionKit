@@ -11,16 +11,7 @@ public final class EdgeStorer<Model> {
 
 // MARK: Getters
 
-extension EdgeStorer: EdgeProvider {
-    public func cursor(for end: End) -> String? {
-        switch end {
-        case .head:
-            return self.edges.first?.cursor
-        case .tail:
-            return self.edges.last?.cursor
-        }
-    }
-
+extension EdgeStorer: EdgeStorable {
     public func ingest(edges: [Edge<Model>], from end: End) {
         self.edges = Edge<Model>.nextEdges(from: self.edges, ingesting: edges, from: end)
     }

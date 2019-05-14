@@ -17,15 +17,7 @@ public protocol PageStorable: EdgeStorable {
 }
 
 extension PageStorable {
-    public func cursor(for end: End) -> String? {
-        guard let page = end == .head ? self.pages.last : self.pages.first else {
-            return nil
-        }
-
-        guard let edge = end == .head ? page.edges.last : page.edges.first else {
-            return nil
-        }
-
-        return edge.cursor
+    public var edges: [Edge<Model>] {
+        return self.pages.flatMap { $0.edges }
     }
 }

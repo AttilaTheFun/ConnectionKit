@@ -28,8 +28,8 @@ extension ParsingEdgeStorer: ParsedEdgeProvider {
 // MARK: Getters
 
 extension ParsingEdgeStorer: EdgeStorable {
-    public func cursor(for end: End) -> String? {
-        return self.rawStorer.cursor(for: end)
+    public var edges: [Edge<Parser.Node>] {
+        return self.rawStorer.edges
     }
 
     public func ingest(edges: [Edge<Node>], from end: End) {

@@ -19,7 +19,6 @@ public final class ConnectionController<Fetcher, Storer>
 
     // MARK: State
 
-//    private var hasCompletedInitialLoad: Bool
     private let stateRelay: BehaviorRelay<ConnectionControllerState>
     private let disposeBag = DisposeBag()
 
@@ -209,6 +208,22 @@ extension ConnectionController {
      */
     public var stateObservable: Observable<ConnectionControllerState> {
         return self.stateRelay.asObservable()
+    }
+}
+
+// MARK: EdgeStorable
+
+extension ConnectionController where Storer: EdgeStorable {
+    public var edges: [Edge<Node>] {
+        return self.storer.edges
+    }
+}
+
+// MARK: ParsedEdgeProvider
+
+extension ConnectionController where Storer: ParsedEdgeProvider {
+    public var parsedEdges: [Edge<Storer.ParsedModel>] {
+        return self.storer.parsedEdges
     }
 }
 

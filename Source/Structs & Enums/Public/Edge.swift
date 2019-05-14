@@ -2,6 +2,11 @@
 public struct Edge<Model> {
     public let node: Model
     public let cursor: String
+
+    public init(node: Model, cursor: String) {
+        self.node = node
+        self.cursor = cursor
+    }
 }
 
 extension Edge: Equatable where Model: Equatable {}
