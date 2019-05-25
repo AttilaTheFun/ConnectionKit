@@ -4,12 +4,24 @@ import RxSwift
 final class PageFetcher<Fetcher> where Fetcher: ConnectionFetcherProtocol {
     typealias Node = Fetcher.FetchedConnection.ConnectedEdge.Node
 
+
+    private let fetcher: Fetcher
+    private let end: End
+    private let pageSize: Int
+    private let cursor: String?
+
     private let stateRelay = BehaviorRelay<PageFetcherState<Node>>(value: .idle)
-    private let fetchablePage: FetchablePage<Fetcher>
     private let disposeBag = DisposeBag()
 
-    init(fetchablePage: @escaping FetchablePage<Fetcher>) {
-        self.fetchablePage = fetchablePage
+    init(for fetcher: Fetcher, end: End, pageSize: Int, cursor: String?) {
+        self.fetcher = fetcher
+        self.end = end
+        self.cursor = cursor
+        self.pageSize = pageSize
+
+        if let cursor = cursor {
+            print("Creating fetcher for end: \(end) with cursor: \(cursor)")
+        }
     }
 }
 
@@ -18,6 +30,17 @@ final class PageFetcher<Fetcher> where Fetcher: ConnectionFetcherProtocol {
 extension PageFetcher {
     private enum PageFetcherError: String, Error {
         case fetchFiredCompleted = "Fetch should not fire onCompleted"
+    }
+
+    private var fetchablePage: Maybe<FetchedConnection<Fetcher>> {
+        switch self.end {
+        case .head:
+            // Paginating forward: `pageSize and `cursor` will be passed as the `first` and `after` arguments.
+            return self.fetcher.fetch(first: self.pageSize, after: self.cursor, last: nil, before: nil)
+        case .tail:
+            // Paginating backward: `pageSize and `cursor` will be passed as the `last` and `before` arguments.
+            return self.fetcher.fetch(first: nil, after: nil, last: self.pageSize, before: self.cursor)
+        }
     }
 }
 
@@ -53,7 +76,7 @@ extension PageFetcher {
 
     private func restartFetch() {
         self.stateRelay.accept(.fetching)
-        self.fetchablePage()
+        self.fetchablePage
             .subscribe(
                 onSuccess: { [weak self] connection in
                     guard let `self` = self else {
@@ -76,22 +99,5 @@ extension PageFetcher {
                     self?.stateRelay.accept(.error(wrappedError))
                 })
             .disposed(by: self.disposeBag)
-    }
-}
-
-// MARK: Internal
-
-extension PageFetcher {
-    convenience init(for fetcher: Fetcher, end: End, pageSize: Int, cursor: String?) {
-        self.init(fetchablePage: {
-            switch end {
-            case .head:
-                // Paginating forward: `pageSize and `cursor` will be passed as the `first` and `after` arguments.
-                return fetcher.fetch(first: pageSize, after: cursor, last: nil, before: nil)
-            case .tail:
-                // Paginating backward: `pageSize and `cursor` will be passed as the `last` and `before` arguments.
-                return fetcher.fetch(first: nil, after: nil, last: pageSize, before: cursor)
-            }
-        })
     }
 }

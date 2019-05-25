@@ -24,11 +24,22 @@ extension XCTestCase {
 
 extension TestFetcher {
     func fetch(config: FetchConfig) -> Maybe<TestConnection> {
-        return self.fetch(
-            first: config.first,
-            after: config.after,
-            last: config.last,
-            before: config.before
-        )
+        switch config.end {
+        case .head:
+            return self.fetch(
+                first: config.limit,
+                after: config.cursor,
+                last: nil,
+                before: nil
+            )
+        case .tail:
+            return self.fetch(
+                first: nil,
+                after: nil,
+                last: config.limit,
+                before: config.cursor
+            )
+        }
+
     }
 }

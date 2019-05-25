@@ -40,22 +40,19 @@ struct TestConnection: Hashable, ConnectionProtocol {
 }
 
 struct FetchConfig: Hashable {
-    let first: Int?
-    let after: String?
-    let last: Int?
-    let before: String?
+    let end: End
+    let limit: Int
+    let cursor: String?
 
     init(first: Int, after: String? = nil) {
-        self.first = first
-        self.after = after
-        self.last = nil
-        self.before = nil
+        self.end = .head
+        self.limit = first
+        self.cursor = after
     }
 
     init(last: Int, before: String? = nil) {
-        self.first = nil
-        self.after = nil
-        self.last = last
-        self.before = before
+        self.end = .tail
+        self.limit = last
+        self.cursor = before
     }
 }

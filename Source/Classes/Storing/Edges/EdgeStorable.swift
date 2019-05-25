@@ -13,7 +13,7 @@ public protocol EdgeStorable {
     var edges: [Edge<Model>] { get }
 
     /**
-     Retrieve the cursor for the given end.
+     Retrieve the cursor for fetching the next edges the given end.
      */
     func cursor(for end: End) -> String?
 

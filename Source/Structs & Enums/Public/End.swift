@@ -6,7 +6,13 @@ public enum End: Hashable {
      Fetches from this end will use the `first` and `after` parameters per the relay cursor spec.
 
      Example:
-     head -> [1, 2, 3, 4, 5]
+     head -> [1, 2, 3, 4, 5, 6, 7, 8]
+
+     first: 2
+     [1, 2]
+
+     first: 2 after: cursor(2)
+     [3, 4]
      */
     case head
 
@@ -16,13 +22,19 @@ public enum End: Hashable {
      Fetches from this end will use the `last` and `before` parameters per the relay cursor spec.
 
      Example:
-     [1, 2, 3, 4, 5] <- tail
+     [1, 2, 3, 4, 5, 6, 7, 8] <- tail
+
+     last: 2
+     [7, 8]
+
+     last: 2 before: cursor(7)
+     [5, 6]
      */
     case tail
 }
 
 extension End {
-    var opposite: End {
+    public var opposite: End {
         switch self {
         case .head:
             return .tail
