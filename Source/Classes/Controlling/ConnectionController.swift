@@ -142,13 +142,6 @@ extension ConnectionController {
 // MARK: Mutations
 
 extension ConnectionController {
-    /**
-     Resets the connection back to a given initial state, stopping all inflight requests.
-     */
-//    public func reset(to state: ConnectionControllerState<Parser.Model>) {
-//        self.hasCompletedInitialLoad = state.initialLoadState.hasCompletedInitialLoad
-//        self.reset(to: state.initialEdges, paginationState: state.paginationState)
-//    }
 
     /**
      Fetch the initial page of data from the given end.
@@ -204,7 +197,7 @@ extension ConnectionController {
     }
 
     /**
-     The current state of the connection controller.
+     Observable for the above state.
      */
     public var stateObservable: Observable<ConnectionControllerState> {
         return self.stateRelay.asObservable()

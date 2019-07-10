@@ -9,7 +9,11 @@ extension PaginationState {
     /**
      The initial pagination state for an empty connection.
      */
-    static let initial = PaginationState(hasFetchedInitialPage: false, hasFetchedLastPageFromHead: false, hasFetchedLastPageFromTail: false)
+    public static let initial = PaginationState(hasFetchedInitialPage: false, hasFetchedLastPageFromHead: false, hasFetchedLastPageFromTail: false)
+
+    public init<P>(connectionPageInfo: P, from end: End) where P: ConnectionPageInfo {
+        self = PaginationState.initial.nextState(pageInfo: PageInfo(connectionPageInfo: connectionPageInfo), from: end)
+    }
 
     /**
      Instantiates a pagination state instance with the given page info fetched from the given end.

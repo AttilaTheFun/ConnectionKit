@@ -4,7 +4,6 @@ import RxSwift
 final class PageFetcher<Fetcher> where Fetcher: ConnectionFetcherProtocol {
     typealias Node = Fetcher.FetchedConnection.ConnectedEdge.Node
 
-
     private let fetcher: Fetcher
     private let end: End
     private let pageSize: Int
@@ -18,10 +17,6 @@ final class PageFetcher<Fetcher> where Fetcher: ConnectionFetcherProtocol {
         self.end = end
         self.cursor = cursor
         self.pageSize = pageSize
-
-        if let cursor = cursor {
-            print("Creating fetcher for end: \(end) with cursor: \(cursor)")
-        }
     }
 }
 
@@ -75,6 +70,10 @@ extension PageFetcher {
     }
 
     private func restartFetch() {
+//        if let cursor = self.cursor {
+//            print("Beginning fetch for end: \(end) with cursor: \(cursor)")
+//        }
+
         self.stateRelay.accept(.fetching)
         self.fetchablePage
             .subscribe(

@@ -19,20 +19,21 @@ public struct ConnectionControllerConfiguration<Fetcher, Storer>
     public let storer: Storer
     public let paginationConfiguration: PaginationConfiguration
     let initialPaginationState: PaginationState
-}
 
-extension ConnectionControllerConfiguration {
     public init(
         fetcher: Fetcher,
         storer: Storer,
-        paginationConfiguration: PaginationConfiguration)
+        paginationConfiguration: PaginationConfiguration,
+        initialPaginationState: PaginationState = .initial)
     {
         self.fetcher = fetcher
         self.storer = storer
         self.paginationConfiguration = paginationConfiguration
-        self.initialPaginationState = .initial
+        self.initialPaginationState = initialPaginationState
     }
+}
 
+extension ConnectionControllerConfiguration {
     public init(
         fetcher: Fetcher,
         storerType: Storer.Type,

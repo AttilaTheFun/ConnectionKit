@@ -15,6 +15,11 @@
 public struct Page<Model> {
     public let index: Int
     public let edges: [Edge<Model>]
+
+    public init(index: Int, edges: [Edge<Model>]) {
+        self.index = index
+        self.edges = edges
+    }
 }
 
 extension Page: Equatable where Model: Equatable {}

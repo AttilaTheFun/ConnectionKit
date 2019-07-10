@@ -14,7 +14,6 @@ extension TestFetcher: ConnectionFetcherProtocol {
         case forwardAndBackwardParameters
         case neitherParameter
         case invalidCursor
-
         case unimplemented
     }
 

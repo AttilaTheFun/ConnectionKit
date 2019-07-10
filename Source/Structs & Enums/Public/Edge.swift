@@ -16,9 +16,9 @@ extension Edge {
     static func nextEdges(from previousEdges: [Edge<Model>], ingesting edges: [Edge<Model>], from end: End) -> [Edge<Model>] {
         switch end {
         case .head:
-            return edges + previousEdges
-        case .tail:
             return previousEdges + edges
+        case .tail:
+            return edges + previousEdges
         }
     }
 }

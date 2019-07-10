@@ -1,5 +1,5 @@
 
-public struct ConnectionControllerState {
+public struct ConnectionControllerState: Hashable {
     public let initialLoadState: InitialLoadState
     public let headState: EndState
     public let tailState: EndState
