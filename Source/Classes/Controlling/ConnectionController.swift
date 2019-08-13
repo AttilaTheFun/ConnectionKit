@@ -113,7 +113,7 @@ extension ConnectionController {
                     self.updateStateRelay()
                 case .complete(let edges, let pageInfo):
                     let paginationState = PaginationState.initial.nextState(pageInfo: pageInfo, from: end)
-                    self.reset(to: edges, paginationState: paginationState)
+                     self.reset(to: edges, paginationState: paginationState)
                 }
             })
             .disposed(by: self.disposeBag)
@@ -210,6 +210,12 @@ extension ConnectionController where Storer: EdgeStorable {
     public var edges: [Edge<Node>] {
         return self.storer.edges
     }
+
+    public var edgesObservable: Observable<[Edge<Node>]> {
+        return self.stateObservable.map { [weak self] _ in
+            return self?.edges ?? []
+        }
+    }
 }
 
 // MARK: ParsedEdgeProvider
@@ -217,6 +223,12 @@ extension ConnectionController where Storer: EdgeStorable {
 extension ConnectionController where Storer: ParsedEdgeProvider {
     public var parsedEdges: [Edge<Storer.ParsedModel>] {
         return self.storer.parsedEdges
+    }
+
+    public var parsedEdgesObservable: Observable<[Edge<Storer.ParsedModel>]> {
+        return self.stateObservable.map { [weak self] _ in
+            return self?.parsedEdges ?? []
+        }
     }
 }
 
@@ -226,6 +238,12 @@ extension ConnectionController where Storer: PageStorable {
     public var pages: [Page<Node>] {
         return self.storer.pages
     }
+
+    public var pagesObservable: Observable<[Page<Node>]> {
+        return self.stateObservable.map { [weak self] _ in
+            return self?.pages ?? []
+        }
+    }
 }
 
 // MARK: ParsingPageStorer
@@ -233,5 +251,11 @@ extension ConnectionController where Storer: PageStorable {
 extension ConnectionController where Storer: ParsedPageProvider {
     public var parsedPages: [Page<Storer.ParsedModel>] {
         return self.storer.parsedPages
+    }
+
+    public var parsedPagesObservable: Observable<[Page<Storer.ParsedModel>]> {
+        return self.stateObservable.map { [weak self] _ in
+            return self?.parsedPages ?? []
+        }
     }
 }

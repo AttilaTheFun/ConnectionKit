@@ -26,6 +26,16 @@ extension Page: Equatable where Model: Equatable {}
 extension Page: Hashable where Model: Hashable {}
 
 extension Page {
+    public func mapEdges<T>(_ transform: (Model) -> T) -> Page<T> {
+        let mappedEdges = self.edges.map { edge in
+            return Edge(node: transform(edge.node), cursor: edge.cursor)
+        }
+
+        return Page<T>(index: self.index, edges: mappedEdges)
+    }
+}
+
+extension Page {
     /**
      Computes the next pages from the previous pages by ingesting the edges.
      */

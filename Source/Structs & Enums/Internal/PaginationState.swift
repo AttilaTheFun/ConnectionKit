@@ -28,7 +28,7 @@ extension PaginationState {
     func nextState(pageInfo: PageInfo, from end: End) -> PaginationState {
         switch end {
         case .head:
-            // If ingesting from the head, only update canFetchNextPageFromHead.
+            // If ingesting from the head, only update hasFetchedLastPageFromTail.
             return PaginationState(
                 hasFetchedInitialPage: true,
                 hasFetchedLastPageFromHead: !pageInfo.hasNextPage,
