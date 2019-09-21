@@ -71,7 +71,7 @@ extension PageFetcher {
 
     private func restartFetch() {
 //        if let cursor = self.cursor {
-//            print("Beginning fetch for end: \(end) with cursor: \(cursor)")
+//            print("Beginning fetch for end: \(self.end) with cursor: \(cursor)")
 //        }
 
         self.stateRelay.accept(.fetching)
@@ -85,6 +85,10 @@ extension PageFetcher {
                     let edges = connection.edges.map { edge -> Edge<Node> in
                         return Edge(node: edge.node, cursor: edge.cursor)
                     }
+
+//                    if let cursor = self.cursor {
+//                        print("Fetched edges: \(edges) for end: \(self.end) with cursor: \(cursor)")
+//                    }
 
                     let pageInfo = PageInfo(connectionPageInfo: connection.pageInfo)
                     self.stateRelay.accept(.complete(edges, pageInfo))
